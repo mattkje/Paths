@@ -1,2 +1,3 @@
-# mappe-prosjekt-paths-mappe-4
-mappe-prosjekt-paths-mappe-4 created by GitHub Classroom
+# Mappe prosjekt, Gruppe 4
+
+This is a start
