@@ -2,9 +2,9 @@
 ## Participants
 ##### Matti Kjellstadli
 ##### Mathias Westergaard Johansen
-![This is an image](https://cdn.worldvectorlogo.com/logos/java.svg)
+![This is an image](https://www.svgrepo.com/download/503859/game.svg)
 
-# Oppgave
+## Oppgave
 Dere skal utvikle et program kalt Paths, som er en spillmotor for valgbasert og
 interaktiv historiefortelling. I denne første delen skal dere fokusere på grunnleggende
 klasser og logikk. I del 2 og 3 skal dere utvide med filhåndtering, et grafisk
