@@ -2,7 +2,6 @@
 ## Participants
 ##### Matti Kjellstadli
 ##### Mathias Westergaard Johansen
-![This is an image](https://www.svgrepo.com/download/503859/game.svg)
 
 ## Oppgave
 Dere skal utvikle et program kalt Paths, som er en spillmotor for valgbasert og
@@ -16,3 +15,5 @@ fristen, men de må som minimum være påbegynt for å få godkjent. Solid og je
 innsats vil gi et godt grunnlag for konstruktive tilbakemeldinger. Vi gjør oppmerksom
 på at dere også skal levere det som er gjort i Blackboard.
 Det kan være lurt å lese gjennom hele dokumentet før dere begynner på oppgavene.
+
+![This is an image](https://www.svgrepo.com/download/503859/game.svg)
