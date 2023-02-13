@@ -3,6 +3,8 @@
 ##### Matti Kjellstadli
 ##### Mathias Westergaard Johansen
 
+## Rapport
+Du kan finne rapporten her: [Prosjekt Rapport](https://studntnu-my.sharepoint.com/:w:/r/personal/mattikj_ntnu_no/Documents/Prosjektrapport.docx?d=w665f537ee9644b7b9326e672d885b2b9&csf=1&web=1&e=F3k23o)
 ## Oppgave
 Dere skal utvikle et program kalt Paths, som er en spillmotor for valgbasert og
 interaktiv historiefortelling. I denne første delen skal dere fokusere på grunnleggende
