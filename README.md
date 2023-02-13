@@ -1,9 +1,10 @@
 # Mappe prosjekt, Gruppe 4
 
-Matti Kjellstadli
-Mathias Westergaard Johansen
+##### Matti Kjellstadli
+##### Mathias Westergaard Johansen
+![This is an image](https://cdn.worldvectorlogo.com/logos/java.svg)
 
-Oppgave
+# Oppgave
 Dere skal utvikle et program kalt Paths, som er en spillmotor for valgbasert og
 interaktiv historiefortelling. I denne første delen skal dere fokusere på grunnleggende
 klasser og logikk. I del 2 og 3 skal dere utvide med filhåndtering, et grafisk
