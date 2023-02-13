@@ -1,5 +1,5 @@
 # Mappe prosjekt, Gruppe 4
-
+## Participants
 ##### Matti Kjellstadli
 ##### Mathias Westergaard Johansen
 ![This is an image](https://cdn.worldvectorlogo.com/logos/java.svg)
