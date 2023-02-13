@@ -5,8 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
 
 <!-- TODO: Set your own groupID, artifactID, and version -->
-    <groupId>fill.in.your.own</groupId>
-    <artifactId>your-application</artifactId>
+    <groupId>gruppe.fire</groupId>
+    <artifactId>Paths-fire</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <!-- Use porperties for versions. Properties are like variables -->
@@ -30,8 +30,8 @@
         <!--
         Details about your application, like where is the main()-method
         -->
-        <application.main>fill.in.your.main.class</application.main>
-        <application.filename>TheFileNameOfYourApplication</application.filename>
+        <application.main>main</application.main>
+        <application.filename>mappe-prosjekt-paths-mappe-4</application.filename>
     </properties>
 
     <build>
