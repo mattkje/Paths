@@ -16,8 +16,6 @@ public class Player {
             this.health = health;
         }
 
-    }
-
     /**
      *
      * @return
@@ -47,7 +45,7 @@ public class Player {
      * @return
      */
     public int addScore() {
-
+        return score;
     }
 
     /**
@@ -55,7 +53,7 @@ public class Player {
      * @return
      */
     public int getScore() {
-
+        return score;
     }
 
     /**
@@ -63,7 +61,7 @@ public class Player {
      * @return
      */
     public int addGold() {
-
+        return gold;
     }
 
     /**
@@ -71,7 +69,7 @@ public class Player {
      * @return
      */
     public String addToInventory() {
-
+        return null;
     }
 
     /**
@@ -79,6 +77,6 @@ public class Player {
      * @return
      */
     public ArrayList<String> getInventory() {
-
+        return inventory;
     }
 }

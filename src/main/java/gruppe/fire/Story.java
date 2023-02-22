@@ -39,9 +39,9 @@ public class Story {
     public Passage getPassage(Link link) {
         return openingPassage;
     }
-}
-    /*public Collection<Passage> getPassages(){
-        Story passage = new Story();
-        return passage.getPassages();
 
-     */
+    public Collection<Passage> getPassages() {
+
+        return null;
+    }
+}
