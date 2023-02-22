@@ -1,7 +1,7 @@
 /**
  * This class is optional. Time dependent!!
  */
-package org.example;
+package gruppe.fire;
 
 public class Client {
 }

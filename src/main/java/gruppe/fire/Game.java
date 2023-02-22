@@ -1,4 +1,4 @@
-package org.example;
+package gruppe.fire;
 
 public class Game {
 }
