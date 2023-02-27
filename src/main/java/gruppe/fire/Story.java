@@ -1,11 +1,12 @@
 package gruppe.fire;
 
 import java.util.Collection;
-import java.util.Map;
+import java.util.Collections;
+import java.util.HashMap;
 
 public class Story {
     private String title;
-    private Map<Link, Passage> passages;
+    private HashMap<Link, Passage> passages;
     private Passage openingPassage;
 
     /**
@@ -17,6 +18,7 @@ public class Story {
     public Story(String title, Passage openingPassage) {
         this.title = title;
         this.openingPassage = openingPassage;
+        this.passages = new HashMap<Link, Passage>();
     }
 
 
@@ -32,7 +34,8 @@ public class Story {
     }
 
     public void addPassage(Passage passage) {
-
+        Link link = new Link(passage.getTitle(), passage.getTitle());
+        passages.put(link, passage);
     }
 
 
@@ -41,7 +44,6 @@ public class Story {
     }
 
     public Collection<Passage> getPassages() {
-
-        return null;
+        return Collections.list(Collections.enumeration(passages.values()));
     }
 }

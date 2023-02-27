@@ -7,8 +7,10 @@ public class Link {
     private String text;
     private String reference;
     private ArrayList<Action> actions;
-    public void Link(String text, String reference) {
 
+    public Link(String text, String reference) {
+        this.text = text;
+        this.reference = reference;
     }
 
     /**

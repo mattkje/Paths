@@ -8,8 +8,10 @@ public class Passage {
     private String content;
     private ArrayList<Link> links;
 
-    public void Passage(String title, String content){
-
+    public Passage(String title, String content){
+        this.title = title;
+        this.content = content;
+        this.links = new ArrayList<Link>();
     }
 
     /**
@@ -34,7 +36,8 @@ public class Passage {
      * @return true or false dependent on the link availability.
      */
     public boolean addLink(Link link){
-        return links != null;
+
+        return false; // correct latrrr
     }
 
     /**
