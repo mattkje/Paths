@@ -1,4 +1,5 @@
 package gruppe.fire;
 
-public class Goal {
+public interface Goal {
+    public boolean isFulfilled(Player player);
 }

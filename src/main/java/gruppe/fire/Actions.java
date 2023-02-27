@@ -1,4 +1,5 @@
 package gruppe.fire;
 
-public class Actions {
+public interface Actions {
+    public void execute(Player player);
 }

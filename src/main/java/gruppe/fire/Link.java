@@ -9,6 +9,12 @@ public class Link {
     private ArrayList<Action> actions;
 
     public Link(String text, String reference) {
+        if (text == null) {
+            throw new IllegalArgumentException("The text can not be empty");
+        }
+        if (reference == null) {
+            throw new IllegalArgumentException("The reference can not be empty");
+        }
         this.text = text;
         this.reference = reference;
     }

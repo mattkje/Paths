@@ -44,8 +44,8 @@ public class Player {
      *
      * @return
      */
-    public int addScore() {
-        return score;
+    public int addScore(int score) {
+        return this.score;
     }
 
     /**
@@ -56,11 +56,7 @@ public class Player {
         return score;
     }
 
-    /**
-     *
-     * @return
-     */
-    public int addGold() {
+    public int getGold() {
         return gold;
     }
 
@@ -68,8 +64,16 @@ public class Player {
      *
      * @return
      */
-    public String addToInventory() {
-        return null;
+    public int addGold(int gold) {
+        return this.gold;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public void addToInventory(String item) {
+        inventory.add(item);
     }
 
     /**

@@ -8,7 +8,23 @@ public class Passage {
     private String content;
     private ArrayList<Link> links;
 
-    public Passage(String title, String content){
+    /**
+     * 
+     * @param title
+     * @param content
+     * @param links
+     */
+    public Passage(String title, String content, ArrayList<Link> links){
+        if (title == null) {
+            throw new IllegalArgumentException("The title can not be empty");
+        }
+        if (content == null) {
+            throw new IllegalArgumentException("The content can not be empty");
+        }
+        if (links == null) {
+            throw new IllegalArgumentException("The links can not be empty");
+        }
+
         this.title = title;
         this.content = content;
         this.links = new ArrayList<Link>();
