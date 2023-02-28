@@ -3,6 +3,10 @@ package gruppe.fire;
 import javax.swing.*;
 import java.util.ArrayList;
 
+/**
+ * this class makes it possible to go from one passage to another. Links bind together
+ * different parts of a story.
+ */
 public class Link {
     private String text;
     private String reference;

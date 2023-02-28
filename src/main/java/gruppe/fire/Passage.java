@@ -3,13 +3,18 @@ package gruppe.fire;
 import java.util.ArrayList;
 import java.util.Objects;
 
+/**
+ * This class represents a smaller part of a story. The class makes it possible to leave
+ * one passage to another through a link.
+ */
 public class Passage {
     private String title;
     private String content;
     private ArrayList<Link> links;
 
     /**
-     * 
+     * Constructs a new Passage object with the specified title, content, and links.
+     * @param title an overall description that also serves as an identifier.
      * @param title an overall description that also serves as an identifier.
      * @param content A textual content that typically represents a paragraph or part of one
      * dialogue.
@@ -71,9 +76,19 @@ public class Passage {
         return activeLinks;
     }
 
+    /**
+     * Determines whether the Passage object has any links.
+     * @return true if there are any links associated with the passage, false otherwise.
+     */
     public boolean hasLinks(){
         return links != null;
     }
+
+    /**
+     * Returns a String representation of the Passage object, which consists of the title
+     * and content fields concatenated together, separated by a space.
+     * @return a String representation of the Passage object.
+     */
     public String toString(){
         return title + " " + content;
     }
@@ -83,7 +98,7 @@ public class Passage {
      * It then checks if the other object is an instance of the Passage class.
      * Finally, it compares the title, content, and links fields of the two
      * Passage objects using the Objects.equals() method.
-     * @param obj
+     * @param obj The object to compare to.
      * @return True if both fields are null, or if both fields are equal according to their equals() method
      */
     public boolean equals(Object obj) {
@@ -98,6 +113,10 @@ public class Passage {
                 && Objects.equals(content, other.content)
                 && Objects.equals(links, other.links);
     }
+    /**
+     * Computes the hash code for this object based on the values of its fields.
+     * @return the hash code value for this object.
+     */
     public int hashCode() {
         int hash = 7;
         hash = 31 * hash + title.hashCode();
