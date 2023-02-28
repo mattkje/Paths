@@ -10,9 +10,10 @@ public class Passage {
 
     /**
      * 
-     * @param title
-     * @param content
-     * @param links
+     * @param title an overall description that also serves as an identifier.
+     * @param content A textual content that typically represents a paragraph or part of one
+     * dialogue.
+     * @param links Links that connect this passage to other passages.
      */
     public Passage(String title, String content, ArrayList<Link> links){
         if (title == null) {

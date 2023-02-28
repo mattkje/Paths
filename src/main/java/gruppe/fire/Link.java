@@ -8,6 +8,11 @@ public class Link {
     private String reference;
     private ArrayList<Action> actions;
 
+    /**
+     *
+     * @param text a descriptive text that indicates a choice or action in a story.
+     * @param reference a string that uniquely identifies a passage.
+     */
     public Link(String text, String reference) {
         if (text == null) {
             throw new IllegalArgumentException("The text can not be empty");
@@ -35,10 +40,18 @@ public class Link {
         return reference;
     }
 
+    /**
+     * Adds the specified action to this object's list of actions.
+     * @param actions the action to be added to the list.
+     */
     public void addAction(Action actions) {
         this.actions = new ArrayList<Action>();
     }
 
+    /**
+     * This method returns a list of actions.
+     * @return The list of actions.
+     */
     public ArrayList<Action> getActions() {
         return actions;
     }
@@ -47,6 +60,11 @@ public class Link {
         return text + " " + reference;
     }
 
+    /**
+     * Compares this object with the specified object for equality.
+     * @param object The object to compare to.
+     * @return True if the objects are equal, false otherwise.
+     */
     @Override
     public boolean equals(Object object) {
         if (object == null){
@@ -56,6 +74,10 @@ public class Link {
         }
     }
 
+    /**
+     * Computes the hash code for this object based on the values of its fields.
+     * @return the hash code value for this object.
+     */
     @Override
     public int hashCode() {
         int hash = 7;
