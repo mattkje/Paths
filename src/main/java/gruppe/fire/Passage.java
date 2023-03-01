@@ -80,7 +80,7 @@ public class Passage {
      * Determines whether the Passage object has any links.
      * @return true if there are any links associated with the passage, false otherwise.
      */
-    public boolean hasLinks(){
+    public boolean hasLinks(Link links){
         return links != null;
     }
 
