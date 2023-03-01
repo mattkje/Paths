@@ -14,9 +14,9 @@ public class Game {
 
     /**
      * Creates an instance of Game.
-     * @param player
-     * @param story
-     * @param goals
+     * @param player The player of the game.
+     * @param story The story of the game.
+     * @param goals The goals of the game.
      */
     public Game(Player player, Story story, ArrayList<Goal> goals){
         this.player = player;

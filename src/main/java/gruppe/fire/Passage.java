@@ -27,7 +27,7 @@ public class Passage {
         if (content == null) {
             throw new IllegalArgumentException("The content can not be empty");
         }
-        if (links == null) {
+        if (links == null || links.isEmpty()) {
             throw new IllegalArgumentException("The links can not be empty");
         }
 
@@ -53,17 +53,21 @@ public class Passage {
     }
 
     /**
-     * This method checks if the link is available.
-     * @param link
-     * @return true or false dependent on the link availability.
+     * This method checks if the link is available and adds it to the links list if it is.
+     * @param link The Link object to be added.
+     * @return true if the link is added successfully, false otherwise.
      */
     public boolean addLink(Link link){
-
-        return false; // correct latrrr
+        if (link == null || links.contains(link)){
+            return false;
+        } else {
+            links.add(link);
+            return true;
+        }
     }
 
     /**
-     * This method returns all available links.
+     * This method returns all available links in a new list: activeLink.
      * @return an ArrayList containing active links.
      */
     public ArrayList<Link> getLinks(){

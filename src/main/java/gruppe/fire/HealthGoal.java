@@ -1,5 +1,8 @@
 package gruppe.fire;
 
+/**
+ * This class represents an expected minimum health.
+ */
 public class HealthGoal implements Goal{
     private int minimumHealth;
 

@@ -1,5 +1,8 @@
 package gruppe.fire;
 
+/**
+ * This class is responsible for changing the player's score.
+ */
 public class ScoreAction implements Actions{
     private int score;
 

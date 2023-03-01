@@ -1,5 +1,8 @@
 package gruppe.fire;
 
+/**
+ * This class represents an expected minimum score.
+ */
 public class ScoreGoal implements Goal{
     private int minimumPoints;
 

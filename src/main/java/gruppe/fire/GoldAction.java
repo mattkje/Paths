@@ -1,5 +1,8 @@
 package gruppe.fire;
 
+/**
+ * This class responsible for changing the player's gold.
+ */
 public class GoldAction implements Actions{
     private int gold;
 

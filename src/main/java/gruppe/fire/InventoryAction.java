@@ -1,7 +1,8 @@
 package gruppe.fire;
 
-import java.util.ArrayList;
-
+/**
+ * This class is responsible for changing the player's inventory.
+ */
 public class InventoryAction implements Actions {
     private String item;
 
