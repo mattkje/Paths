@@ -1,7 +1,7 @@
 package gruppe.fire;
 
 /**
- * This class is responsible for changing the player's inventory.
+ * This class represents an action that adds an item to the player's inventory.
  */
 public class InventoryAction implements Actions {
     private String item;

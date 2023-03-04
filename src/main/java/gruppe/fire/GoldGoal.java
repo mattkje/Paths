@@ -1,7 +1,7 @@
 package gruppe.fire;
 
 /**
- * This class represents an expected minimum gold.
+ * This class represents a gold goal that specifies a minimum amount of gold that the player needs to have.
  */
 public class GoldGoal implements Goal{
     private int minimumGold;

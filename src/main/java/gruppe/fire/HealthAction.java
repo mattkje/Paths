@@ -1,7 +1,7 @@
 package gruppe.fire;
 
 /**
- * This class is responsible for changing the player's health.
+ * This class represents an action that changes the player's health.
  */
 public class HealthAction implements Actions{
     private int health;

@@ -1,7 +1,7 @@
 package gruppe.fire;
 
 /**
- * This class represents an expected minimum health.
+ * This class represents a health goal that specifies a minimum amount of health that the player needs to have.
  */
 public class HealthGoal implements Goal{
     private int minimumHealth;

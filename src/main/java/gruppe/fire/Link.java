@@ -13,7 +13,7 @@ public class Link {
     private ArrayList<Action> actions;
 
     /**
-     *
+     * Creates an instance of Link.
      * @param text a descriptive text that indicates a choice or action in a story.
      * @param reference a string that uniquely identifies a passage.
      */
@@ -60,6 +60,10 @@ public class Link {
         return actions;
     }
 
+    /**
+     * Returns a sensible textual representation of the link for use in debug.
+     * @return A link in a textual form.
+     */
     public String toString() {
         return text + " " + reference;
     }
