@@ -75,11 +75,16 @@ public class Link {
      */
     @Override
     public boolean equals(Object object) {
-        if (object == null){
+        if (this == object) {
             return true;
-        }else {
+        }
+        if (!(object instanceof Link)) {
             return false;
         }
+        Link otherLink = (Link) object;
+        return this.text.equals(otherLink.text) &&
+                this.reference.equals(otherLink.reference) &&
+                this.actions.equals(otherLink.actions);
     }
 
     /**

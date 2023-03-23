@@ -1,6 +1,11 @@
 package gruppe.fire;
 
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -78,4 +83,53 @@ public class Story {
     public Collection<Passage> getPassages() {
         return Collections.list(Collections.enumeration(passages.values()));
     }
+    /**
+
+     Removes a given passage from passages. It shouldn't be possible to remove the passage
+     if there are other passages linking to it.
+     @param link The link of the passage to remove.
+     */
+    public void removePassage(Link link){
+        boolean isUsed = false;
+        for (Passage passage : passages.values()) {
+            if (passage.hasLinks(link)) {
+                isUsed = true;
+                break;
+            }
+        }
+        if (!isUsed) {
+            passages.remove(link);
+        }
+    }
+
+    /**
+
+     Finds and returns a list of dead links. A link is dead if it refers to a passage
+     not found in passages.
+     @return A list of dead links.
+     */
+    public ArrayList<Link> getBrokenLinks(){
+        ArrayList<Link> brokenLinks = new ArrayList<Link>();
+        for (Passage passage : passages.values()) {
+            for (Link link : passage.getLinks()) {
+                if (!passages.containsKey(link)) {
+                    brokenLinks.add(link);
+                }
+            }
+        }
+        return brokenLinks;
+    }
+
+    public static void main(String[] args) {
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader("C:/Users/matti/Documents/Programmering 2/mappe-prosjekt-paths-mappe-4/src/main/resources/gruppe/fire/Paths/Example.paths"));
+            String line;
+            while((line = reader.readLine()) != null)
+                System.out.println(line);
+            reader.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }

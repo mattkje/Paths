@@ -1,0 +1,9 @@
+Murder Mystery
+::Beginning
+You are in a small, dimly lit room. There is a door in front of
+you.
+[Try to open the door](Another room)
+::Another room
+The door opens to another room. You see a knife covered in blood.
+[Look at the knife][Take the knife](clue knife)
+[Go back](Beginning)
