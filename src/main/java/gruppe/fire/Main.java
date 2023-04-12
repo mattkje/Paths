@@ -1,12 +1,12 @@
 package gruppe.fire;
 
-import javafx.scene.layout.BorderPane;
+import gruppe.fire.ui.MainUI;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-
+/**
+ * This class represents the starting point of the applications.
+ */
 public class Main {
-    BorderPane start = new BorderPane();
+    public static void main(String[] args) {
+        MainUI.appMain(args);
+    }
 }

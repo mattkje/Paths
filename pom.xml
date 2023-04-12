@@ -3,8 +3,6 @@
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
-<!-- TODO: Set your own groupID, artifactID, and version -->
     <groupId>gruppe.fire</groupId>
     <artifactId>Paths-fire</artifactId>
     <version>1.0</version>
@@ -29,7 +27,7 @@
         <!--
         Details about your application, like where is the main()-method
         -->
-        <application.main>main</application.main>
+        <application.main>Main</application.main>
         <application.filename>mappe-prosjekt-paths-mappe-4</application.filename>
     </properties>
 
