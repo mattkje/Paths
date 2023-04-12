@@ -18,4 +18,4 @@ innsats vil gi et godt grunnlag for konstruktive tilbakemeldinger. Vi gjør oppm
 på at dere også skal levere det som er gjort i Blackboard.
 Det kan være lurt å lese gjennom hele dokumentet før dere begynner på oppgavene.
 
-![This is an image](https://www.svgrepo.com/download/503859/game.svg)
+![This is an image](https://drive.google.com/uc?id=1znm0UrSfk-Jd0GL_bULLKmaowk6g1EHh)

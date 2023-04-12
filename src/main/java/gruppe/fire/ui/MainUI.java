@@ -16,24 +16,23 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
-
 import java.io.File;
-import java.net.URL;
 import java.util.Random;
-import java.util.ResourceBundle;
-
-import static javafx.scene.control.ScrollPane.ScrollBarPolicy.ALWAYS;
 
 /**
- * This class represents a starting point for the GUI.
+ * This class represents a starting point for the GUI (Main menu).
  */
 public class MainUI extends Application {
 
+    /**
+     *
+     * @param stage
+     * @throws Exception
+     */
     @Override
     public void start(Stage stage) throws Exception {
 
         BorderPane root = new BorderPane();
-
 
         //Background Image
         Image backgroundImage = new Image("/gruppe/fire/Media/titleBackground.png");
@@ -44,6 +43,9 @@ public class MainUI extends Application {
         ImageView anim5 = new ImageView("/gruppe/fire/Media/anim5.png");
         BackgroundImage background = new BackgroundImage(backgroundImage, null, null, null, null);
         Background backgroundObject = new Background(background);
+        root.setBackground(backgroundObject);
+
+        //Animated background letters.
         Timeline timeline = new Timeline();
         timeline.setCycleCount(Timeline.INDEFINITE);
 
@@ -72,8 +74,6 @@ public class MainUI extends Application {
         animPane.setLayoutX(-200);
         animPane.setLayoutY(100);
         root.getChildren().addAll(animPane);
-        root.setBackground(backgroundObject);
-
 
 
         //Main menu title
@@ -84,7 +84,7 @@ public class MainUI extends Application {
         titlePane.setCenter(title);
         root.setTop(titlePane);
 
-        //Import ui
+        //Import file menu.
         DropShadow dropShadow = new DropShadow();
         dropShadow.setOffsetY(5.0);
         dropShadow.setColor(Color.color(0, 0, 0, 0.5));
@@ -105,6 +105,7 @@ public class MainUI extends Application {
         importMenu.setEffect(dropShadow);
         FileChooser fileChooser = new FileChooser();
 
+        //Open file button.
         Button continueButton = new Button("Open paths file");
         continueButton.setOnAction(e -> {
             File selectedFile = fileChooser.showOpenDialog(stage);
@@ -124,23 +125,38 @@ public class MainUI extends Application {
 
         continueButton.setStyle("-fx-background-color: #FFFFFF; -fx-background-radius: 20px ; -fx-cursor: HAND ");
         continueButton.setFont(font);
-        importMenu.getChildren().addAll(continueButton, label);
 
+        //Clickable labels to open saved stories.
+        //TODO Add functionality/Rewrite if necessary.
+        Label recent1 = new Label("None");
+        Label recent2 = new Label("None");
+        Label recent3 = new Label("None");
+        Label recent4 = new Label("None");
+        recent1.setTextFill(Color.WHITE);
+        recent2.setTextFill(Color.WHITE);
+        recent3.setTextFill(Color.WHITE);
+        recent4.setTextFill(Color.WHITE);
+        importMenu.getChildren().addAll(continueButton, label, recent1, recent2, recent3, recent4);
+        root.setCenter(importMenu);
+
+        //Version label.
         Label version = new Label("Version: pre-Aplha 0.1");
         version.setTextFill(Color.WHITE);
         root.setBottom(version);
-        root.setCenter(importMenu);
 
-
-        //Create main menu here --->
-
+        //Show stage
         Scene mainScene = new Scene(root, 1300,800);
         stage.setResizable(false);
         stage.setScene(mainScene);
         stage.setTitle("Paths");
+        stage.getIcons().add(new Image("/gruppe/fire/Media/icon.png"));
         stage.show();
     }
 
+    /**
+     * Launch method.
+     * @param args
+     */
     public static void appMain(String[] args) {
         launch(args);
     }
