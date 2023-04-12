@@ -73,6 +73,7 @@ public class MainUI extends Application {
         animPane.getChildren().addAll(anim1, anim2, anim3, anim4, anim5);
         animPane.setLayoutX(-200);
         animPane.setLayoutY(100);
+        animPane.setOpacity(0.2);
         root.getChildren().addAll(animPane);
 
 
@@ -84,11 +85,13 @@ public class MainUI extends Application {
         titlePane.setCenter(title);
         root.setTop(titlePane);
 
-        //Import file menu.
+        //Shadow and font
         DropShadow dropShadow = new DropShadow();
         dropShadow.setOffsetY(5.0);
         dropShadow.setColor(Color.color(0, 0, 0, 0.5));
         Font font = Font.font("Arial",FontWeight.BOLD, 24);
+
+        //Import file menu.
         VBox importMenu = new VBox();
         Label label = new Label("Saved stories:");
         ImageView selectGame = new ImageView("/gruppe/fire/Media/GameSelect.png");
@@ -97,8 +100,8 @@ public class MainUI extends Application {
         label.setFont(font);
         label.setTextFill(Color.WHITE);
         importMenu.getChildren().add(selectGame);
-        importMenu.setStyle("-fx-background-color: rgba(0,0,0,0.81); -fx-background-radius: 40px");
-        importMenu.setMaxWidth(400);
+        importMenu.setStyle("-fx-background-color: rgba(0,0,0,0.7); -fx-background-radius: 40px");
+        importMenu.setPrefWidth(400);
         importMenu.setMaxHeight(400);
         importMenu.setSpacing(20);
         importMenu.setAlignment(Pos.TOP_CENTER);
@@ -126,18 +129,94 @@ public class MainUI extends Application {
         continueButton.setStyle("-fx-background-color: #FFFFFF; -fx-background-radius: 20px ; -fx-cursor: HAND ");
         continueButton.setFont(font);
 
-        //Clickable labels to open saved stories.
-        //TODO Add functionality/Rewrite if necessary.
-        Label recent1 = new Label("None");
-        Label recent2 = new Label("None");
-        Label recent3 = new Label("None");
-        Label recent4 = new Label("None");
-        recent1.setTextFill(Color.WHITE);
-        recent2.setTextFill(Color.WHITE);
-        recent3.setTextFill(Color.WHITE);
-        recent4.setTextFill(Color.WHITE);
-        importMenu.getChildren().addAll(continueButton, label, recent1, recent2, recent3, recent4);
-        root.setCenter(importMenu);
+        //Buttons to open saved stories.
+        GridPane customStories = new GridPane();
+        customStories.setPrefSize(400, 400);
+        customStories.setMaxHeight(400);
+        customStories.setAlignment(Pos.CENTER);
+
+        String[] storyTitles = {"Slot 1", "Slot 2", "Slot 3", "Slot 4"};
+        ImageView[] storyImages = {new ImageView("/gruppe/fire/Media/custom.png"), new ImageView("/gruppe/fire/Media/custom.png"), new ImageView("/gruppe/fire/Media/custom.png"), new ImageView("/gruppe/fire/Media/custom.png")};
+
+        for (int i = 0; i < storyTitles.length; i++) {
+            Button story = new Button();
+            Label storyTitle = new Label(storyTitles[i]);
+            storyTitle.setTextFill(Color.WHITE);
+            storyTitle.setFont(font);
+            story.setGraphic(storyImages[i]);
+            story.setStyle("-fx-background-color: rgba(255,255,255,0.24); -fx-background-radius: 10px");
+            customStories.add(story, 0, i + 1);
+            customStories.add(storyTitle, 1, i + 1);
+        }
+        importMenu.getChildren().addAll(continueButton, label, customStories);
+
+        GridPane defaultStories = new GridPane();
+        defaultStories.setStyle("-fx-background-color: rgba(0,0,0,0.7); -fx-background-radius: 40px");
+        defaultStories.setPrefSize(400, 400);
+        defaultStories.setMaxHeight(400);
+        defaultStories.setVgap(20);
+        defaultStories.setAlignment(Pos.CENTER);
+        defaultStories.setEffect(dropShadow);
+
+        Label ourStories = new Label("Our stories:");
+        ourStories.setFont(font);
+        ourStories.setTextFill(Color.WHITE);
+        defaultStories.add(ourStories, 0, 0);
+
+        String[] storyTitles2 = {"Haunted House", "Murder Mystery", "Castle", "Space Ship"};
+        ImageView[] storyImages2 = {new ImageView("/gruppe/fire/Media/1.png"), new ImageView("/gruppe/fire/Media/2.png"), new ImageView("/gruppe/fire/Media/3.png"), new ImageView("/gruppe/fire/Media/4.png")};
+
+        for (int i = 0; i < storyTitles.length; i++) {
+            Button story = new Button();
+            Label storyTitle2 = new Label(storyTitles2[i]);
+            storyTitle2.setTextFill(Color.WHITE);
+            storyTitle2.setFont(font);
+            story.setGraphic(storyImages2[i]);
+            story.setStyle("-fx-background-color: transparent");
+            defaultStories.add(story, 0, i + 1);
+            defaultStories.add(storyTitle2, 1, i + 1);
+        }
+
+
+        //Default stories.
+        /*
+        GridPane defaultStories = new GridPane();
+        defaultStories.setStyle("-fx-background-color: rgba(0,0,0,0.7); -fx-background-radius: 40px");
+        defaultStories.setPrefSize(400, 400);
+        defaultStories.setMaxHeight(400);
+        defaultStories.setVgap(20);
+        defaultStories.setAlignment(Pos.CENTER);
+        defaultStories.setEffect(dropShadow);
+
+        Label ourStories = new Label("Our stories:");
+        ourStories.setFont(font);
+        ourStories.setTextFill(Color.WHITE);
+        defaultStories.add(ourStories, 0, 0);
+
+        String[] storyTitles2 = {"Haunted House", "Murder Mystery", "Castle", "Space Ship"};
+        ImageView[] storyImages2 = {new ImageView("/gruppe/fire/Media/1.png"), new ImageView("/gruppe/fire/Media/2.png"), new ImageView("/gruppe/fire/Media/3.png"), new ImageView("/gruppe/fire/Media/4.png")};
+
+        for (int i = 0; i < storyTitles.length; i++) {
+            Button story = new Button();
+            Label storyTitle2 = new Label(storyTitles2[i]);
+            storyTitle2.setTextFill(Color.WHITE);
+            storyTitle2.setFont(font);
+            story.setGraphic(storyImages2[i]);
+            story.setStyle("-fx-background-color: rgba(255,255,255,0.24); -fx-background-radius: 10px");
+            defaultStories.add(story, 0, i + 1);
+            defaultStories.add(storyTitle2, 1, i + 1);
+        }
+         */
+
+
+
+        //Menu box
+        HBox menuBox = new HBox();
+        menuBox.getChildren().addAll(importMenu, defaultStories);
+        menuBox.setAlignment(Pos.CENTER);
+        menuBox.setSpacing(10);
+
+        root.setCenter(menuBox);
 
         //Version label.
         Label version = new Label("Version: pre-Aplha 0.1");

@@ -121,7 +121,7 @@ public class Story {
 
     public static void main(String[] args) {
         try {
-            BufferedReader reader = new BufferedReader(new FileReader("C:/Users/matti/Documents/Programmering 2/mappe-prosjekt-paths-mappe-4/src/main/resources/gruppe/fire/Paths/Example.paths"));
+            BufferedReader reader = new BufferedReader(new FileReader("C:/Users/matti/Documents/Programmering 2/mappe-prosjekt-paths-mappe-4/src/main/resources/gruppe/fire/Paths/MurderMystery.paths"));
             String line;
             while((line = reader.readLine()) != null)
                 System.out.println(line);
