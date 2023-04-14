@@ -4,7 +4,9 @@ import javafx.animation.*;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
@@ -17,6 +19,7 @@ import javafx.stage.Stage;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
 import java.io.File;
+import java.util.Optional;
 import java.util.Random;
 
 /**
@@ -24,6 +27,7 @@ import java.util.Random;
  */
 public class MainUI extends Application {
 
+    private MainUiController controller;
     /**
      *
      * @param stage
@@ -33,7 +37,7 @@ public class MainUI extends Application {
     public void start(Stage stage) throws Exception {
 
         BorderPane root = new BorderPane();
-
+        this.controller = new MainUiController();
         //Background Image
         Image backgroundImage = new Image("/gruppe/fire/Media/titleBackground.png");
         ImageView anim1 = new ImageView("/gruppe/fire/Media/anim1.png");
@@ -85,11 +89,20 @@ public class MainUI extends Application {
         titlePane.setCenter(title);
         root.setTop(titlePane);
 
-        //Shadow and font
+        //Shadows and fonts
         DropShadow dropShadow = new DropShadow();
         dropShadow.setOffsetY(5.0);
         dropShadow.setColor(Color.color(0, 0, 0, 0.5));
+        DropShadow titleShadow = new DropShadow();
+        titleShadow.setColor(Color.color(1,1,1));
+        titleShadow.setSpread(1);
+        titleShadow.setRadius(3);
+        DropShadow glow = new DropShadow();
+        glow.setColor(Color.WHITE);
+        glow.setSpread(1);
+        glow.setRadius(2);
         Font font = Font.font("Arial",FontWeight.BOLD, 24);
+        Font titleFont = Font.font("Freestyle Script", 74);
 
         //Import file menu.
         VBox importMenu = new VBox();
@@ -110,105 +123,67 @@ public class MainUI extends Application {
 
         //Open file button.
         Button continueButton = new Button("Open paths file");
+        continueButton.setOnMouseEntered(e -> continueButton.setStyle("-fx-background-color: #d1d1d1; -fx-background-radius: 20px ; -fx-cursor: HAND "));
+        continueButton.setOnMouseClicked(e -> continueButton.setStyle("-fx-background-color: GREY; -fx-background-radius: 20px ; -fx-cursor: HAND "));
+        continueButton.setOnMouseExited(e -> continueButton.setStyle("-fx-background-color: #FFFFFF; -fx-background-radius: 20px ; -fx-cursor: HAND "));
         continueButton.setOnAction(e -> {
             File selectedFile = fileChooser.showOpenDialog(stage);
-        });
-
-        continueButton.setOnMouseEntered(e -> {
-            continueButton.setStyle("-fx-background-color: #d1d1d1; -fx-background-radius: 20px ; -fx-cursor: HAND ");
-        });
-
-        continueButton.setOnMouseClicked(e -> {
-            continueButton.setStyle("-fx-background-color: GREY; -fx-background-radius: 20px ; -fx-cursor: HAND ");
-        });
-
-        continueButton.setOnMouseExited(e -> {
-            continueButton.setStyle("-fx-background-color: #FFFFFF; -fx-background-radius: 20px ; -fx-cursor: HAND ");
         });
 
         continueButton.setStyle("-fx-background-color: #FFFFFF; -fx-background-radius: 20px ; -fx-cursor: HAND ");
         continueButton.setFont(font);
 
         //Buttons to open saved stories.
+        //TODO rewrite when filewriting is developed.
         GridPane customStories = new GridPane();
         customStories.setPrefSize(400, 400);
         customStories.setMaxHeight(400);
         customStories.setAlignment(Pos.CENTER);
 
         String[] storyTitles = {"Slot 1", "Slot 2", "Slot 3", "Slot 4"};
-        ImageView[] storyImages = {new ImageView("/gruppe/fire/Media/custom.png"), new ImageView("/gruppe/fire/Media/custom.png"), new ImageView("/gruppe/fire/Media/custom.png"), new ImageView("/gruppe/fire/Media/custom.png")};
+        ImageView storyImage = new ImageView("/gruppe/fire/Media/custom.png");
 
         for (int i = 0; i < storyTitles.length; i++) {
             Button story = new Button();
             Label storyTitle = new Label(storyTitles[i]);
             storyTitle.setTextFill(Color.WHITE);
             storyTitle.setFont(font);
-            story.setGraphic(storyImages[i]);
+            story.setGraphic(storyImage);
             story.setStyle("-fx-background-color: rgba(255,255,255,0.24); -fx-background-radius: 10px");
             customStories.add(story, 0, i + 1);
             customStories.add(storyTitle, 1, i + 1);
         }
-        importMenu.getChildren().addAll(continueButton, label, customStories);
+        Label deleteSoon = new Label("Feature not available in this version.");
+        deleteSoon.setTextFill(Color.WHITE);
+        importMenu.getChildren().addAll(continueButton, label, deleteSoon);
+        //importMenu.getChildren().addAll(continueButton, label, customStories);
 
-        GridPane defaultStories = new GridPane();
+        VBox defaultStories = new VBox();
         defaultStories.setStyle("-fx-background-color: rgba(0,0,0,0.7); -fx-background-radius: 40px");
         defaultStories.setPrefSize(400, 400);
         defaultStories.setMaxHeight(400);
-        defaultStories.setVgap(20);
         defaultStories.setAlignment(Pos.CENTER);
         defaultStories.setEffect(dropShadow);
 
-        Label ourStories = new Label("Our stories:");
-        ourStories.setFont(font);
-        ourStories.setTextFill(Color.WHITE);
-        defaultStories.add(ourStories, 0, 0);
+        ImageView ourStories = new ImageView("/gruppe/fire/Media/ourgames.png");
+        ourStories.setFitWidth(250);
+        ourStories.setFitHeight(85);
+        defaultStories.getChildren().add(ourStories);
 
-        String[] storyTitles2 = {"Haunted House", "Murder Mystery", "Castle", "Space Ship"};
-        ImageView[] storyImages2 = {new ImageView("/gruppe/fire/Media/1.png"), new ImageView("/gruppe/fire/Media/2.png"), new ImageView("/gruppe/fire/Media/3.png"), new ImageView("/gruppe/fire/Media/4.png")};
 
-        for (int i = 0; i < storyTitles.length; i++) {
+        //Creates graphics for default story buttons.
+        for (int i = 1; i <= 4; i++) {
             Button story = new Button();
-            Label storyTitle2 = new Label(storyTitles2[i]);
-            storyTitle2.setTextFill(Color.WHITE);
-            storyTitle2.setFont(font);
-            story.setGraphic(storyImages2[i]);
+            ImageView storyImage2 = new ImageView("/gruppe/fire/Media/" + i + ".png");
+            story.setGraphic(storyImage2);
             story.setStyle("-fx-background-color: transparent");
-            defaultStories.add(story, 0, i + 1);
-            defaultStories.add(storyTitle2, 1, i + 1);
+            defaultStories.getChildren().add(story);
+            int finalI = i;
+            story.setOnMouseEntered(e -> story.setStyle("-fx-background-color: rgba(255,255,255,0.27); -fx-background-radius: 20px ; -fx-cursor: HAND "));
+            story.setOnMousePressed(e -> story.setStyle("-fx-background-color: rgba(255,255,255,0.56); -fx-background-radius: 20px ; -fx-cursor: HAND "));
+            story.setOnMouseReleased(e -> story.setStyle("-fx-background-color: rgba(255,255,255,0.27); -fx-background-radius: 20px ; -fx-cursor: HAND "));
+            story.setOnMouseExited(e -> story.setStyle("-fx-background-color: transparent; -fx-background-radius: 20px ; -fx-cursor: HAND "));
         }
-
-
-        //Default stories.
-        /*
-        GridPane defaultStories = new GridPane();
-        defaultStories.setStyle("-fx-background-color: rgba(0,0,0,0.7); -fx-background-radius: 40px");
-        defaultStories.setPrefSize(400, 400);
-        defaultStories.setMaxHeight(400);
-        defaultStories.setVgap(20);
-        defaultStories.setAlignment(Pos.CENTER);
-        defaultStories.setEffect(dropShadow);
-
-        Label ourStories = new Label("Our stories:");
-        ourStories.setFont(font);
-        ourStories.setTextFill(Color.WHITE);
-        defaultStories.add(ourStories, 0, 0);
-
-        String[] storyTitles2 = {"Haunted House", "Murder Mystery", "Castle", "Space Ship"};
-        ImageView[] storyImages2 = {new ImageView("/gruppe/fire/Media/1.png"), new ImageView("/gruppe/fire/Media/2.png"), new ImageView("/gruppe/fire/Media/3.png"), new ImageView("/gruppe/fire/Media/4.png")};
-
-        for (int i = 0; i < storyTitles.length; i++) {
-            Button story = new Button();
-            Label storyTitle2 = new Label(storyTitles2[i]);
-            storyTitle2.setTextFill(Color.WHITE);
-            storyTitle2.setFont(font);
-            story.setGraphic(storyImages2[i]);
-            story.setStyle("-fx-background-color: rgba(255,255,255,0.24); -fx-background-radius: 10px");
-            defaultStories.add(story, 0, i + 1);
-            defaultStories.add(storyTitle2, 1, i + 1);
-        }
-         */
-
-
 
         //Menu box
         HBox menuBox = new HBox();
@@ -218,10 +193,43 @@ public class MainUI extends Application {
 
         root.setCenter(menuBox);
 
+        //About page for the program. Displays Authors and version etc.
+        Button about = new Button();
+        about.setStyle("-fx-background-color: transparent");
+        ImageView info = new ImageView("/gruppe/fire/Media/info.png");
+        info.setFitHeight(20);
+        info.setFitWidth(20);
+        about.setGraphic(info);
+        about.setOnMouseEntered(e -> about.setStyle("-fx-background-color: rgba(255,255,255,0.27); -fx-background-radius: 30px ; -fx-cursor: HAND "));
+        about.setOnMousePressed(e -> about.setStyle("-fx-background-color: rgba(255,255,255,0.56); -fx-background-radius: 30px ; -fx-cursor: HAND "));
+        about.setOnMouseReleased(e -> about.setStyle("-fx-background-color: rgba(255,255,255,0.27); -fx-background-radius: 30px ; -fx-cursor: HAND "));
+        about.setOnMouseExited(e -> about.setStyle("-fx-background-color: transparent"));
+        about.setOnMouseClicked(mouseEvent -> {
+            //On clicked
+            Alert alertDialog = new Alert(Alert.AlertType.INFORMATION);
+            ImageView logo = new ImageView("/gruppe/fire/Media/icon.png");
+            logo.setFitWidth(100);
+            logo.setFitHeight(100);
+            alertDialog.setGraphic(logo);
+            alertDialog.setTitle("About");
+            alertDialog.setHeaderText("Version: pre-Alpha 0.1");
+            alertDialog.setContentText("Created by: Gruppe 4");
+            Optional<ButtonType> respons = alertDialog.showAndWait();
+        });
+
         //Version label.
-        Label version = new Label("Version: pre-Aplha 0.1");
+        Label version = new Label("Version: pre-Alpha 0.1");
         version.setTextFill(Color.WHITE);
-        root.setBottom(version);
+
+        //Bottom bar.
+        HBox bottom = new HBox();
+        bottom.setMaxHeight(30);
+        HBox growBox = new HBox();
+        growBox.setHgrow(growBox, Priority.ALWAYS); // set horizontal grow priority
+        growBox.setMaxWidth(Double.MAX_VALUE); // set maximum width to a large value
+        bottom.getChildren().addAll(version, growBox, about);
+        root.setBottom(bottom);
+
 
         //Show stage
         Scene mainScene = new Scene(root, 1300,800);
