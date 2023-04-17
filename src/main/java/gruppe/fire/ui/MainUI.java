@@ -19,6 +19,7 @@ import javafx.stage.Stage;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
 import java.io.File;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
 
@@ -207,8 +208,8 @@ public class MainUI extends Application {
         about.setOnMouseClicked(mouseEvent -> {
             //On clicked
             Alert alertDialog = new Alert(Alert.AlertType.INFORMATION);
-            ImageView logo = new ImageView("/gruppe/fire/Media/icon.png");
-            logo.setFitWidth(100);
+            ImageView logo = new ImageView("/gruppe/fire/Media/title.png");
+            logo.setFitWidth(256);
             logo.setFitHeight(100);
             alertDialog.setGraphic(logo);
             alertDialog.setTitle("About");
@@ -237,6 +238,7 @@ public class MainUI extends Application {
         stage.setScene(mainScene);
         stage.setTitle("Paths");
         stage.getIcons().add(new Image("/gruppe/fire/Media/icon.png"));
+        mainScene.getStylesheets().add(Objects.requireNonNull(this.getClass().getResource("/gruppe/fire/css/main.css")).toExternalForm());
         stage.show();
     }
 
