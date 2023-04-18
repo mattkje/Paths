@@ -2,6 +2,7 @@ package gruppe.fire.ui;
 
 import javafx.animation.*;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -19,6 +20,11 @@ import javafx.stage.Stage;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
@@ -28,7 +34,9 @@ import java.util.Random;
  */
 public class MainUI extends Application {
 
-    private MainUiController controller;
+    private GameDisplay game;
+
+    private File selectedFile;
     /**
      *
      * @param stage
@@ -36,9 +44,12 @@ public class MainUI extends Application {
      */
     @Override
     public void start(Stage stage) throws Exception {
+        //Universal app version
+        String version = "Version: Pre-release v1";
+
+        this.game = new GameDisplay();
 
         BorderPane root = new BorderPane();
-        this.controller = new MainUiController();
         //Background Image
         Image backgroundImage = new Image("/gruppe/fire/Media/titleBackground.png");
         ImageView anim1 = new ImageView("/gruppe/fire/Media/anim1.png");
@@ -48,6 +59,7 @@ public class MainUI extends Application {
         ImageView anim5 = new ImageView("/gruppe/fire/Media/anim5.png");
         BackgroundImage background = new BackgroundImage(backgroundImage, null, null, null, null);
         Background backgroundObject = new Background(background);
+
         root.setBackground(backgroundObject);
 
         //Animated background letters.
@@ -103,7 +115,7 @@ public class MainUI extends Application {
         glow.setSpread(1);
         glow.setRadius(2);
         Font font = Font.font("Arial",FontWeight.BOLD, 24);
-        Font titleFont = Font.font("Freestyle Script", 74);
+        Font titleFont = Font.font("Freestyle Script", 24);
 
         //Import file menu.
         VBox importMenu = new VBox();
@@ -121,43 +133,113 @@ public class MainUI extends Application {
         importMenu.setAlignment(Pos.TOP_CENTER);
         importMenu.setEffect(dropShadow);
         FileChooser fileChooser = new FileChooser();
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Paths files (*.paths)", "*.paths");
+        fileChooser.getExtensionFilters().add(extFilter);
+
 
         //Open file button.
         Button continueButton = new Button("Open paths file");
-        continueButton.setOnMouseEntered(e -> continueButton.setStyle("-fx-background-color: #d1d1d1; -fx-background-radius: 20px ; -fx-cursor: HAND "));
-        continueButton.setOnMouseClicked(e -> continueButton.setStyle("-fx-background-color: GREY; -fx-background-radius: 20px ; -fx-cursor: HAND "));
-        continueButton.setOnMouseExited(e -> continueButton.setStyle("-fx-background-color: #FFFFFF; -fx-background-radius: 20px ; -fx-cursor: HAND "));
+        continueButton.setEffect(dropShadow);
+        Button startGame = new Button("Start");
+        startGame.setEffect(dropShadow);
+        continueButton.setOnMouseEntered(e -> continueButton.setStyle("-fx-background-color: rgba(46,4,143,0.62); -fx-background-radius: 20px ; -fx-cursor: HAND "));
+        continueButton.setOnMouseClicked(e -> continueButton.setStyle("-fx-background-color: rgba(46,4,143,0.41); -fx-background-radius: 20px ; -fx-cursor: HAND "));
+        continueButton.setOnMouseExited(e -> continueButton.setStyle("-fx-background-color: #2e048f; -fx-background-radius: 20px ; -fx-cursor: HAND "));
+        startGame.setOnMouseEntered(e -> startGame.setStyle("-fx-background-color: rgba(46,4,143,0.62); -fx-background-radius: 20px ; -fx-cursor: HAND "));
+        startGame.setOnMouseClicked(e -> startGame.setStyle("-fx-background-color: rgba(46,4,143,0.41); -fx-background-radius: 20px ; -fx-cursor: HAND "));
+        startGame.setOnMouseExited(e -> startGame.setStyle("-fx-background-color: #2e048f; -fx-background-radius: 20px ; -fx-cursor: HAND "));
+        Label noFile = new Label("No file selected");
         continueButton.setOnAction(e -> {
-            File selectedFile = fileChooser.showOpenDialog(stage);
+
+            this.selectedFile = fileChooser.showOpenDialog(stage);
+
+            //Prevents user from opening non-paths files (typing direct path will bypass filter)
+            if(!String.valueOf(selectedFile).endsWith(".paths") && selectedFile != null){
+                noFile.setText("Incorrect file type!");
+
+            //Stores the file path to a txt file and also sets status as file path.
+            }else if(selectedFile != null) {
+                Path currentFile = Path.of(selectedFile.getPath());
+                try {
+                    FileWriter writer = null;
+                    writer = new FileWriter("src/main/java/gruppe/fire/fileParsing/currentPathsFile.txt");
+                    writer.write(String.valueOf(currentFile));
+                    writer.close();
+                    noFile.setText(String.valueOf(currentFile));
+
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+
+            //Sets status if user cancels open file.
+            } else {
+                noFile.setText("No file was selected");
+            }
+
+
         });
 
-        continueButton.setStyle("-fx-background-color: #FFFFFF; -fx-background-radius: 20px ; -fx-cursor: HAND ");
+        continueButton.setStyle("-fx-background-color: rgb(46,4,143); -fx-background-radius: 20px ; -fx-cursor: HAND ");
         continueButton.setFont(font);
+        continueButton.setTextFill(Color.WHITE);
+        startGame.setStyle("-fx-background-color: #2e048f; -fx-background-radius: 20px ; -fx-cursor: HAND ");
+        startGame.setFont(font);
+        startGame.setTextFill(Color.WHITE);
+
+        //Game Starting point. Will open new stage.
+        startGame.setOnAction(e -> {
+            if(String.valueOf(selectedFile).endsWith(".paths") && selectedFile != null){
+                stage.close();
+                Stage gameStage = new Stage();
+                try {
+                    game.start(gameStage);
+                } catch (Exception ex) {
+                    throw new RuntimeException(ex);
+                }
+            } else {
+                noFile.setText("You have to select a file first.");
+            }
+
+
+        });
 
         //Buttons to open saved stories.
         //TODO rewrite when filewriting is developed.
         GridPane customStories = new GridPane();
-        customStories.setPrefSize(400, 400);
-        customStories.setMaxHeight(400);
+        //customStories.setPrefSize(400, 400);
+        //customStories.setMaxHeight(400);
         customStories.setAlignment(Pos.CENTER);
+        customStories.setVgap(4);
 
         String[] storyTitles = {"Slot 1", "Slot 2", "Slot 3", "Slot 4"};
-        ImageView storyImage = new ImageView("/gruppe/fire/Media/custom.png");
 
         for (int i = 0; i < storyTitles.length; i++) {
             Button story = new Button();
-            Label storyTitle = new Label(storyTitles[i]);
-            storyTitle.setTextFill(Color.WHITE);
-            storyTitle.setFont(font);
-            story.setGraphic(storyImage);
-            story.setStyle("-fx-background-color: rgba(255,255,255,0.24); -fx-background-radius: 10px");
+            story.setText(storyTitles[i]);
+            story.setTextFill(Color.WHITE);
+            story.setStyle("-fx-background-color: rgba(255,255,255,0.09); -fx-background-radius: 10px; -fx-pref-width: 300");
             customStories.add(story, 0, i + 1);
-            customStories.add(storyTitle, 1, i + 1);
         }
-        Label deleteSoon = new Label("Feature not available in this version.");
-        deleteSoon.setTextFill(Color.WHITE);
-        importMenu.getChildren().addAll(continueButton, label, deleteSoon);
-        //importMenu.getChildren().addAll(continueButton, label, customStories);
+        noFile.setTextFill(Color.WHITE);
+        noFile.setAlignment(Pos.CENTER);
+        noFile.setStyle("-fx-background-color: #363636; -fx-opacity: 0.5 ; -fx-background-radius: 20px; -fx-padding: 5px; -fx-max-width: 300");
+
+        HBox gameControl = new HBox();
+        Button dev = new Button();
+        dev.setText("Preview HUD");
+        dev.setOnAction(e ->{
+            stage.close();
+            Stage gameStage = new Stage();
+            try {
+                game.start(gameStage);
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+        gameControl.getChildren().addAll(continueButton, startGame, dev);
+        gameControl.setAlignment(Pos.CENTER);
+        gameControl.setSpacing(3);
+        importMenu.getChildren().addAll(gameControl, noFile, label, customStories);
 
         VBox defaultStories = new VBox();
         defaultStories.setStyle("-fx-background-color: rgba(0,0,0,0.7); -fx-background-radius: 40px");
@@ -188,7 +270,7 @@ public class MainUI extends Application {
 
         //Menu box
         HBox menuBox = new HBox();
-        menuBox.getChildren().addAll(importMenu, defaultStories);
+        menuBox.getChildren().addAll(defaultStories, importMenu);
         menuBox.setAlignment(Pos.CENTER);
         menuBox.setSpacing(10);
 
@@ -213,14 +295,14 @@ public class MainUI extends Application {
             logo.setFitHeight(100);
             alertDialog.setGraphic(logo);
             alertDialog.setTitle("About");
-            alertDialog.setHeaderText("Version: pre-Alpha 0.1");
+            alertDialog.setHeaderText(version);
             alertDialog.setContentText("Created by: Gruppe 4");
             Optional<ButtonType> respons = alertDialog.showAndWait();
         });
 
         //Version label.
-        Label version = new Label("Version: pre-Alpha 0.1");
-        version.setTextFill(Color.WHITE);
+        Label versionLabel = new Label(version);
+        versionLabel.setTextFill(Color.WHITE);
 
         //Bottom bar.
         HBox bottom = new HBox();
@@ -228,7 +310,7 @@ public class MainUI extends Application {
         HBox growBox = new HBox();
         growBox.setHgrow(growBox, Priority.ALWAYS); // set horizontal grow priority
         growBox.setMaxWidth(Double.MAX_VALUE); // set maximum width to a large value
-        bottom.getChildren().addAll(version, growBox, about);
+        bottom.getChildren().addAll(versionLabel, growBox, about);
         root.setBottom(bottom);
 
 
