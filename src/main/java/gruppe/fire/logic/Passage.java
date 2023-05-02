@@ -14,13 +14,15 @@ public class Passage {
 
     /**
      * Constructs a new Passage object with the specified title, content, and links.
-     * @param title an overall description that also serves as an identifier.
-     * @param title an overall description that also serves as an identifier.
+     *
+     * @param title   an overall description that also serves as an identifier.
      * @param content A textual content that typically represents a paragraph or part of one
-     * dialogue.
-     * @param links Links that connect this passage to other passages.
+     *                dialogue.
      */
-    public Passage(String title, String content, ArrayList<Link> links){
+    public Passage(String title, String content){
+
+
+        /*
         if (title == null) {
             throw new IllegalArgumentException("The title can not be empty");
         }
@@ -30,6 +32,7 @@ public class Passage {
         if (links == null || links.isEmpty()) {
             throw new IllegalArgumentException("The links can not be empty");
         }
+         */
 
         this.title = title;
         this.content = content;

@@ -1,5 +1,6 @@
 package gruppe.fire.ui;
 
+import gruppe.fire.fileHandling.StoryFileHandler;
 import javafx.animation.*;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -36,6 +37,8 @@ public class MainUI extends Application {
 
     private GameDisplay game;
 
+    private MainUiController controller;
+
     private File selectedFile;
     /**
      *
@@ -45,7 +48,9 @@ public class MainUI extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         //Universal app version
-        String version = "Version: Pre-release v1";
+        String version = "Version: 2023.04.26";
+
+        this.controller = new MainUiController();
 
         this.game = new GameDisplay();
 
@@ -142,27 +147,20 @@ public class MainUI extends Application {
         continueButton.setEffect(dropShadow);
         Button startGame = new Button("Start");
         startGame.setEffect(dropShadow);
-        continueButton.setOnMouseEntered(e -> continueButton.setStyle("-fx-background-color: rgba(46,4,143,0.62); -fx-background-radius: 20px ; -fx-cursor: HAND "));
-        continueButton.setOnMouseClicked(e -> continueButton.setStyle("-fx-background-color: rgba(46,4,143,0.41); -fx-background-radius: 20px ; -fx-cursor: HAND "));
-        continueButton.setOnMouseExited(e -> continueButton.setStyle("-fx-background-color: #2e048f; -fx-background-radius: 20px ; -fx-cursor: HAND "));
-        startGame.setOnMouseEntered(e -> startGame.setStyle("-fx-background-color: rgba(46,4,143,0.62); -fx-background-radius: 20px ; -fx-cursor: HAND "));
-        startGame.setOnMouseClicked(e -> startGame.setStyle("-fx-background-color: rgba(46,4,143,0.41); -fx-background-radius: 20px ; -fx-cursor: HAND "));
-        startGame.setOnMouseExited(e -> startGame.setStyle("-fx-background-color: #2e048f; -fx-background-radius: 20px ; -fx-cursor: HAND "));
         Label noFile = new Label("No file selected");
         continueButton.setOnAction(e -> {
-
             this.selectedFile = fileChooser.showOpenDialog(stage);
 
             //Prevents user from opening non-paths files (typing direct path will bypass filter)
             if(!String.valueOf(selectedFile).endsWith(".paths") && selectedFile != null){
                 noFile.setText("Incorrect file type!");
 
-            //Stores the file path to a txt file and also sets status as file path.
+                //Stores the file path to a txt file and also sets status as file path.
             }else if(selectedFile != null) {
                 Path currentFile = Path.of(selectedFile.getPath());
                 try {
                     FileWriter writer = null;
-                    writer = new FileWriter("src/main/java/gruppe/fire/fileParsing/currentPathsFile.txt");
+                    writer = new FileWriter("src/main/java/gruppe/fire/fileHandling/currentPathsFile.txt");
                     writer.write(String.valueOf(currentFile));
                     writer.close();
                     noFile.setText(String.valueOf(currentFile));
@@ -171,18 +169,13 @@ public class MainUI extends Application {
                     throw new RuntimeException(ex);
                 }
 
-            //Sets status if user cancels open file.
+                //Sets status if user cancels open file.
             } else {
                 noFile.setText("No file was selected");
             }
-
-
         });
-
-        continueButton.setStyle("-fx-background-color: rgb(46,4,143); -fx-background-radius: 20px ; -fx-cursor: HAND ");
         continueButton.setFont(font);
         continueButton.setTextFill(Color.WHITE);
-        startGame.setStyle("-fx-background-color: #2e048f; -fx-background-radius: 20px ; -fx-cursor: HAND ");
         startGame.setFont(font);
         startGame.setTextFill(Color.WHITE);
 
@@ -203,6 +196,7 @@ public class MainUI extends Application {
 
         });
 
+
         //Buttons to open saved stories.
         //TODO rewrite when filewriting is developed.
         GridPane customStories = new GridPane();
@@ -214,29 +208,31 @@ public class MainUI extends Application {
         String[] storyTitles = {"Slot 1", "Slot 2", "Slot 3", "Slot 4"};
 
         for (int i = 0; i < storyTitles.length; i++) {
-            Button story = new Button();
-            story.setText(storyTitles[i]);
-            story.setTextFill(Color.WHITE);
-            story.setStyle("-fx-background-color: rgba(255,255,255,0.09); -fx-background-radius: 10px; -fx-pref-width: 300");
-            customStories.add(story, 0, i + 1);
+            Button defaultStory = new Button();
+            defaultStory.setText(storyTitles[i]);
+            defaultStory.setTextFill(Color.WHITE);
+            defaultStory.setId("storyButtons");
+            customStories.add(defaultStory, 0, i + 1);
         }
+
+
+
         noFile.setTextFill(Color.WHITE);
         noFile.setAlignment(Pos.CENTER);
-        noFile.setStyle("-fx-background-color: #363636; -fx-opacity: 0.5 ; -fx-background-radius: 20px; -fx-padding: 5px; -fx-max-width: 300");
+        noFile.setId("noFile");
 
         HBox gameControl = new HBox();
         Button dev = new Button();
-        dev.setText("Preview HUD");
+        dev.setStyle("-fx-background-color: #FFFFFF");
+        dev.setText("PREVIEW");
         dev.setOnAction(e ->{
-            stage.close();
-            Stage gameStage = new Stage();
             try {
-                game.start(gameStage);
+                game.start(stage);
             } catch (Exception ex) {
                 throw new RuntimeException(ex);
             }
         });
-        gameControl.getChildren().addAll(continueButton, startGame, dev);
+        gameControl.getChildren().addAll(continueButton, startGame);
         gameControl.setAlignment(Pos.CENTER);
         gameControl.setSpacing(3);
         importMenu.getChildren().addAll(gameControl, noFile, label, customStories);
@@ -310,7 +306,7 @@ public class MainUI extends Application {
         HBox growBox = new HBox();
         growBox.setHgrow(growBox, Priority.ALWAYS); // set horizontal grow priority
         growBox.setMaxWidth(Double.MAX_VALUE); // set maximum width to a large value
-        bottom.getChildren().addAll(versionLabel, growBox, about);
+        bottom.getChildren().addAll(versionLabel, growBox, dev, about);
         root.setBottom(bottom);
 
 

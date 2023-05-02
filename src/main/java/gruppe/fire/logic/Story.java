@@ -14,17 +14,14 @@ import java.util.HashMap;
  */
 public class Story {
     private String title;
-    private HashMap<Link, Passage> passages;
+    private static HashMap<Link, Passage> passages;
     private Passage openingPassage;
 
     /**
      * Creates an instance of story.
-     *
-     * @param title The title of the story
-     * @param openingPassage The opening passage of the story.
-     * @param passages A Map containing the passage of the story.
      */
-    public Story(String title, Passage openingPassage, HashMap<Link, Passage> passages) {
+    public Story() {
+        /*
         if (title == null) {
             throw new IllegalArgumentException("The title can not be empty");
         }
@@ -34,6 +31,7 @@ public class Story {
         if (passages == null) {
             throw new IllegalArgumentException("The passages can not be empty");
         }
+         */
 
         this.title = title;
         this.openingPassage = openingPassage;
@@ -61,7 +59,7 @@ public class Story {
      * Adds a new passage to the story.
      * @param passage The passage to add to the story.
      */
-    public void addPassage(Passage passage){
+    public static void addPassage(Passage passage){
         Link link = new Link(passage.getTitle(), passage.getTitle());
         passages.put(link, passage);
     }
