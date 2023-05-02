@@ -2,6 +2,7 @@
     -fx-background-color: #2e048f;
     -fx-background-radius: 20px;
     -fx-cursor: HAND;
+    -fx-effect: dropshadow(gaussian, rgb(29, 3, 89), 0, 6.8025, 0, 3);
 }
 
 .button:hover{
@@ -12,7 +13,9 @@
 .button:pressed {
     -fx-background-color: rgba(46,4,143,0.41);
     -fx-background-radius: 20px;
-    -fx-cursor: HAND
+    -fx-cursor: HAND;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 0, 2, 0, 1);
+    -fx-translate-y: 2px;
 
 }
 
@@ -25,7 +28,24 @@
 }
 
 #storyButtons {
-    -fx-background-color: rgba(255,255,255,0.09);
+    -fx-background-color: #2e048f;
+    -fx-background-radius: 10px;
+    -fx-pref-width: 300;
+    -fx-effect: dropshadow(gaussian, rgb(29, 3, 89), 0, 6.8025, 0, 3);
+
+}
+
+#storyButtons:hover {
+    -fx-background-color: rgba(46,4,143,0.62);
     -fx-background-radius: 10px;
     -fx-pref-width: 300
 }
+
+#storyButtons:pressed {
+    -fx-background-color: rgba(46,4,143,0.41);
+    -fx-background-radius: 10px;
+    -fx-pref-width: 300;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 0, 2, 0, 1);
+    -fx-translate-y: 2px;
+}
+

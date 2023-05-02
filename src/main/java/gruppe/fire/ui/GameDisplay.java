@@ -1,8 +1,8 @@
 package gruppe.fire.ui;
 
 
-import gruppe.fire.fileHandling.StoryFileHandler;
 import javafx.application.Application;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -18,6 +18,7 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.util.Objects;
 
 /**
@@ -26,14 +27,18 @@ import java.util.Objects;
 public class GameDisplay extends Application {
 
     private MainUI mainMenu;
+
+    private GameDisplayController controller;
     /**
      * Starting point for the game.
      * @param stage
      * @throws Exception
      */
     @Override
-    public void start(Stage stage) throws Exception {
-        //Background
+    public void start(Stage stage) {
+
+        this.controller = new GameDisplayController();
+                //Background
         BorderPane root = new BorderPane();
         this.mainMenu = new MainUI();
         root.setStyle("-fx-background-color: linear-gradient(#5130b4, #402593)");
@@ -68,11 +73,11 @@ public class GameDisplay extends Application {
         growBox.setMaxWidth(Double.MAX_VALUE); // set maximum width to a large value
 
         //Back to main menu
-        Button button = new Button("MAIN MENU");
-        button.setFont(font);
-        button.setEffect(dropShadow);
-        button.setTextFill(Color.WHITE);
-        button.setOnAction(e ->{
+        Button mainMenuButton = new Button("MAIN MENU");
+        mainMenuButton.setFont(font);
+        mainMenuButton.setEffect(dropShadow);
+        mainMenuButton.setTextFill(Color.WHITE);
+        mainMenuButton.setOnAction(e ->{
             stage.close();
             Stage menuStage = new Stage();
             try {
@@ -82,10 +87,33 @@ public class GameDisplay extends Application {
             }
         });
 
+        Button saveButton = new Button("Save story");
+        saveButton.setFont(font);
+        saveButton.setEffect(dropShadow);
+        saveButton.setTextFill(Color.WHITE);
+        saveButton.setOnAction(e ->{
+            controller.saveStory();
+        });
+        Label unsavedChanges = new Label("Story is not saved");
+        unsavedChanges.setPadding(new Insets(17));
+        unsavedChanges.setTextFill(Color.WHITE);
+        unsavedChanges.setFont(Font.font("Segoe UI", FontWeight.BOLD, 12));
+
         HBox menuBar = new HBox();
         menuBar.setStyle("-fx-background-color: rgba(0,0,0,0.7); -fx-padding: 10px");
-        menuBar.getChildren().addAll(title, growBox, button);
+
+        try {
+            if(controller.checkIfDefault() == true) {
+                menuBar.getChildren().addAll(title, growBox, unsavedChanges, saveButton, mainMenuButton);
+            } else {
+                menuBar.getChildren().addAll(title, growBox, mainMenuButton);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
         menuBar.setEffect(dropShadow);
+        menuBar.setSpacing(10);
         root.setTop(menuBar);
 
         BorderPane gameWindow = new BorderPane();

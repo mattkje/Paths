@@ -160,7 +160,7 @@ public class MainUI extends Application {
                 Path currentFile = Path.of(selectedFile.getPath());
                 try {
                     FileWriter writer = null;
-                    writer = new FileWriter("src/main/java/gruppe/fire/fileHandling/currentPathsFile.txt");
+                    writer = new FileWriter("Data/currentPathsFile.cfg");
                     writer.write(String.valueOf(currentFile));
                     writer.close();
                     noFile.setText(String.valueOf(currentFile));
@@ -182,10 +182,8 @@ public class MainUI extends Application {
         //Game Starting point. Will open new stage.
         startGame.setOnAction(e -> {
             if(String.valueOf(selectedFile).endsWith(".paths") && selectedFile != null){
-                stage.close();
-                Stage gameStage = new Stage();
                 try {
-                    game.start(gameStage);
+                    game.start(stage);
                 } catch (Exception ex) {
                     throw new RuntimeException(ex);
                 }
@@ -198,15 +196,75 @@ public class MainUI extends Application {
 
 
         //Buttons to open saved stories.
-        //TODO rewrite when filewriting is developed.
+        //TODO rewrite when file writing is developed.
         GridPane customStories = new GridPane();
-        //customStories.setPrefSize(400, 400);
-        //customStories.setMaxHeight(400);
         customStories.setAlignment(Pos.CENTER);
         customStories.setVgap(4);
+        StoryFileHandler handler = new StoryFileHandler();
 
-        String[] storyTitles = {"Slot 1", "Slot 2", "Slot 3", "Slot 4"};
+        //Sets slot titles as story title.
+        String[] storyTitles = handler.readSavedStories();
 
+        Button defaultStory1 = new Button();
+        defaultStory1.setText(storyTitles[0]);
+        defaultStory1.setTextFill(Color.WHITE);
+        defaultStory1.setId("storyButtons");
+        defaultStory1.setOnAction(e ->{
+            try {
+                controller.setActiveFile("paths1.paths");
+                game.start(stage);
+            } catch (Exception ex) {
+                noFile.setText("This slot is empty");
+            }
+        });
+        customStories.add(defaultStory1, 0, 0);
+
+        Button defaultStory2 = new Button();
+        defaultStory2.setText(storyTitles[1]);
+        defaultStory2.setTextFill(Color.WHITE);
+        defaultStory2.setId("storyButtons");
+        defaultStory2.setOnAction(e ->{
+            try {
+                controller.setActiveFile("paths2.paths");
+                game.start(stage);
+            } catch (Exception ex) {
+                noFile.setText("This slot is empty");
+            }
+        });
+        customStories.add(defaultStory2, 0, 1);
+
+        Button defaultStory3 = new Button();
+        defaultStory3.setText(storyTitles[2]);
+        defaultStory3.setTextFill(Color.WHITE);
+        defaultStory3.setId("storyButtons");
+        defaultStory3.setOnAction(e ->{
+            try {
+                controller.setActiveFile("paths3.paths");
+                game.start(stage);
+            } catch (Exception ex) {
+                noFile.setText("This slot is empty");
+            }
+        });
+        customStories.add(defaultStory3, 0, 2);
+
+        Button defaultStory4 = new Button();
+        defaultStory4.setText(storyTitles[3]);
+        defaultStory4.setTextFill(Color.WHITE);
+        defaultStory4.setId("storyButtons");
+        defaultStory4.setOnAction(e ->{
+            try {
+                controller.setActiveFile("paths4.paths");
+                game.start(stage);
+            } catch (Exception ex) {
+                noFile.setText("This slot is empty");
+            }
+        });
+        customStories.add(defaultStory4, 0, 3);
+        customStories.setVgap(5);
+
+
+        //I don't think this will work.
+        /*
         for (int i = 0; i < storyTitles.length; i++) {
             Button defaultStory = new Button();
             defaultStory.setText(storyTitles[i]);
@@ -214,7 +272,7 @@ public class MainUI extends Application {
             defaultStory.setId("storyButtons");
             customStories.add(defaultStory, 0, i + 1);
         }
-
+        */
 
 
         noFile.setTextFill(Color.WHITE);
@@ -279,10 +337,6 @@ public class MainUI extends Application {
         info.setFitHeight(20);
         info.setFitWidth(20);
         about.setGraphic(info);
-        about.setOnMouseEntered(e -> about.setStyle("-fx-background-color: rgba(255,255,255,0.27); -fx-background-radius: 30px ; -fx-cursor: HAND "));
-        about.setOnMousePressed(e -> about.setStyle("-fx-background-color: rgba(255,255,255,0.56); -fx-background-radius: 30px ; -fx-cursor: HAND "));
-        about.setOnMouseReleased(e -> about.setStyle("-fx-background-color: rgba(255,255,255,0.27); -fx-background-radius: 30px ; -fx-cursor: HAND "));
-        about.setOnMouseExited(e -> about.setStyle("-fx-background-color: transparent"));
         about.setOnMouseClicked(mouseEvent -> {
             //On clicked
             Alert alertDialog = new Alert(Alert.AlertType.INFORMATION);
