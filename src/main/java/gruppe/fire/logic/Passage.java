@@ -19,24 +19,11 @@ public class Passage {
      * @param content A textual content that typically represents a paragraph or part of one
      *                dialogue.
      */
-    public Passage(String title, String content){
-
-
-        /*
-        if (title == null) {
-            throw new IllegalArgumentException("The title can not be empty");
-        }
-        if (content == null) {
-            throw new IllegalArgumentException("The content can not be empty");
-        }
-        if (links == null || links.isEmpty()) {
-            throw new IllegalArgumentException("The links can not be empty");
-        }
-         */
+    public Passage(String title, String content, ArrayList<Link> links){
 
         this.title = title;
         this.content = content;
-        this.links = new ArrayList<Link>();
+        this.links = links;
     }
 
     /**

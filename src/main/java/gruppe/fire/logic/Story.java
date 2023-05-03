@@ -20,22 +20,11 @@ public class Story {
     /**
      * Creates an instance of story.
      */
-    public Story() {
-        /*
-        if (title == null) {
-            throw new IllegalArgumentException("The title can not be empty");
-        }
-        if (openingPassage == null) {
-            throw new IllegalArgumentException("The openingPassage can not be empty");
-        }
-        if (passages == null) {
-            throw new IllegalArgumentException("The passages can not be empty");
-        }
-         */
+    public Story(String title, Passage openingPassage, HashMap<Link, Passage> passages) {
 
         this.title = title;
         this.openingPassage = openingPassage;
-        this.passages = new HashMap<Link, Passage>();
+        this.passages = passages;
     }
 
 
@@ -60,7 +49,7 @@ public class Story {
      * @param passage The passage to add to the story.
      */
     public static void addPassage(Passage passage){
-        Link link = new Link(passage.getTitle(), passage.getTitle());
+        Link link = new Link(passage.getTitle(), passage.getTitle(), new ArrayList<>());
         passages.put(link, passage);
     }
 
@@ -115,18 +104,6 @@ public class Story {
             }
         }
         return brokenLinks;
-    }
-
-    public static void main(String[] args) {
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader("C:/Users/matti/Documents/Programmering 2/mappe-prosjekt-paths-mappe-4/src/main/resources/gruppe/fire/Paths/MurderMystery.paths"));
-            String line;
-            while((line = reader.readLine()) != null)
-                System.out.println(line);
-            reader.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
 }

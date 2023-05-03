@@ -12,7 +12,7 @@ public class HealthAction implements Action {
      * Creates an instance of HealthAction with the specified health amount.
      * @param health The amount of health to be added to the player's health.
      */
-    public void HealthAction(int health){
+    public HealthAction(int health){
         this.health = health;
     }
 

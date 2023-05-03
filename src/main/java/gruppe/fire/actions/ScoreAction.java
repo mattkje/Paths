@@ -8,7 +8,7 @@ import gruppe.fire.logic.Player;
 public class ScoreAction implements Action {
     private int score;
 
-    public void ScoreAction(int score){
+    public ScoreAction(int score){
         this.score = score;
     }
     public void execute(Player player){

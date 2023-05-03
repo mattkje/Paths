@@ -3,9 +3,27 @@ package gruppe.fire;
 import gruppe.fire.logic.Player;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
 
-class PlayerTest {
+
+public class PlayerTest {
+
+    private Player player;
+
+    @Test
+    public void testAddHealth() {
+
+    }
+
+    @Test
+    public void testAddGoldWithPositiveAmount() {
+        
+    }
+
+    @Test
+    public void testAddGoldWithNegativeAmount() {
+
+    }
+
 
     @Test
     void addToInventory() {

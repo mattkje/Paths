@@ -37,42 +37,6 @@ public class StoryFileHandler {
 
     }
 
-    public void readGameFile(String fileAsString2) throws IOException {
-
-        Scanner scanner = new Scanner(fileAsString2);
-        String storyName = scanner.nextLine();
-        scanner.useDelimiter("::");
-        System.out.println(storyName);
-        scanner.next();
-        String openingPassage = scanner.next();
-        String[] openingParts = openingPassage.split("\r?\n");
-        String openingPassageTitle = openingParts[0];
-        String openingPassageContent = openingParts[1];
-        String openingActions = openingParts[2];
-        System.out.println(openingPassageTitle);
-        System.out.println(openingPassageContent);
-        System.out.println(openingActions);
-        readSavedStories();
-
-        for (int i = 2; i <= 2; i++) {
-
-            String openingPassageLinks = openingParts[i + 1];
-            parseLink(openingPassageLinks);
-            System.out.println(parseLink(openingPassageLinks));
-        }
-
-    }
-
-
-
-    public Link parseLink(String openingPassageLinks) {
-        String[] tokens = openingPassageLinks.split("[\\[\\]()]+");
-        String text = tokens[1].strip();
-        String reference = tokens[2].strip();
-        Link link = new Link(text, reference);
-        return link;
-    }
-
     /**
      * Reads first lines in saved files in saved folder and returns all story titles as an array of Strings.
      */

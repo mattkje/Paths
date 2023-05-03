@@ -18,15 +18,11 @@ public class Link {
      * @param text a descriptive text that indicates a choice or action in a story.
      * @param reference a string that uniquely identifies a passage.
      */
-    public Link(String text, String reference) {
-        if (text == null) {
-            throw new IllegalArgumentException("The text can not be empty");
-        }
-        if (reference == null) {
-            throw new IllegalArgumentException("The reference can not be empty");
-        }
+    public Link(String text, String reference, ArrayList<Action> actions) {
+
         this.text = text;
         this.reference = reference;
+        this.actions = actions;
     }
 
     /**
