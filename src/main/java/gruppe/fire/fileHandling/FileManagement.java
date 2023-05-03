@@ -5,21 +5,22 @@ import gruppe.fire.actions.*;
 import gruppe.fire.logic.Link;
 import gruppe.fire.logic.Passage;
 import gruppe.fire.logic.Story;
-
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class FileManagement {
+
+    private File gameFile;
+
+    public FileManagement(File gameFile){
+        this.gameFile = gameFile;
+    }
+
     public Story readFile() {
         String fileContent;
         try {
-            Path filePath = Path.of("Data/currentPathsFile.cfg");
-            byte[] fileBytes = Files.readAllBytes(filePath);
-            String fileAsString = new String(fileBytes);
-            File gameFile = new File(fileAsString);
+
             FileInputStream inputStream = new FileInputStream(gameFile);
             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
             StringBuilder stringBuilder = new StringBuilder();
@@ -95,5 +96,38 @@ public class FileManagement {
             case "ScoreAction" -> action = new ScoreAction(Integer.parseInt(actionAmount));
         }
         return action;
+    }
+
+    /**
+     * Reads first lines in saved files in saved folder and returns all story titles as an array of Strings.
+     */
+    public String[] readSavedStories() throws IOException {
+        BufferedReader reader1 = new BufferedReader(new FileReader("Data/SavedPaths/paths1.paths"));
+        BufferedReader reader2 = new BufferedReader(new FileReader("Data/SavedPaths/paths2.paths"));
+        BufferedReader reader3 = new BufferedReader(new FileReader("Data/SavedPaths/paths3.paths"));
+        BufferedReader reader4 = new BufferedReader(new FileReader("Data/SavedPaths/paths4.paths"));
+        String story1 = reader1.readLine();
+        if (story1 == null || story1.isEmpty()) {
+            story1 = "No File";
+        }
+
+        String story2 = reader2.readLine();
+        if (story2 == null || story2.isEmpty()) {
+            story2 = "No File";
+        }
+
+        String story3 = reader3.readLine();
+        if (story3 == null || story3.isEmpty()) {
+            story3 = "No File";
+        }
+
+        String story4 = reader4.readLine();
+        if (story4 == null || story4.isEmpty()) {
+            story4 = "No File";
+        }
+
+        String[] storyArray = { story1, story2, story3, story4 };
+        return storyArray;
+
     }
 }

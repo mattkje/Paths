@@ -1,6 +1,6 @@
 package gruppe.fire.ui;
 
-import gruppe.fire.fileHandling.StoryFileHandler;
+import gruppe.fire.fileHandling.FileManagement;
 import javafx.animation.*;
 import javafx.application.Application;
 import javafx.geometry.Pos;
@@ -22,9 +22,7 @@ import javafx.util.Duration;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
@@ -39,6 +37,7 @@ public class MainUI extends Application {
     private MainUiController controller;
 
     private File selectedFile;
+
     /**
      *
      * @param stage
@@ -47,7 +46,7 @@ public class MainUI extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         //Universal app version
-        String version = "Version: 2023.04.26";
+        String version = "Version: 2023.05.03";
 
         this.controller = new MainUiController();
 
@@ -158,7 +157,7 @@ public class MainUI extends Application {
             }else if(selectedFile != null) {
                 Path currentFile = Path.of(selectedFile.getPath());
                 try {
-                    FileWriter writer = null;
+                    FileWriter writer;
                     writer = new FileWriter("Data/currentPathsFile.cfg");
                     writer.write(String.valueOf(currentFile));
                     writer.close();
@@ -199,7 +198,7 @@ public class MainUI extends Application {
         GridPane customStories = new GridPane();
         customStories.setAlignment(Pos.CENTER);
         customStories.setVgap(4);
-        StoryFileHandler handler = new StoryFileHandler();
+        FileManagement handler = new FileManagement(selectedFile);
 
         //Sets slot titles as story title.
         String[] storyTitles = handler.readSavedStories();
@@ -372,6 +371,8 @@ public class MainUI extends Application {
         mainScene.getStylesheets().add(Objects.requireNonNull(this.getClass().getResource("/gruppe/fire/css/main.css")).toExternalForm());
         stage.show();
     }
+
+
 
     /**
      * Launch method.

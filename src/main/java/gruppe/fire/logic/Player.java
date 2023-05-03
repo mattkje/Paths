@@ -44,10 +44,14 @@ public class Player {
      */
     public int addHealth(int amount) {
         health += amount;
+        return health;
+    }
+
+    public boolean checkIfAlive() {
         if(health >= 0) {
-            return health;
+            return true;
         }else {
-            throw new IllegalArgumentException("Health can not be less than 0");
+            return false;
         }
     }
 
@@ -67,10 +71,14 @@ public class Player {
      */
     public int addScore(int amount) {
         score += amount;
+        return score;
+    }
+
+    public boolean checkScore() {
         if(score >= 0) {
-            return score;
+            return true;
         }else {
-            throw new IllegalArgumentException("Score can not be less than 0");
+            return false;
         }
     }
 
@@ -98,10 +106,14 @@ public class Player {
      */
     public int addGold(int amount) {
         gold += amount;
+        return gold;
+    }
+
+    public boolean checkIfAfford() {
         if(gold >= 0) {
-            return gold;
+            return true;
         }else {
-            throw new IllegalArgumentException("Gold can not be less than 0");
+            return false;
         }
     }
 
