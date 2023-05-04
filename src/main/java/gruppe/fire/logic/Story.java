@@ -1,9 +1,6 @@
 package gruppe.fire.logic;
 
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -14,17 +11,18 @@ import java.util.HashMap;
  */
 public class Story {
     private String title;
-    private static HashMap<Link, Passage> passages;
+    private HashMap<Link, Passage> passages;
     private Passage openingPassage;
 
     /**
      * Creates an instance of story.
      */
-    public Story(String title, Passage openingPassage, HashMap<Link, Passage> passages) {
+    public Story(String title, Passage openingPassage) {
 
         this.title = title;
+        this.passages = new HashMap<>();
         this.openingPassage = openingPassage;
-        this.passages = passages;
+        this.addPassage(openingPassage);
     }
 
 
@@ -36,6 +34,10 @@ public class Story {
         return title;
     }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     /**
      * Returns the openingPassage of the story.
      * @return the openingPassage
@@ -44,13 +46,17 @@ public class Story {
         return openingPassage;
     }
 
+    public void setOpeningPassage(Passage openingPassage){
+        this.openingPassage = openingPassage;
+    }
+
     /**
      * Adds a new passage to the story.
      * @param passage The passage to add to the story.
      */
-    public static void addPassage(Passage passage){
-        Link link = new Link(passage.getTitle(), passage.getTitle(), new ArrayList<>());
-        passages.put(link, passage);
+    public void addPassage(Passage passage){
+        Link link = new Link(passage.getTitle(), passage.getTitle());
+        this.passages.put(link, passage);
     }
 
     /**

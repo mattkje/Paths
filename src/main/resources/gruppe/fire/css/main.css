@@ -49,3 +49,130 @@
     -fx-translate-y: 2px;
 }
 
+#startButton {
+    -fx-background-color: rgba(0, 0, 0, 0.7);
+    -fx-background-radius: 20px;
+    -fx-cursor: HAND;
+    -fx-effect: dropshadow(gaussian, rgb(29, 3, 89), 0, 6.8025, 0, 3);
+    -fx-pref-width: 300;
+    -fx-pref-height: 70;
+}
+#startButton:hover{
+    -fx-background-color: rgba(46,4,143,0.62);
+    -fx-background-radius: 20px;
+    -fx-cursor: HAND;
+    -fx-pref-width: 300;
+    -fx-pref-height: 70;
+}
+#startButton:pressed {
+    -fx-background-color: rgba(46,4,143,0.41);
+    -fx-background-radius: 20px;
+    -fx-cursor: HAND;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 0, 2, 0, 1);
+    -fx-translate-y: 2px;
+    -fx-pref-width: 300;
+    -fx-pref-height: 70;
+
+}
+
+#settingsButton {
+    -fx-background-color: rgba(0, 0, 0, 0.7);
+    -fx-background-radius: 20px;
+    -fx-cursor: HAND;
+    -fx-effect: dropshadow(gaussian, rgb(29, 3, 89), 0, 6.8025, 0, 3);
+    -fx-pref-width: 300;
+    -fx-pref-height: 70;
+}
+#settingsButton:hover{
+    -fx-background-color: rgba(46,4,143,0.62);
+    -fx-background-radius: 20px;
+    -fx-cursor: HAND;
+    -fx-pref-width: 300;
+    -fx-pref-height: 70;
+}
+#settingsButton:pressed {
+    -fx-background-color: rgba(46,4,143,0.41);
+    -fx-background-radius: 20px;
+    -fx-cursor: HAND;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 0, 2, 0, 1);
+    -fx-translate-y: 2px;
+    -fx-pref-width: 300;
+    -fx-pref-height: 70;
+
+}
+
+#howToPlayButton {
+    -fx-background-color: rgba(0, 0, 0, 0.7);
+    -fx-background-radius: 20px;
+    -fx-cursor: HAND;
+    -fx-effect: dropshadow(gaussian, rgb(29, 3, 89), 0, 6.8025, 0, 3);
+    -fx-pref-width: 300;
+    -fx-pref-height: 70;
+}
+#howToPlayButton:hover{
+    -fx-background-color: rgba(46,4,143,0.62);
+    -fx-background-radius: 20px;
+    -fx-cursor: HAND;
+    -fx-pref-width: 300;
+    -fx-pref-height: 70;
+}
+#howToPlayButton:pressed {
+    -fx-background-color: rgba(46,4,143,0.41);
+    -fx-background-radius: 20px;
+    -fx-cursor: HAND;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 0, 2, 0, 1);
+    -fx-translate-y: 2px;
+    -fx-pref-width: 300;
+    -fx-pref-height: 70;
+
+}
+
+#exitButton {
+    -fx-background-color: rgba(0, 0, 0, 0.7);
+    -fx-background-radius: 20px;
+    -fx-cursor: HAND;
+    -fx-effect: dropshadow(gaussian, rgb(29, 3, 89), 0, 6.8025, 0, 3);
+    -fx-pref-width: 300;
+    -fx-pref-height: 70;
+}
+#exitButton:hover{
+    -fx-background-color: rgba(46,4,143,0.62);
+    -fx-background-radius: 20px;
+    -fx-cursor: HAND;
+    -fx-pref-width: 300;
+    -fx-pref-height: 70;
+}
+#exitButton:pressed {
+    -fx-background-color: rgba(46,4,143,0.41);
+    -fx-background-radius: 20px;
+    -fx-cursor: HAND;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 0, 2, 0, 1);
+    -fx-translate-y: 2px;
+    -fx-pref-width: 300;
+    -fx-pref-height: 70;
+
+}
+
+.alert .button-bar .button {
+    -fx-background-color: #3a11a6;
+    -fx-text-fill: #ffffff; /* Dark blue text */
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+.alert .button-bar {
+    -fx-background-color: rgb(19, 19, 19);
+}
+
+.alert {
+    -fx-background-color: rgb(19, 19, 19);
+}
+
+.alert .header-panel {
+    -fx-background-color: rgb(19, 19, 19);
+}
+
+.alert .header-panel .label {
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: BOLD;
+}

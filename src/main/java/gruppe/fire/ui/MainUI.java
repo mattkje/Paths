@@ -1,14 +1,13 @@
 package gruppe.fire.ui;
 
-import gruppe.fire.fileHandling.FileManagement;
+
+import gruppe.fire.fileHandling.FileToStory;
 import javafx.animation.*;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -16,8 +15,10 @@ import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.scene.paint.Color;
+import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import java.io.File;
 import java.io.FileWriter;
@@ -118,7 +119,8 @@ public class MainUI extends Application {
         glow.setSpread(1);
         glow.setRadius(2);
         Font font = Font.font("Arial",FontWeight.BOLD, 24);
-        Font titleFont = Font.font("Freestyle Script", 24);
+        Font titleFont = Font.font("Freestyle Script",FontWeight.BOLD, 24);
+        Font menuFont = Font.font("Arial Rounded MT",FontWeight.BOLD, 24);
 
         //Import file menu.
         VBox importMenu = new VBox();
@@ -174,6 +176,7 @@ public class MainUI extends Application {
         });
         continueButton.setFont(font);
         continueButton.setTextFill(Color.WHITE);
+
         startGame.setFont(font);
         startGame.setTextFill(Color.WHITE);
 
@@ -198,7 +201,7 @@ public class MainUI extends Application {
         GridPane customStories = new GridPane();
         customStories.setAlignment(Pos.CENTER);
         customStories.setVgap(4);
-        FileManagement handler = new FileManagement(selectedFile);
+        FileToStory handler = new FileToStory(selectedFile);
 
         //Sets slot titles as story title.
         String[] storyTitles = handler.readSavedStories();
@@ -285,7 +288,9 @@ public class MainUI extends Application {
             try {
                 game.start(stage);
             } catch (Exception ex) {
-                throw new RuntimeException(ex);
+                FileToStory fileToStory = null;
+                fileToStory.readFile();
+                noFile.setText("Could not load file (broken file)");
             }
         });
         gameControl.getChildren().addAll(continueButton, startGame);
@@ -319,14 +324,79 @@ public class MainUI extends Application {
             story.setOnMouseReleased(e -> story.setStyle("-fx-background-color: rgba(255,255,255,0.27); -fx-background-radius: 20px ; -fx-cursor: HAND "));
             story.setOnMouseExited(e -> story.setStyle("-fx-background-color: transparent; -fx-background-radius: 20px ; -fx-cursor: HAND "));
         }
+        ImageView backImage = new ImageView("/gruppe/fire/Media/back.png");
+        Button backButton = new Button();
+        backButton.setGraphic(backImage);
+        backButton.setStyle("-fx-background-color: rgba(0,0,0,0.7); -fx-background-radius: 40px");
+        backButton.setPrefSize(100, 100);
+        //backButton.setMaxHeight(400);
+        backButton.setAlignment(Pos.CENTER);
+        backButton.setEffect(dropShadow);
 
-        //Menu box
+
         HBox menuBox = new HBox();
-        menuBox.getChildren().addAll(defaultStories, importMenu);
         menuBox.setAlignment(Pos.CENTER);
         menuBox.setSpacing(10);
 
         root.setCenter(menuBox);
+
+        VBox startMenu = new VBox();
+        startMenu.setStyle("-fx-background-color: rgba(0,0,0,0); -fx-background-radius: 40px");
+        startMenu.setPrefSize(400, 400);
+        startMenu.setMaxHeight(400);
+        startMenu.setAlignment(Pos.CENTER);
+        startMenu.setEffect(dropShadow);
+        startMenu.setSpacing(30);
+
+        Button story = new Button("Start Game");
+        Button settings = new Button("Settings");
+        Button howToPlay = new Button("Tutorial");
+        Button exit = new Button("Exit Game");
+        story.setFont(menuFont);
+        story.setTextFill(Color.WHITE);
+        story.setId("startButton");
+        settings.setFont(menuFont);
+        settings.setTextFill(Color.WHITE);
+        settings.setId("settingsButton");
+        howToPlay.setFont(menuFont);
+        howToPlay.setTextFill(Color.WHITE);
+        howToPlay.setId("howToPlayButton");
+        exit.setFont(menuFont);
+        exit.setTextFill(Color.WHITE);
+        exit.setId("exitButton");
+        //defaultStories.getChildren().add(story);
+
+        story.setOnAction(e ->{
+            menuBox.getChildren().remove(startMenu);
+            menuBox.getChildren().addAll(backButton, defaultStories, importMenu);
+        });
+        backButton.setOnAction(e ->{
+            menuBox.getChildren().removeAll(backButton, defaultStories, importMenu);
+            menuBox.getChildren().add(startMenu);
+        });
+
+        exit.setOnAction(e -> {
+            Alert alertDialog = new Alert(Alert.AlertType.CONFIRMATION);
+            alertDialog.setTitle("Exit game");
+            alertDialog.setHeaderText("Do you really want to exit the game?");
+            alertDialog.setGraphic(null);
+            alertDialog.initStyle(StageStyle.UNDECORATED);
+            alertDialog.initModality(Modality.APPLICATION_MODAL);
+            ButtonType buttonTypeOne = new ButtonType("Yes", ButtonBar.ButtonData.YES);
+            ButtonType buttonTypeTwo = new ButtonType("No", ButtonBar.ButtonData.NO);
+            alertDialog.getButtonTypes().setAll(buttonTypeOne, buttonTypeTwo);
+            DialogPane dialogPane = alertDialog.getDialogPane();
+            dialogPane.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/gruppe/fire/css/main.css")).toExternalForm());
+            Optional<ButtonType> respons = alertDialog.showAndWait();
+            if (respons.get().getText().equals("Yes")) {
+                Platform.exit();
+            }
+        });
+        menuBox.getChildren().add(startMenu);
+        startMenu.getChildren().addAll(story, settings, howToPlay, exit);
+        //Menu box
+
+
 
         //About page for the program. Displays Authors and version etc.
         Button about = new Button();

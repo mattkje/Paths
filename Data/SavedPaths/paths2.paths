@@ -1,2 +1,8 @@
-Quiz mini game
-Line2
+Justin Timberlake sim
+::Bed room
+You wake up as Justin Timberlake, There is a door in front of you.
+[Try to open the door](Another room);GoldAction;6;
+[Look at pp](Another room);
+::Another
+You asddfre in a small, dimly lit room. There is a door in front of you.
+[Try to opendf the door](Another room);

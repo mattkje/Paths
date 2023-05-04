@@ -1,7 +1,7 @@
 package gruppe.fire.ui;
 
 
-import gruppe.fire.fileHandling.FileManagement;
+import gruppe.fire.fileHandling.FileToStory;
 import gruppe.fire.logic.Link;
 import gruppe.fire.logic.Story;
 import javafx.application.Application;
@@ -32,6 +32,8 @@ public class GameDisplay extends Application {
 
     private MainUI mainMenu;
 
+    private PlayerMenu playerMenu;
+
     private GameDisplayController controller;
     /**
      * Starting point for the game.
@@ -45,6 +47,7 @@ public class GameDisplay extends Application {
                 //Background
         BorderPane root = new BorderPane();
         this.mainMenu = new MainUI();
+        this.playerMenu = new PlayerMenu();
         root.setStyle("-fx-background-color: linear-gradient(#5130b4, #402593)");
         ImageView background = new ImageView("/gruppe/fire/Media/gameBG.png");
         background.fitWidthProperty().bind(root.widthProperty());
@@ -91,6 +94,18 @@ public class GameDisplay extends Application {
             }
         });
 
+        Button playerMenuButton = new Button("PLAYER");
+        playerMenuButton.setFont(font);
+        playerMenuButton.setEffect(dropShadow);
+        playerMenuButton.setTextFill(Color.WHITE);
+        playerMenuButton.setOnAction(e ->{
+            try {
+                playerMenu.start(stage);
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+
         Button saveButton = new Button("Save story");
         saveButton.setFont(font);
         saveButton.setEffect(dropShadow);
@@ -108,9 +123,9 @@ public class GameDisplay extends Application {
 
         try {
             if(controller.checkIfDefault() == true) {
-                menuBar.getChildren().addAll(title, growBox, unsavedChanges, saveButton, mainMenuButton);
+                menuBar.getChildren().addAll(title, growBox, unsavedChanges, saveButton,playerMenuButton, mainMenuButton);
             } else {
-                menuBar.getChildren().addAll(title, growBox, mainMenuButton);
+                menuBar.getChildren().addAll(title, growBox, playerMenuButton, mainMenuButton);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -191,7 +206,7 @@ public class GameDisplay extends Application {
         actionBar.setStyle("-fx-background-color: rgba(0,0,0,0.7); -fx-padding: 10px");
 
         File gameFile = new File(getActiveStoryPath());
-        FileManagement handler = new FileManagement(gameFile);
+        FileToStory handler = new FileToStory(gameFile);
         Story story = handler.readFile();
 
         ArrayList links = story.getOpeningPassage().getLinks();
@@ -205,7 +220,7 @@ public class GameDisplay extends Application {
             nextPath.setEffect(dropShadow);
             nextPath.setTextFill(Color.WHITE);
             nextPath.setText(link.getText());
-            actionBox.getChildren().add(nextPath);
+            actionBar.getChildren().add(nextPath);
         }
 
 

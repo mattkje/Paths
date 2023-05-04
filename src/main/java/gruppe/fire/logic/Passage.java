@@ -19,11 +19,11 @@ public class Passage {
      * @param content A textual content that typically represents a paragraph or part of one
      *                dialogue.
      */
-    public Passage(String title, String content, ArrayList<Link> links){
+    public Passage(String title, String content){
 
         this.title = title;
         this.content = content;
-        this.links = links;
+        this.links = new ArrayList<>();
     }
 
     /**
@@ -34,6 +34,9 @@ public class Passage {
         return title;
     }
 
+    public void setTitle(String title){
+        this.title = title;
+    }
     /**
      * This method returns the content.
      * @return returns the content.
@@ -42,6 +45,9 @@ public class Passage {
         return content;
     }
 
+    public void setContent(String content){
+        this.content = content;
+    }
     /**
      * This method checks if the link is available and adds it to the links list if it is.
      * @param link The Link object to be added.

@@ -18,11 +18,11 @@ public class Link {
      * @param text a descriptive text that indicates a choice or action in a story.
      * @param reference a string that uniquely identifies a passage.
      */
-    public Link(String text, String reference, ArrayList<Action> actions) {
+    public Link(String text, String reference) {
 
         this.text = text;
         this.reference = reference;
-        this.actions = actions;
+        this.actions = new ArrayList<>();
     }
 
     /**
@@ -45,8 +45,8 @@ public class Link {
      * Adds the specified action to this object's list of actions.
      * @param actions the action to be added to the list.
      */
-    public void addAction(Action actions) {
-        this.actions = new ArrayList<Action>();
+    public void addAction(Action action) {
+        actions.add(action);
     }
 
     /**

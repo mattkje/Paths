@@ -1,6 +1,6 @@
 package gruppe.fire.ui;
 
-import gruppe.fire.fileHandling.FileManagement;
+import gruppe.fire.fileHandling.FileToStory;
 import gruppe.fire.logic.Story;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -62,7 +62,7 @@ public class GameDisplayController {
         });
 
         File gameFile = new File(getActiveStoryPath());
-        FileManagement handler = new FileManagement(gameFile);
+        FileToStory handler = new FileToStory(gameFile);
 
         //Sets slot titles as story title.
         String[] storyTitles;
@@ -151,9 +151,10 @@ public class GameDisplayController {
      */
     public boolean checkIfDefault() throws IOException {
         String activeStory = getActiveStoryPath();
-        if(activeStory.contains("paths1.paths") || activeStory.contains("paths2.paths") || activeStory.contains("paths3.paths") || activeStory.contains("paths4.paths")){
-            return false;
-        } else if(activeStory.contains("Castle.paths") || activeStory.contains("HauntedHouse.paths") || activeStory.contains("MurderMystery.paths") || activeStory.contains("SpaceShip.paths")) {
+        if(activeStory.contains("paths1.paths") || activeStory.contains("paths2.paths") ||
+                activeStory.contains("paths3.paths") || activeStory.contains("paths4.paths") ||
+                activeStory.contains("Castle.paths") || activeStory.contains("HauntedHouse.paths") ||
+                activeStory.contains("MurderMystery.paths") || activeStory.contains("SpaceShip.paths")){
             return false;
         } else {
             return true;
