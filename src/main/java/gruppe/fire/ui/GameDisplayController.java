@@ -1,16 +1,14 @@
 package gruppe.fire.ui;
 
-import gruppe.fire.fileHandling.StoryFileHandler;
+import gruppe.fire.fileHandling.FileManagement;
+import gruppe.fire.logic.Story;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Modality;
@@ -18,7 +16,6 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 import java.io.*;
-import java.nio.file.Path;
 import java.util.Objects;
 
 public class GameDisplayController {
@@ -64,7 +61,8 @@ public class GameDisplayController {
             ((Stage) cancelButton.getScene().getWindow()).close();
         });
 
-        StoryFileHandler handler = new StoryFileHandler();
+        File gameFile = new File(getActiveStoryPath());
+        FileManagement handler = new FileManagement(gameFile);
 
         //Sets slot titles as story title.
         String[] storyTitles;
@@ -101,7 +99,11 @@ public class GameDisplayController {
         gridPane.add(cancelButton,0,4);
 
 
-        String activeStory = handler.getStoryTitle();
+        //String activeStory = handler.getStoryTitle();
+
+        Story story = handler.readFile();
+        String activeStory = story.getTitle();
+
         Label activeFile = new Label("   Active story: " + activeStory);
         activeFile.setFont(Font.font("Segoe UI", FontWeight.BOLD, 15));
         activeFile.setStyle("-fx-background-color: transparent; -fx-padding: 10; -fx-text-fill: rgba(255,255,255,0.84); -fx-min-width: 100");
