@@ -12,7 +12,6 @@ public class Player {
     private int score;
     private int gold;
     private ArrayList<String> inventory;
-
     /**
      * Creates an instance of Player.
      * @param name The player name.

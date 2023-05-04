@@ -34,7 +34,7 @@ public class GoldGoal implements Goal {
      * @param player The player whose gold amount will be checked.
      * @return The remaining gold needed to fulfill the goal.
      */
-    public int remainingHealth(Player player){
+    public int remainingGold(Player player){
         return minimumGold - player.getGold();
     }
 }
