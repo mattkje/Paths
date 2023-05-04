@@ -153,6 +153,10 @@
 
 }
 
+.tool-bar{
+    -fx-background-color: rgba(12, 2, 37, 0.8);
+}
+
 .alert .button-bar .button {
     -fx-background-color: #3a11a6;
     -fx-text-fill: #ffffff; /* Dark blue text */

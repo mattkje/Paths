@@ -4,6 +4,10 @@ package gruppe.fire.ui;
 import gruppe.fire.fileHandling.FileToStory;
 import gruppe.fire.logic.Link;
 import gruppe.fire.logic.Story;
+import javafx.animation.Animation;
+import javafx.animation.Interpolator;
+import javafx.animation.ParallelTransition;
+import javafx.animation.TranslateTransition;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -20,6 +24,7 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -49,11 +54,43 @@ public class GameDisplay extends Application {
         this.mainMenu = new MainUI();
         this.playerMenu = new PlayerMenu();
         root.setStyle("-fx-background-color: linear-gradient(#5130b4, #402593)");
-        ImageView background = new ImageView("/gruppe/fire/Media/gameBG.png");
-        background.fitWidthProperty().bind(root.widthProperty());
-        background.fitHeightProperty().bind(root.heightProperty());
-        background.setStyle("-fx-opacity: 0.1");
-        root.getChildren().add(background);
+        ImageView citySkyline = new ImageView("/gruppe/fire/Media/gameBG.png");
+        ImageView citySkyline2 = new ImageView("/gruppe/fire/Media/gameBG.png");
+        ImageView citySkyline3 = new ImageView("/gruppe/fire/Media/gameBG.png");
+
+        TranslateTransition translateTransition =
+                new TranslateTransition(Duration.millis(10000), citySkyline);
+        translateTransition.setFromX(0);
+        translateTransition.setToX(-1 * 1300);
+        translateTransition.setInterpolator(Interpolator.LINEAR);
+
+        TranslateTransition translateTransition2 =
+                new TranslateTransition(Duration.millis(10000), citySkyline2);
+        translateTransition2.setFromX(1300);
+        translateTransition2.setToX(0);
+        translateTransition2.setInterpolator(Interpolator.LINEAR);
+
+        TranslateTransition translateTransition3 =
+                new TranslateTransition(Duration.millis(10000), citySkyline3);
+        translateTransition3.setFromX(2600);
+        translateTransition3.setToX(1300);
+        translateTransition3.setInterpolator(Interpolator.LINEAR);
+
+        ParallelTransition parallelTransition = new ParallelTransition(translateTransition, translateTransition2, translateTransition3);
+        parallelTransition.setCycleCount(Animation.INDEFINITE);
+
+        parallelTransition.play();
+
+        //citySkyline.fitWidthProperty().bind(root.widthProperty());
+        citySkyline.fitHeightProperty().bind(root.heightProperty());
+        //citySkyline2.fitWidthProperty().bind(root.widthProperty());
+        citySkyline2.fitHeightProperty().bind(root.heightProperty());
+        citySkyline3.fitHeightProperty().bind(root.heightProperty());
+
+        citySkyline.setStyle("-fx-opacity: 0.1");
+        citySkyline2.setStyle("-fx-opacity: 0.1");
+        citySkyline3.setStyle("-fx-opacity: 0.1");
+        root.getChildren().addAll(citySkyline, citySkyline2, citySkyline3);
 
 
         //Shadows and fonts
@@ -80,10 +117,12 @@ public class GameDisplay extends Application {
         growBox.setMaxWidth(Double.MAX_VALUE); // set maximum width to a large value
 
         //Back to main menu
-        Button mainMenuButton = new Button("MAIN MENU");
-        mainMenuButton.setFont(font);
+        Button mainMenuButton = new Button();
+        ImageView mainMenuImage = new ImageView("/gruppe/fire/Media/home.png");
+        mainMenuImage.setFitWidth(50);
+        mainMenuImage.setFitHeight(50);
+        mainMenuButton.setGraphic(mainMenuImage);
         mainMenuButton.setEffect(dropShadow);
-        mainMenuButton.setTextFill(Color.WHITE);
         mainMenuButton.setOnAction(e ->{
             stage.close();
             Stage menuStage = new Stage();
@@ -94,10 +133,12 @@ public class GameDisplay extends Application {
             }
         });
 
-        Button playerMenuButton = new Button("PLAYER");
-        playerMenuButton.setFont(font);
+        Button playerMenuButton = new Button();
+        ImageView playerMenuImage = new ImageView("/gruppe/fire/Media/menu.png");
+        playerMenuImage.setFitWidth(50);
+        playerMenuImage.setFitHeight(50);
+        playerMenuButton.setGraphic(playerMenuImage);
         playerMenuButton.setEffect(dropShadow);
-        playerMenuButton.setTextFill(Color.WHITE);
         playerMenuButton.setOnAction(e ->{
             try {
                 playerMenu.start(stage);
@@ -106,10 +147,12 @@ public class GameDisplay extends Application {
             }
         });
 
-        Button saveButton = new Button("Save story");
-        saveButton.setFont(font);
+        Button saveButton = new Button();
+        ImageView saveImage = new ImageView("/gruppe/fire/Media/diskette.png");
+        saveImage.setFitWidth(50);
+        saveImage.setFitHeight(50);
+        saveButton.setGraphic(saveImage);
         saveButton.setEffect(dropShadow);
-        saveButton.setTextFill(Color.WHITE);
         saveButton.setOnAction(e ->{
             controller.saveStory();
         });
@@ -123,7 +166,7 @@ public class GameDisplay extends Application {
 
         try {
             if(controller.checkIfDefault() == true) {
-                menuBar.getChildren().addAll(title, growBox, unsavedChanges, saveButton,playerMenuButton, mainMenuButton);
+                menuBar.getChildren().addAll(title, growBox, unsavedChanges, saveButton, playerMenuButton, mainMenuButton);
             } else {
                 menuBar.getChildren().addAll(title, growBox, playerMenuButton, mainMenuButton);
             }
@@ -168,7 +211,28 @@ public class GameDisplay extends Application {
         inventory.add(health,0,2);
         inventory.add(gold,0,3);
         inventory.add(score,0,4);
-        root.setRight(inventory);
+        HBox sideBox = new HBox();
+        Button showInventory = new Button();
+        ImageView showImage = new ImageView("/gruppe/fire/Media/back.png");
+        showImage.setScaleX(-1);
+        showInventory.setGraphic(showImage);
+        showInventory.setStyle("-fx-background-color: rgba(0,0,0,0.7); -fx-background-radius: 0px; -fx-translate-y: 0px;");
+        showInventory.setPrefSize(80, 2000);
+
+        sideBox.getChildren().addAll(showInventory, inventory);
+        root.setRight(sideBox);
+        showInventory.setOnAction(e ->{
+            if(!sideBox.getChildren().contains(inventory)){
+                sideBox.getChildren().add(inventory);
+                showImage.setScaleX(-1);
+            } else {
+                sideBox.getChildren().remove(inventory);
+                showInventory.setGraphic(showImage);
+                showImage.setScaleX(1);
+            }
+
+        });
+        //root.setRight(sideBox);
 
         //The Game
         Label gameTitle = new Label();
