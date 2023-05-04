@@ -13,21 +13,5 @@ class GoldActionTest {
         action.execute(player);
         assertEquals(600, player.getGold());
     }
-
-    //@Test
-    //public void testExecuteNegativeGold() {
-        //Player player = new Player("Per", 500, 200, 100);
-        //GoldAction action = new GoldAction(-130);
-
-        //Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            //action.execute(player);
-        //});
-
-        //String expectedMessage = "Gold cannot be less than 0";
-        //String actualMessage = exception.getMessage();
-
-        //assertEquals(expectedMessage, actualMessage);
-    //}
-
 }
 
