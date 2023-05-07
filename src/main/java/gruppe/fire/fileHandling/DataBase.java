@@ -77,7 +77,7 @@ public class DataBase {
             fileWriter.write(player.getScore()+"\n");
             fileWriter.write(player.getGold()+"\n");
         } catch (IOException e) {
-            System.out.println("HAah stoopid");
+            System.out.println("Something went wrong");
         }
     }
 }

@@ -36,6 +36,7 @@ public class PlayerMenu extends Application {
     private PlayerMenuController controller;
 
     private Image newProfileImage;
+
     @Override
     public void start(Stage stage) {
 
@@ -142,14 +143,12 @@ public class PlayerMenu extends Application {
 
         ImageView[] ppImages = new ImageView[players.length];
         Label[] ppLabels = new Label[players.length];
-        System.out.println(ppLabels.length);
 
         //Reads playerfolder, and display all saved users.
         for (int i = 1; i <= players.length; i++) {
             File file = new File(players[i-1]);
             FileToPlayer fileToPlayer = new FileToPlayer(file);
             Player currentPlayer = fileToPlayer.readFile();
-            System.out.println(currentPlayer.getImage() + currentPlayer.getName());
 
             ppImages[i-1] = new ImageView(currentPlayer.getImage());
             ppImages[i-1].setFitHeight(100);
@@ -188,12 +187,12 @@ public class PlayerMenu extends Application {
         createPlayer.setTextFill(Color.WHITE);
         createPlayer.setAlignment(Pos.CENTER);
         createPlayer.setFont(font);
-        VBox vBox =new VBox();
+        VBox vBox = new VBox();
         vBox.setAlignment(Pos.CENTER);
+        vBox.setStyle("-fx-background-color: rgba(255,255,255,0.14);-fx-background-radius: 20; -fx-padding: 20");
         vBox.getChildren().addAll(newPlayer, createPlayer);
         newPlayerButton.setGraphic(vBox);
         newPlayerButton.setPadding(new Insets(30));
-        newPlayerButton.setStyle("-fx-background-radius: 10");
 
         ppImageBox.getChildren().add(newPlayerButton);
 
@@ -325,12 +324,13 @@ public class PlayerMenu extends Application {
         root.setCenter(menuBox);
 
         //Show stage
-        Scene playerStage = new Scene(root, 1300,800);
-        playerStage.getStylesheets().add(Objects.requireNonNull(this.getClass().getResource("/gruppe/fire/css/main.css")).toExternalForm());
+        Scene playerScene = new Scene(root, 1300,800);
+        playerScene.getStylesheets().add(Objects.requireNonNull(this.getClass().getResource("/gruppe/fire/css/main.css")).toExternalForm());
         stage.setResizable(true);
-        stage.setScene(playerStage);
+        stage.setScene(playerScene);
         stage.setTitle("Paths");
         stage.getIcons().add(new Image("/gruppe/fire/Media/icon.png"));
         stage.show();
     }
+
 }

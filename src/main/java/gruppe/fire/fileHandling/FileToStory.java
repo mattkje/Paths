@@ -91,7 +91,6 @@ public class FileToStory {
 
   public Link createLink(String linkString){
     int i = 1;
-    //System.out.println(linkString);
     int tIA = linkString.indexOf("[") + 1;
     int tIB = linkString.indexOf("]");
     int rIA = linkString.indexOf("(") + 1;

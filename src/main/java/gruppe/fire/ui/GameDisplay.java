@@ -50,12 +50,10 @@ public class GameDisplay extends Application {
         this.controller = new GameDisplayController();
         DataBase dataBase = new DataBase();
         File gameFile = new File(dataBase.getActiveStoryPath());
-        System.out.println(dataBase.getActivePlayerPath());
         File playerFile = new File(dataBase.getActivePlayerPath());
         GameBuilder handler = new GameBuilder(playerFile, gameFile);
         Game game = handler.createGame();
         Story story = game.getStory();
-        System.out.println(game.getStory().getTitle());
         Player player = game.getPlayer();
 
                 //Background
