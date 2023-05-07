@@ -1,0 +1,5 @@
+Space Ship
+::Sleeping quarters
+You wake up for another day in your space mission. \n You must do the following tasks: \n - Make breakfast for crew \n - Clean floors
+[Procrastinate](Hall);GoldAction;6;
+[Start doing tasks](Bed room);

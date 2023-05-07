@@ -1,5 +1,7 @@
 package gruppe.fire.logic;
 
+import javafx.scene.image.Image;
+
 import java.util.ArrayList;
 
 /**
@@ -8,6 +10,7 @@ import java.util.ArrayList;
  */
 public class Player {
     private String name;
+    private Image image;
     private int health;
     private int score;
     private int gold;
@@ -19,8 +22,9 @@ public class Player {
      * @param score The player score.
      * @param gold Amount of gold the player has.
      */
-    public Player(String name, int health, int score, int gold){
+    public Player(String name, Image image, int health, int score, int gold){
         this.name = name;
+        this.image = image;
         this.health = health;
         this.score = score;
         this.gold = gold;
@@ -33,6 +37,30 @@ public class Player {
      */
     public String getName() {
         return name;
+    }
+
+    public void setName(String name){
+        this.name = name;
+    }
+
+    public Image getImage(){
+        return image;
+    }
+
+    public void setImage(Image image){
+        this.image = image;
+    }
+
+    public void setHealth(int health) {
+        this.health = health;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
+    }
+
+    public void setGold(int gold) {
+        this.gold = gold;
     }
 
     /**

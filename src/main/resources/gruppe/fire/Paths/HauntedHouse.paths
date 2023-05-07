@@ -1,0 +1,10 @@
+Haunted House
+::Bedroom
+You are in a small, dimly lit room. There is a door in front of you.
+[Try to open the door](Hall);GoldAction;6;
+[Stay where you are](Bedroom)
+::Hall
+You see a Ghost, what do you do?
+[Run Away](Bed Room)
+[Fight the ghost](fight);HealthAction;2;
+[Beg for mercy](ending);GoldAction;1;

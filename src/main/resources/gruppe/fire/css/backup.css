@@ -1,0 +1,19 @@
+.button{
+    -fx-background-color: #2e048f;
+    -fx-background-radius: 20px;
+    -fx-cursor: HAND;
+    -fx-effect: dropshadow(gaussian, rgb(29, 3, 89), 0, 6.8025, 0, 3);
+}
+
+.button:hover{
+    -fx-background-color: rgba(46,4,143,0.62);
+    -fx-background-radius: 20px;
+    -fx-cursor: HAND;
+}
+.button:pressed {
+    -fx-background-color: rgba(46,4,143,0.41);
+    -fx-background-radius: 20px;
+    -fx-cursor: HAND;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 0, 2, 0, 1);
+    -fx-translate-y: 2px;
+}

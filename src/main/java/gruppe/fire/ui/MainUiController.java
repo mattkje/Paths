@@ -36,4 +36,17 @@ public class MainUiController {
             throw new RuntimeException(ex);
         }
     }
+
+    public void setDefaultPath(String filename){
+        Path savedPaths = Path.of("src/main/resources/gruppe/fire/Paths/" + filename);
+        try {
+            FileWriter writer;
+            writer = new FileWriter("Data/currentPathsFile.cfg");
+            writer.write(String.valueOf(savedPaths));
+            writer.close();
+
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
 }

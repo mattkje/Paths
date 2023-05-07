@@ -1,0 +1,5 @@
+Zacciboi
+Data\PlayerData\Images\pp7.png
+10
+0
+15000
