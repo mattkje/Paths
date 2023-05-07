@@ -1,6 +1,8 @@
 package gruppe.fire.ui;
 
+import gruppe.fire.fileHandling.DataBase;
 import gruppe.fire.fileHandling.FileToStory;
+import gruppe.fire.logic.GameBuilder;
 import gruppe.fire.logic.Story;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -61,7 +63,8 @@ public class GameDisplayController {
             ((Stage) cancelButton.getScene().getWindow()).close();
         });
 
-        File gameFile = new File(getActiveStoryPath());
+        DataBase dataBase = new DataBase();
+        File gameFile = new File(dataBase.getActiveStoryPath());
         FileToStory handler = new FileToStory(gameFile);
 
         //Sets slot titles as story title.
@@ -128,29 +131,14 @@ public class GameDisplayController {
         popupStage.show();
     }
 
-    public String getActiveStoryPath(){
-        BufferedReader reader;
-        try {
-            reader = new BufferedReader(new FileReader("Data/currentPathsFile.cfg"));
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-        String activeStory;
-        try {
-            activeStory = reader.readLine();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        return activeStory;
-    }
-
     /**
      * This method determines if a paths file is new.
      * @return true if active path is already saved or if it is default, false otherwise.
      * @throws IOException Exception
      */
     public boolean checkIfDefault() throws IOException {
-        String activeStory = getActiveStoryPath();
+        DataBase dataBase = new DataBase();
+        String activeStory = dataBase.getActiveStoryPath();
         if(activeStory.contains("paths1.paths") || activeStory.contains("paths2.paths") ||
                 activeStory.contains("paths3.paths") || activeStory.contains("paths4.paths") ||
                 activeStory.contains("Castle.paths") || activeStory.contains("HauntedHouse.paths") ||

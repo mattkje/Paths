@@ -1,9 +1,8 @@
 package gruppe.fire.ui;
 
 
-import gruppe.fire.fileHandling.FileToStory;
-import gruppe.fire.logic.Link;
-import gruppe.fire.logic.Story;
+import gruppe.fire.fileHandling.DataBase;
+import gruppe.fire.logic.*;
 import javafx.animation.Animation;
 import javafx.animation.Interpolator;
 import javafx.animation.ParallelTransition;
@@ -49,6 +48,16 @@ public class GameDisplay extends Application {
     public void start(Stage stage) {
 
         this.controller = new GameDisplayController();
+        DataBase dataBase = new DataBase();
+        File gameFile = new File(dataBase.getActiveStoryPath());
+        System.out.println(dataBase.getActivePlayerPath());
+        File playerFile = new File(dataBase.getActivePlayerPath());
+        GameBuilder handler = new GameBuilder(playerFile, gameFile);
+        Game game = handler.createGame();
+        Story story = game.getStory();
+        System.out.println(game.getStory().getTitle());
+        Player player = game.getPlayer();
+
                 //Background
         BorderPane root = new BorderPane();
         this.mainMenu = new MainUI();
@@ -195,18 +204,34 @@ public class GameDisplay extends Application {
         inventory.setPrefWidth(300);
         inventory.setVgap(40);
         inventory.setStyle("-fx-background-color: rgba(0,0,0,0.7); -fx-padding: 10px");
+
+
+        Image profileImage = player.getImage();
+        ImageView playerPicture = new ImageView(profileImage);
+        playerPicture.setFitWidth(50);
+        playerPicture.setFitHeight(50);
+        String playerString = player.getName();
+        Label playerName = new Label(playerString);
+        //HBox playerBox = new HBox();
+        //playerBox.getChildren().addAll(playerPicture, playerName);
+
         Label info = new Label("Stats");
         Label health = new Label("Health:");
         Label gold = new Label("Gold:");
         Label score = new Label("Score:");
+
+        playerName.setTextFill(Color.WHITE);
         info.setTextFill(Color.WHITE);
         health.setTextFill(Color.WHITE);
         gold.setTextFill(Color.WHITE);
         score.setTextFill(Color.WHITE);
+        playerName.setFont(font);
         info.setFont(titleFont);
         health.setFont(font);
         gold.setFont(font);
         score.setFont(font);
+        inventory.add(playerPicture,1,0);
+        inventory.add(playerName,0,0);
         inventory.add(info,0,1);
         inventory.add(health,0,2);
         inventory.add(gold,0,3);
@@ -238,6 +263,7 @@ public class GameDisplay extends Application {
         Label gameTitle = new Label();
         Label roomTitle = new Label();
         Text roomContent = new Text();
+        roomContent.setWrappingWidth(400);
         Text gameRoom = new Text();
         HBox titleBox = new HBox();
         VBox gameBox = new VBox();
@@ -269,9 +295,8 @@ public class GameDisplay extends Application {
         actionBar.setAlignment(Pos.CENTER);
         actionBar.setStyle("-fx-background-color: rgba(0,0,0,0.7); -fx-padding: 10px");
 
-        File gameFile = new File(getActiveStoryPath());
-        FileToStory handler = new FileToStory(gameFile);
-        Story story = handler.readFile();
+
+
 
         ArrayList links = story.getOpeningPassage().getLinks();
         int linkCount = links.size();
@@ -286,9 +311,6 @@ public class GameDisplay extends Application {
             nextPath.setText(link.getText());
             actionBar.getChildren().add(nextPath);
         }
-
-
-
 
 
         //Import text
@@ -328,21 +350,5 @@ public class GameDisplay extends Application {
         stage.setTitle("Paths");
         stage.getIcons().add(new Image("/gruppe/fire/Media/icon.png"));
         stage.show();
-    }
-
-    public String getActiveStoryPath(){
-        BufferedReader reader;
-        try {
-            reader = new BufferedReader(new FileReader("Data/currentPathsFile.cfg"));
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-        String activeStory;
-        try {
-            activeStory = reader.readLine();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        return activeStory;
     }
 }

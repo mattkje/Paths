@@ -2,7 +2,9 @@ package gruppe.fire.logic;
 
 import gruppe.fire.goals.Goal;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The Game class is responsible for connecting a player to a story, and has
@@ -18,12 +20,11 @@ public class Game {
      * Creates an instance of Game.
      * @param player The player of the game.
      * @param story The story of the game.
-     * @param goals The goals of the game.
      */
-    public Game(Player player, Story story, ArrayList<Goal> goals){
+    public Game(Player player, Story story){
         this.player = player;
         this.story = story;
-        this.goals = goals;
+        this.goals = new ArrayList<>();
     }
 
     /**
@@ -74,6 +75,21 @@ public class Game {
             }
         }
         return currentPassage;
+    }
+
+    public String[] readPlayers() {
+        File folder = new File("Data/PlayerData/Players");
+        File[] listOfFiles = folder.listFiles();
+        List<String> paths = new ArrayList<>();
+
+        for (File file : listOfFiles) {
+            if (file.isFile()) {
+                paths.add(file.getPath());
+            }
+        }
+
+        String[] result = paths.toArray(new String[0]);
+        return result;
     }
 
 }

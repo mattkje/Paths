@@ -14,6 +14,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -49,11 +50,17 @@ public class MainUI extends Application {
         //Universal app version
         String version = "Version: 2023.05.03";
 
+
         this.controller = new MainUiController();
 
         this.game = new GameDisplay();
 
         BorderPane root = new BorderPane();
+        Scene mainScene = new Scene(root, 1300,800);
+        mainScene.getStylesheets().add(Objects.requireNonNull(this.getClass().getResource("/gruppe/fire/css/main.css")).toExternalForm());
+        mainScene.getStylesheets().add("https://fonts.googleapis.com/css2?family=Pacifico");
+        mainScene.getStylesheets().add("https://fonts.googleapis.com/css2?family=Comfortaa");
+
         //Background Image
         Image backgroundImage = new Image("/gruppe/fire/Media/titleBackground.png");
         ImageView anim1 = new ImageView("/gruppe/fire/Media/anim1.png");
@@ -118,17 +125,20 @@ public class MainUI extends Application {
         glow.setColor(Color.WHITE);
         glow.setSpread(1);
         glow.setRadius(2);
-        Font font = Font.font("Arial",FontWeight.BOLD, 24);
+        Font font = Font.font("Comfortaa",FontWeight.BOLD, 24);
         Font titleFont = Font.font("Freestyle Script",FontWeight.BOLD, 24);
-        Font menuFont = Font.font("Arial Rounded MT",FontWeight.BOLD, 24);
+        Font menuFont = Font.font("Pacifico",FontWeight.BOLD, 34);
 
         //Import file menu.
         VBox importMenu = new VBox();
         Label label = new Label("Saved stories:");
-        ImageView selectGame = new ImageView("/gruppe/fire/Media/GameSelect.png");
-        selectGame.setFitHeight(90);
-        selectGame.setFitWidth(250);
-        label.setFont(font);
+        //ImageView selectGame = new ImageView("/gruppe/fire/Media/GameSelect.png");
+        //selectGame.setFitHeight(90);
+        //selectGame.setFitWidth(250);
+        Label selectGame = new Label("Upload story");
+        selectGame.setFont(menuFont);
+        selectGame.setTextFill(Color.WHITE);
+        label.setFont(menuFont);
         label.setTextFill(Color.WHITE);
         importMenu.getChildren().add(selectGame);
         importMenu.setStyle("-fx-background-color: rgba(0,0,0,0.7); -fx-background-radius: 40px");
@@ -148,6 +158,7 @@ public class MainUI extends Application {
         Button startGame = new Button("Start");
         startGame.setEffect(dropShadow);
         Label noFile = new Label("No file selected");
+        noFile.setStyle("-fx-font-family: Comfortaa");
         continueButton.setOnAction(e -> {
             this.selectedFile = fileChooser.showOpenDialog(stage);
 
@@ -186,7 +197,7 @@ public class MainUI extends Application {
                 try {
                     game.start(stage);
                 } catch (Exception ex) {
-                    throw new RuntimeException(ex);
+                    noFile.setText("Could not load file. Wrong format?");
                 }
             } else {
                 noFile.setText("You have to select a file first.");
@@ -206,11 +217,12 @@ public class MainUI extends Application {
         //Sets slot titles as story title.
         String[] storyTitles = handler.readSavedStories();
 
-        Button defaultStory1 = new Button();
-        defaultStory1.setText(storyTitles[0]);
-        defaultStory1.setTextFill(Color.WHITE);
-        defaultStory1.setId("storyButtons");
-        defaultStory1.setOnAction(e ->{
+        Button customStory1 = new Button();
+        customStory1.setText(storyTitles[0]);
+        customStory1.setStyle("-fx-font-family: Comfortaa");
+        customStory1.setTextFill(Color.WHITE);
+        customStory1.setPrefWidth(300);
+        customStory1.setOnAction(e ->{
             try {
                 controller.setActiveFile("paths1.paths");
                 game.start(stage);
@@ -218,13 +230,14 @@ public class MainUI extends Application {
                 noFile.setText("This slot is empty");
             }
         });
-        customStories.add(defaultStory1, 0, 0);
+        customStories.add(customStory1, 0, 0);
 
-        Button defaultStory2 = new Button();
-        defaultStory2.setText(storyTitles[1]);
-        defaultStory2.setTextFill(Color.WHITE);
-        defaultStory2.setId("storyButtons");
-        defaultStory2.setOnAction(e ->{
+        Button customStory2 = new Button();
+        customStory2.setStyle("-fx-font-family: Comfortaa");
+        customStory2.setText(storyTitles[1]);
+        customStory2.setTextFill(Color.WHITE);
+        customStory2.setPrefWidth(300);
+        customStory2.setOnAction(e ->{
             try {
                 controller.setActiveFile("paths2.paths");
                 game.start(stage);
@@ -232,13 +245,14 @@ public class MainUI extends Application {
                 noFile.setText("This slot is empty");
             }
         });
-        customStories.add(defaultStory2, 0, 1);
+        customStories.add(customStory2, 0, 1);
 
-        Button defaultStory3 = new Button();
-        defaultStory3.setText(storyTitles[2]);
-        defaultStory3.setTextFill(Color.WHITE);
-        defaultStory3.setId("storyButtons");
-        defaultStory3.setOnAction(e ->{
+        Button customStory3 = new Button();
+        customStory3.setStyle("-fx-font-family: Comfortaa");
+        customStory3.setText(storyTitles[2]);
+        customStory3.setTextFill(Color.WHITE);
+        customStory3.setPrefWidth(300);
+        customStory3.setOnAction(e ->{
             try {
                 controller.setActiveFile("paths3.paths");
                 game.start(stage);
@@ -246,13 +260,14 @@ public class MainUI extends Application {
                 noFile.setText("This slot is empty");
             }
         });
-        customStories.add(defaultStory3, 0, 2);
+        customStories.add(customStory3, 0, 2);
 
-        Button defaultStory4 = new Button();
-        defaultStory4.setText(storyTitles[3]);
-        defaultStory4.setTextFill(Color.WHITE);
-        defaultStory4.setId("storyButtons");
-        defaultStory4.setOnAction(e ->{
+        Button customStory4 = new Button();
+        customStory4.setStyle("-fx-font-family: Comfortaa");
+        customStory4.setText(storyTitles[3]);
+        customStory4.setTextFill(Color.WHITE);
+        customStory4.setPrefWidth(300);
+        customStory4.setOnAction(e ->{
             try {
                 controller.setActiveFile("paths4.paths");
                 game.start(stage);
@@ -260,7 +275,7 @@ public class MainUI extends Application {
                 noFile.setText("This slot is empty");
             }
         });
-        customStories.add(defaultStory4, 0, 3);
+        customStories.add(customStory4, 0, 3);
         customStories.setVgap(5);
 
 
@@ -285,45 +300,115 @@ public class MainUI extends Application {
         dev.setStyle("-fx-background-color: #FFFFFF");
         dev.setText("PREVIEW");
         dev.setOnAction(e ->{
-            try {
-                game.start(stage);
-            } catch (Exception ex) {
-                FileToStory fileToStory = null;
-                fileToStory.readFile();
-                noFile.setText("Could not load file (broken file)");
-            }
+            game.start(stage);
         });
         gameControl.getChildren().addAll(continueButton, startGame);
         gameControl.setAlignment(Pos.CENTER);
         gameControl.setSpacing(3);
         importMenu.getChildren().addAll(gameControl, noFile, label, customStories);
 
-        VBox defaultStories = new VBox();
-        defaultStories.setStyle("-fx-background-color: rgba(0,0,0,0.7); -fx-background-radius: 40px");
-        defaultStories.setPrefSize(400, 400);
-        defaultStories.setMaxHeight(400);
-        defaultStories.setAlignment(Pos.CENTER);
-        defaultStories.setEffect(dropShadow);
-
-        ImageView ourStories = new ImageView("/gruppe/fire/Media/ourgames.png");
-        ourStories.setFitWidth(250);
-        ourStories.setFitHeight(85);
-        defaultStories.getChildren().add(ourStories);
-
 
         //Creates graphics for default story buttons.
-        for (int i = 1; i <= 4; i++) {
-            Button story = new Button();
-            ImageView storyImage2 = new ImageView("/gruppe/fire/Media/" + i + ".png");
-            story.setGraphic(storyImage2);
-            story.setStyle("-fx-background-color: transparent");
-            defaultStories.getChildren().add(story);
-            int finalI = i;
-            story.setOnMouseEntered(e -> story.setStyle("-fx-background-color: rgba(255,255,255,0.27); -fx-background-radius: 20px ; -fx-cursor: HAND "));
-            story.setOnMousePressed(e -> story.setStyle("-fx-background-color: rgba(255,255,255,0.56); -fx-background-radius: 20px ; -fx-cursor: HAND "));
-            story.setOnMouseReleased(e -> story.setStyle("-fx-background-color: rgba(255,255,255,0.27); -fx-background-radius: 20px ; -fx-cursor: HAND "));
-            story.setOnMouseExited(e -> story.setStyle("-fx-background-color: transparent; -fx-background-radius: 20px ; -fx-cursor: HAND "));
-        }
+        GridPane defaultStories = new GridPane();
+        defaultStories.setAlignment(Pos.CENTER);
+        defaultStories.setVgap(4);
+
+
+        Button defaultStory1 = new Button("Haunted House");
+        ImageView storyImage1 = new ImageView("/gruppe/fire/Media/1 - Copy.png");
+        HBox defaultStoryBox1 = new HBox();
+        defaultStoryBox1.setAlignment(Pos.CENTER);
+        defaultStoryBox1.getChildren().add(storyImage1);
+        defaultStory1.setGraphic(defaultStoryBox1);
+        defaultStory1.setPrefWidth(350);
+        defaultStory1.setFont(font);
+        defaultStory1.setTextFill(Color.WHITE);
+        defaultStory1.setOnAction(e ->{
+            try {
+                controller.setDefaultPath("HauntedHouse.paths");
+                game.start(stage);
+            } catch (Exception ex) {
+                noFile.setText("Something went wrong");
+            }
+        });
+
+        Button defaultStory2 = new Button("Murder Mystery");
+        ImageView storyImage2 = new ImageView("/gruppe/fire/Media/2 - Copy.png");
+        HBox defaultStoryBox2 = new HBox();
+        defaultStoryBox2.setAlignment(Pos.CENTER);
+        defaultStoryBox2.getChildren().add(storyImage2);
+        defaultStory2.setGraphic(defaultStoryBox2);
+        defaultStory2.setPrefWidth(350);
+        defaultStory2.setFont(font);
+        defaultStory2.setTextFill(Color.WHITE);
+        defaultStory2.setOnAction(e ->{
+            try {
+                controller.setDefaultPath("MurderMystery.paths");
+                game.start(stage);
+            } catch (Exception ex) {
+                noFile.setText("Something went wrong");
+            }
+        });
+
+        Button defaultStory3 = new Button("Ancient Castle");
+        ImageView storyImage3 = new ImageView("/gruppe/fire/Media/3 - Copy.png");
+        HBox defaultStoryBox3 = new HBox();
+        defaultStoryBox3.setAlignment(Pos.CENTER);
+        defaultStoryBox3.getChildren().add(storyImage3);
+        defaultStory3.setGraphic(defaultStoryBox3);
+        defaultStory3.setPrefWidth(350);
+        defaultStory3.setFont(font);
+        defaultStory3.setTextFill(Color.WHITE);
+        defaultStory3.setOnAction(e ->{
+            try {
+                controller.setDefaultPath("Castle.paths");
+                game.start(stage);
+            } catch (Exception ex) {
+                noFile.setText("Something went wrong");
+            }
+        });
+
+        Button defaultStory4 = new Button("Space Ship");
+        ImageView storyImage4 = new ImageView("/gruppe/fire/Media/4 - Copy.png");
+        HBox defaultStoryBox4 = new HBox();
+        defaultStoryBox4.setAlignment(Pos.CENTER);
+        defaultStoryBox4.getChildren().add(storyImage4);
+        defaultStory4.setGraphic(defaultStoryBox4);
+        defaultStory4.setPrefWidth(350);
+        defaultStory4.setFont(font);
+        defaultStory4.setTextFill(Color.WHITE);
+        defaultStory4.setOnAction(e ->{
+            try {
+                controller.setDefaultPath("SpaceShip.paths");
+                game.start(stage);
+            } catch (Exception ex) {
+                noFile.setText("Something went wrong");
+            }
+        });
+
+        //defaultStory2.setDisable(true);
+        //defaultStory3.setDisable(true);
+        //defaultStory4.setDisable(true);
+
+        defaultStories.add(defaultStory1, 0, 0);
+        defaultStories.add(defaultStory2, 0, 1);
+        defaultStories.add(defaultStory3, 0, 2);
+        defaultStories.add(defaultStory4, 0, 3);
+
+        VBox defaultStoriesBox = new VBox();
+        defaultStoriesBox.setStyle("-fx-background-color: rgba(0,0,0,0.7); -fx-background-radius: 40px");
+        defaultStoriesBox.setPrefSize(400, 400);
+        defaultStoriesBox.setMaxHeight(400);
+        defaultStoriesBox.setAlignment(Pos.CENTER);
+        defaultStoriesBox.setEffect(dropShadow);
+
+
+        Label ourStories = new Label("Our stories");
+        ourStories.setTextFill(Color.WHITE);
+        ourStories.setFont(menuFont);
+        defaultStoriesBox.getChildren().addAll(ourStories, defaultStories);
+
+        //Back Button
         ImageView backImage = new ImageView("/gruppe/fire/Media/back.png");
         Button backButton = new Button();
         backButton.setGraphic(backImage);
@@ -339,6 +424,27 @@ public class MainUI extends Application {
         menuBox.setSpacing(10);
 
         root.setCenter(menuBox);
+
+        //Tutorial screen
+        Label tutorialTitle = new Label("How to play");
+        tutorialTitle.setTextFill(Color.WHITE);
+        tutorialTitle.setFont(font);
+        Text tutorialText = new Text("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce gravida turpis id velit hendrerit, \n" +
+                "sed imperdiet dui ullamcorper. Vestibulum at mi justo. Fusce ultricies neque vel turpis finibus, ac efficitur ex convallis. \n" +
+                "Nullam dignissim nisi id enim tincidunt, vel convallis ex sagittis. Fusce scelerisque purus quis sapien malesuada, \n\n" +
+
+
+                "non bibendum eros rutrum. Integer euismod, quam vel pulvinar vestibulum, libero ante auctor eros, a vulputate velit \n" +
+                "velit in lorem. Sed ullamcorper, leo ac efficitur sollicitudin, velit mauris finibus nisi, ut consequat mauris ipsum a \n" +
+                "ex. Nunc congue aliquam sapien, vitae ultrices nulla hendrerit vel. Nunc id blandit mi. Sed fermentum nisi quis faucibus \n" +
+                "suscipit. Aenean quis sem ac nibh vehicula ullamcorper.");
+        tutorialText.setFill(Color.WHITE);
+        VBox tutorialBox = new VBox();
+        tutorialBox.setStyle("-fx-background-color: rgba(0,0,0,0.7); -fx-background-radius: 40px");
+        tutorialBox.setPrefSize(1000, 800);
+        tutorialBox.setAlignment(Pos.CENTER);
+        tutorialBox.setEffect(dropShadow);
+        tutorialBox.getChildren().addAll(tutorialTitle, tutorialText);
 
         VBox startMenu = new VBox();
         startMenu.setStyle("-fx-background-color: rgba(0,0,0,0); -fx-background-radius: 40px");
@@ -368,10 +474,14 @@ public class MainUI extends Application {
 
         story.setOnAction(e ->{
             menuBox.getChildren().remove(startMenu);
-            menuBox.getChildren().addAll(backButton, defaultStories, importMenu);
+            menuBox.getChildren().addAll(backButton, defaultStoriesBox, importMenu);
+        });
+        howToPlay.setOnAction(e ->{
+            menuBox.getChildren().remove(startMenu);
+            menuBox.getChildren().addAll(backButton, tutorialBox);
         });
         backButton.setOnAction(e ->{
-            menuBox.getChildren().removeAll(backButton, defaultStories, importMenu);
+            menuBox.getChildren().removeAll(backButton, defaultStoriesBox, importMenu, tutorialBox);
             menuBox.getChildren().add(startMenu);
         });
 
@@ -433,12 +543,11 @@ public class MainUI extends Application {
 
 
         //Show stage
-        Scene mainScene = new Scene(root, 1300,800);
+
         stage.setResizable(false);
         stage.setScene(mainScene);
         stage.setTitle("Paths");
         stage.getIcons().add(new Image("/gruppe/fire/Media/icon.png"));
-        mainScene.getStylesheets().add(Objects.requireNonNull(this.getClass().getResource("/gruppe/fire/css/main.css")).toExternalForm());
         stage.show();
     }
 

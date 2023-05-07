@@ -59,15 +59,22 @@ public class FileToStory {
             while (line.startsWith("[")){
 
               openingPassage.addLink(createLink(line));
-              line = scanner.nextLine();
+              if(scanner.hasNext()){
+                line = scanner.nextLine();
+              } else {
+                line="";
+              }
             }
           } else {
             Passage passage = new Passage(passageTitle,passageContent);
             line = scanner.nextLine();
             while (line.startsWith("[")){
               passage.addLink(createLink(line));
-              //line = scanner.nextLine();
-              break;
+              if(scanner.hasNext()){
+                line = scanner.nextLine();
+              } else {
+                line="";
+              }
             }
             story.addPassage(passage);
           }
@@ -114,7 +121,6 @@ public class FileToStory {
 
     return action;
   }
-
   /**
    * Reads first lines in saved files in saved folder and returns all story titles as an array of Strings.
    */

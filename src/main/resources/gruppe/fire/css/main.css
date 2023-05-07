@@ -1,22 +1,22 @@
 .button{
-    -fx-background-color: #2e048f;
-    -fx-background-radius: 20px;
+    -fx-background-color: #4f1fb9;
+    -fx-text-fill: #ffffff;
+    -fx-background-radius: 50px;
     -fx-cursor: HAND;
     -fx-effect: dropshadow(gaussian, rgb(29, 3, 89), 0, 6.8025, 0, 3);
 }
 
 .button:hover{
     -fx-background-color: rgba(46,4,143,0.62);
-    -fx-background-radius: 20px;
+    -fx-background-radius: 50px;
     -fx-cursor: HAND;
 }
 .button:pressed {
     -fx-background-color: rgba(46,4,143,0.41);
-    -fx-background-radius: 20px;
+    -fx-background-radius: 50px;
     -fx-cursor: HAND;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 0, 2, 0, 1);
     -fx-translate-y: 2px;
-
 }
 
 #noFile {
@@ -179,4 +179,108 @@
 .alert .header-panel .label {
     -fx-text-fill: #ffffff;
     -fx-font-weight: BOLD;
+}
+
+#ppButton1{
+    -fx-background-color: transparent;
+    -fx-cursor: HAND;
+    -fx-effect: dropshadow(gaussian, rgb(29, 3, 89), 0, 6.8025, 0, 3);
+}
+#ppButton1:hover{
+    -fx-background-color: transparent;
+    -fx-cursor: HAND;
+}
+#ppButton1:pressed {
+    -fx-background-color: transparent;
+    -fx-cursor: HAND;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 0, 2, 0, 1);
+    -fx-translate-y: 2px;
+}
+
+#ppButton2{
+    -fx-background-color: transparent;
+    -fx-cursor: HAND;
+    -fx-effect: dropshadow(gaussian, rgb(29, 3, 89), 0, 6.8025, 0, 3);
+}
+#ppButton2:hover{
+    -fx-background-color: transparent;
+    -fx-cursor: HAND;
+}
+#ppButton2:pressed {
+    -fx-background-color: transparent;
+    -fx-cursor: HAND;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 0, 2, 0, 1);
+    -fx-translate-y: 2px;
+}
+
+#ppButton3{
+    -fx-background-color: transparent;
+    -fx-cursor: HAND;
+    -fx-effect: dropshadow(gaussian, rgb(29, 3, 89), 0, 6.8025, 0, 3);
+}
+#ppButton3:hover{
+    -fx-background-color: transparent;
+    -fx-cursor: HAND;
+}
+#ppButton3:pressed {
+    -fx-background-color: transparent;
+    -fx-cursor: HAND;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 0, 2, 0, 1);
+    -fx-translate-y: 2px;
+}
+
+#ppButton{
+    -fx-background-color: transparent;
+    -fx-cursor: HAND;
+    -fx-effect: dropshadow(gaussian, rgb(29, 3, 89), 0, 6.8025, 0, 3);
+}
+#ppButton:hover{
+    -fx-background-color: transparent;
+    -fx-cursor: HAND;
+}
+#ppButton:pressed {
+    -fx-background-color: transparent;
+    -fx-cursor: HAND;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 0, 2, 0, 1);
+    -fx-translate-y: 2px;
+}
+
+.text-field {
+    -fx-background-color: rgba(255, 255, 255, 0.46);
+    -fx-background-radius: 30px;
+}
+
+.label {
+    -fx-text-fill: #ffffff;
+}
+
+.spinner {
+    -fx-background-color: rgba(255, 255, 255, 0.46);
+    -fx-background-radius: 30px;
+}
+
+.spinner .increment-arrow-button,
+.spinner .decrement-arrow-button {
+    -fx-background-color: #693db9;
+    -fx-background-radius: 0;
+}
+.spinner .increment-arrow-button:hover,
+.spinner .decrement-arrow-button:hover {
+    -fx-background-color: #431b8f;
+}
+.spinner .increment-arrow-button:hover:pressed,
+.spinner .decrement-arrow-button:hover:pressed,
+.spinner .increment-arrow-button:pressed,
+.spinner .decrement-arrow-button:pressed {
+    -fx-background-color: #431b8f;
+}
+.spinner .increment-arrow-button .increment-arrow,
+.spinner .decrement-arrow-button .decrement-arrow {
+    -fx-background-color: white;
+}
+
+.list-view {
+    -fx-background-color: rgba(255, 255, 255, 0.46);
+    -fx-background-radius: 30px;
+    -fx-pref-height: 300;
 }
