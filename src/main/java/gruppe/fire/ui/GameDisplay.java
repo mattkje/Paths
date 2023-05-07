@@ -283,9 +283,10 @@ public class GameDisplay extends Application {
         gameRoom.setFill(Color.WHITE);
         ImageView lives = new ImageView("/gruppe/fire/Media/health.png");
         ImageView livesLost = new ImageView("/gruppe/fire/Media/lostHealth.png");
+        Label healthAmount = new Label();
         Label goldAmount = new Label();
         Label scoreAmount = new Label();
-        inventory.add(lives,1,2);
+        inventory.add(healthAmount,1,2);
         inventory.add(goldAmount,1,3);
         inventory.add(scoreAmount,1,4);
 
@@ -314,21 +315,23 @@ public class GameDisplay extends Application {
 
 
         //Import text
-        gameTitle.setText(story.getTitle());
-        roomTitle.setText(story.getOpeningPassage().getTitle());
-        roomContent.setText(story.getOpeningPassage().getContent());
+        gameTitle.setText(game.getStory().getTitle());
+        roomTitle.setText(game.getStory().getOpeningPassage().getTitle());
+        roomContent.setText(game.getStory().getOpeningPassage().getContent());
 
 
         //TODO Implement goals here!!!
-        goldAmount.setText("null");
-        scoreAmount.setText("null");
+        healthAmount.setText(String.valueOf(game.getPlayer().getHealth()));
+        goldAmount.setText(String.valueOf(game.getPlayer().getGold()));
+        scoreAmount.setText(String.valueOf(game.getPlayer().getScore()));
 
         titleBox.getChildren().add(gameTitle);
         titleBox.setAlignment(Pos.CENTER);
 
         //TODO: ADD FUNC HERE
 
-
+        healthAmount.setFont(font);
+        healthAmount.setTextFill(Color.WHITE);
         goldAmount.setFont(font);
         goldAmount.setTextFill(Color.WHITE);
         scoreAmount.setFont(font);

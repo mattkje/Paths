@@ -20,6 +20,7 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import java.io.File;
@@ -33,6 +34,8 @@ public class PlayerMenu extends Application {
     private ParallelTransition parallelTransition;
 
     private PlayerMenuController controller;
+
+    private Image newProfileImage;
     @Override
     public void start(Stage stage) {
 
@@ -168,6 +171,7 @@ public class PlayerMenu extends Application {
             String activePlayerString = "player"+i+".txt";
             playerButton.setOnAction(event -> {
                 controller.setActivePlayer(activePlayerString);
+                gameDisplay.start(stage);
             });
             ppImageBox.getChildren().add(playerButton);
         }
@@ -219,9 +223,18 @@ public class PlayerMenu extends Application {
         Label playerGoldLabel = new Label("Set gold:");
         Label playerGoalsLabel = new Label("Set custom goals:");
         TextField playerTextField = new TextField();
-        Spinner healthSpinner = new Spinner();
-        Spinner goldSpinner = new Spinner();
+
+        SpinnerValueFactory<Integer> healthFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 10);
+        SpinnerValueFactory<Integer> goldFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 15000);
+        ((SpinnerValueFactory.IntegerSpinnerValueFactory) goldFactory).setAmountToStepBy(100);
+        Spinner healthSpinner = new Spinner(healthFactory);
+        Spinner goldSpinner = new Spinner(goldFactory);
+
         Button addGoalsButton = new Button("Add goal");
+        addGoalsButton.setOnAction(event -> {
+            //TODO: Implement goals.
+        });
+        Button createPlayerButton = new Button("Create player");
 
         newUserOptions.add(playerNameLabel,0,0);
         newUserOptions.add(playerTextField,1,0);
@@ -231,13 +244,26 @@ public class PlayerMenu extends Application {
         newUserOptions.add(goldSpinner,1,2);
         newUserOptions.add(playerGoalsLabel,0,3);
         newUserOptions.add(addGoalsButton,1,3);
+        newUserOptions.add(createPlayerButton,0,4);
 
         ListView goalsList = new ListView();
         Label goalsTitle = new Label("Active goals");
         goalsTitle.setFont(font);
 
         ImageView imageDisplay = new ImageView("/gruppe/fire/Media/noSelect.png");
+        imageDisplay.setFitHeight(100);
+        imageDisplay.setFitWidth(100);
         Button uploadImage = new Button("Upload image");
+        uploadImage.setOnAction(event -> {
+            FileChooser fileChooser = new FileChooser();
+            FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("PNG files (*.png)", "*.png");
+            fileChooser.getExtensionFilters().add(extFilter);
+            File newProfileImageFile = fileChooser.showOpenDialog(stage);
+            if (newProfileImageFile != null) {
+                this.newProfileImage = new Image(newProfileImageFile.toURI().toString());
+                imageDisplay.setImage(newProfileImage);
+            }
+        });
 
         ImageView backImage = new ImageView("/gruppe/fire/Media/back.png");
         Button backButton = new Button();
@@ -246,6 +272,16 @@ public class PlayerMenu extends Application {
         backButton.setPrefSize(100, 100);
         backButton.setAlignment(Pos.CENTER);
         backButton.setEffect(dropShadow);
+
+        createPlayerButton.setOnAction(event -> {
+            String name = playerTextField.getText();
+            Image profileImage = newProfileImage;
+            int health = (int) healthSpinner.getValue();
+            int gold = (int) goldSpinner.getValue();
+
+            Player addedPlayer = new Player(name, profileImage, health,0,gold);
+            dataBase.writeFile(addedPlayer);
+        });
 
         imageSelectBox.getChildren().addAll(imageDisplay, uploadImage);
         goalsListBox.getChildren().addAll(goalsTitle, goalsList);

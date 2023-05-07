@@ -1,11 +1,13 @@
 package gruppe.fire.fileHandling;
 
+import gruppe.fire.logic.GameBuilder;
 import gruppe.fire.logic.Player;
 import javafx.scene.image.Image;
 
 import java.io.*;
 import java.nio.file.Path;
 import java.util.Scanner;
+import java.util.logging.Level;
 
 public class FileToPlayer {
 
@@ -36,5 +38,6 @@ public class FileToPlayer {
         }
         return player;
     }
+
 
 }

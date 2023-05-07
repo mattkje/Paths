@@ -35,6 +35,7 @@ import java.util.Random;
 public class MainUI extends Application {
 
     private GameDisplay game;
+    private PlayerMenu playerMenu;
 
     private MainUiController controller;
 
@@ -52,6 +53,8 @@ public class MainUI extends Application {
 
 
         this.controller = new MainUiController();
+
+        this.playerMenu = new PlayerMenu();
 
         this.game = new GameDisplay();
 
@@ -195,7 +198,7 @@ public class MainUI extends Application {
         startGame.setOnAction(e -> {
             if(String.valueOf(selectedFile).endsWith(".paths") && selectedFile != null){
                 try {
-                    game.start(stage);
+                    playerMenu.start(stage);
                 } catch (Exception ex) {
                     noFile.setText("Could not load file. Wrong format?");
                 }
@@ -225,7 +228,7 @@ public class MainUI extends Application {
         customStory1.setOnAction(e ->{
             try {
                 controller.setActiveFile("paths1.paths");
-                game.start(stage);
+                playerMenu.start(stage);
             } catch (Exception ex) {
                 noFile.setText("This slot is empty");
             }
@@ -240,7 +243,7 @@ public class MainUI extends Application {
         customStory2.setOnAction(e ->{
             try {
                 controller.setActiveFile("paths2.paths");
-                game.start(stage);
+                playerMenu.start(stage);
             } catch (Exception ex) {
                 noFile.setText("This slot is empty");
             }
@@ -255,7 +258,7 @@ public class MainUI extends Application {
         customStory3.setOnAction(e ->{
             try {
                 controller.setActiveFile("paths3.paths");
-                game.start(stage);
+                playerMenu.start(stage);
             } catch (Exception ex) {
                 noFile.setText("This slot is empty");
             }
@@ -270,7 +273,7 @@ public class MainUI extends Application {
         customStory4.setOnAction(e ->{
             try {
                 controller.setActiveFile("paths4.paths");
-                game.start(stage);
+                playerMenu.start(stage);
             } catch (Exception ex) {
                 noFile.setText("This slot is empty");
             }
@@ -326,7 +329,7 @@ public class MainUI extends Application {
         defaultStory1.setOnAction(e ->{
             try {
                 controller.setDefaultPath("HauntedHouse.paths");
-                game.start(stage);
+                playerMenu.start(stage);
             } catch (Exception ex) {
                 noFile.setText("Something went wrong");
             }
@@ -344,7 +347,7 @@ public class MainUI extends Application {
         defaultStory2.setOnAction(e ->{
             try {
                 controller.setDefaultPath("MurderMystery.paths");
-                game.start(stage);
+                playerMenu.start(stage);
             } catch (Exception ex) {
                 noFile.setText("Something went wrong");
             }
@@ -362,7 +365,7 @@ public class MainUI extends Application {
         defaultStory3.setOnAction(e ->{
             try {
                 controller.setDefaultPath("Castle.paths");
-                game.start(stage);
+                playerMenu.start(stage);
             } catch (Exception ex) {
                 noFile.setText("Something went wrong");
             }
@@ -380,7 +383,7 @@ public class MainUI extends Application {
         defaultStory4.setOnAction(e ->{
             try {
                 controller.setDefaultPath("SpaceShip.paths");
-                game.start(stage);
+                playerMenu.start(stage);
             } catch (Exception ex) {
                 noFile.setText("Something went wrong");
             }

@@ -1,0 +1,5 @@
+Mann
+Data\PlayerData\Images\noSelect.png
+3
+0
+300

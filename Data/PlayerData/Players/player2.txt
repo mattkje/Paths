@@ -1,5 +1,5 @@
 If show Win
 Data/PlayerData/Images/pp2.png
 61
-103
-10
+13041
+190742
