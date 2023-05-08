@@ -16,6 +16,8 @@ public class Game {
     private Story story;
     private ArrayList<Goal> goals;
 
+    private Passage currentPassage;
+
     /**
      * Creates an instance of Game.
      * @param player The player of the game.
@@ -66,7 +68,7 @@ public class Game {
      * @param link
      * @return The passage which matches the provided Link.
      */
-    public Passage go(Link link){
+    public Passage g2o(Link link){
         Passage currentPassage = null;
         for (Passage passage : story.getPassages()) {
             if (passage.hasLinks(link)) {
@@ -74,6 +76,11 @@ public class Game {
                 break;
             }
         }
+        return currentPassage;
+    }
+
+    public Passage go(Link link){
+        this.currentPassage = story.getPassage(link);
         return currentPassage;
     }
 

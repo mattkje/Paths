@@ -45,8 +45,7 @@ public class PlayerMenu extends Application {
 
         DataBase dataBase = new DataBase();
         GameBuilder gameBuilder = new GameBuilder(new File(dataBase.getActivePlayerPath()), new File(dataBase.getActiveStoryPath()));
-        Story story = gameBuilder.createGame().getStory();
-        Player player = gameBuilder.createGame().getPlayer();
+
         //Background
         BorderPane root = new BorderPane();
         root.setStyle("-fx-background-color: linear-gradient(#5130b4, #402593)");

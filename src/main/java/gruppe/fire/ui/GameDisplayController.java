@@ -3,6 +3,7 @@ package gruppe.fire.ui;
 import gruppe.fire.fileHandling.DataBase;
 import gruppe.fire.fileHandling.FileToStory;
 import gruppe.fire.logic.GameBuilder;
+import gruppe.fire.logic.Passage;
 import gruppe.fire.logic.Story;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;

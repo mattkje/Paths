@@ -26,8 +26,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * This class represents the GUI for the game itself.
@@ -39,6 +38,22 @@ public class GameDisplay extends Application {
     private PlayerMenu playerMenu;
 
     private GameDisplayController controller;
+
+    private Label gameTitle;
+    private Label roomTitle;
+    private Text roomContent;
+    private Label healthAmount;
+    private Label goldAmount;
+    private Label scoreAmount;
+
+
+    private HBox actionBar;
+
+    private DropShadow dropShadow;
+
+    private Font font;
+
+    private Link link;
     /**
      * Starting point for the game.
      * @param stage
@@ -101,7 +116,7 @@ public class GameDisplay extends Application {
 
 
         //Shadows and fonts
-        DropShadow dropShadow = new DropShadow();
+        this.dropShadow = new DropShadow();
         dropShadow.setOffsetY(5.0);
         dropShadow.setColor(Color.color(0, 0, 0, 0.5));
         DropShadow hopShadow = new DropShadow();
@@ -111,7 +126,7 @@ public class GameDisplay extends Application {
         glow.setColor(Color.WHITE);
         glow.setSpread(1);
         glow.setRadius(2);
-        Font font = Font.font("Arial Rounded MT Bold", FontWeight.BOLD, 24);
+        this.font = Font.font("Arial Rounded MT Bold", FontWeight.BOLD, 24);
         Font titleFont = Font.font("Freestyle Script", 44);
 
         //logo
@@ -258,9 +273,9 @@ public class GameDisplay extends Application {
         //root.setRight(sideBox);
 
         //The Game
-        Label gameTitle = new Label();
-        Label roomTitle = new Label();
-        Text roomContent = new Text();
+        this.gameTitle = new Label();
+        this.roomTitle = new Label();
+        this.roomContent = new Text();
         roomContent.setWrappingWidth(400);
         Text gameRoom = new Text();
         HBox titleBox = new HBox();
@@ -281,14 +296,14 @@ public class GameDisplay extends Application {
         gameRoom.setFill(Color.WHITE);
         ImageView lives = new ImageView("/gruppe/fire/Media/health.png");
         ImageView livesLost = new ImageView("/gruppe/fire/Media/lostHealth.png");
-        Label healthAmount = new Label();
-        Label goldAmount = new Label();
-        Label scoreAmount = new Label();
+        this.healthAmount = new Label();
+        this.goldAmount = new Label();
+        this.scoreAmount = new Label();
         inventory.add(healthAmount,1,2);
         inventory.add(goldAmount,1,3);
         inventory.add(scoreAmount,1,4);
 
-        HBox actionBar = new HBox();
+        this.actionBar = new HBox();
         actionBar.setEffect(hopShadow);
         actionBar.setSpacing(30);
         actionBar.setAlignment(Pos.CENTER);
@@ -297,25 +312,33 @@ public class GameDisplay extends Application {
 
 
 
-        ArrayList links = story.getOpeningPassage().getLinks();
+        ArrayList<Link> links = game.getStory().getOpeningPassage().getLinks();
         int linkCount = links.size();
+        //System.out.println(links);
+        //System.out.println(links.get(0));
+        //System.out.println(links.get(1));
 
-        for (int i = 0; i < linkCount; i++) {
-            Link link = (Link) links.get(i);
-            //String linkVariableName = "link" + (i + 1);
+
+
+        for (int i = 0; i <= linkCount - 1; i++) {
+            this.link = links.get(i);
+            Passage passage = game.go(link);
             Button nextPath = new Button("");
-            nextPath.setFont(font);
-            nextPath.setEffect(dropShadow);
             nextPath.setTextFill(Color.WHITE);
             nextPath.setText(link.getText());
+            nextPath.setOnAction(e -> {
+
+                System.out.println(passage);
+            });
             actionBar.getChildren().add(nextPath);
+            nextPath.setFont(font);
+            nextPath.setEffect(dropShadow);
         }
 
 
+
         //Import text
-        gameTitle.setText(game.getStory().getTitle());
-        roomTitle.setText(game.getStory().getOpeningPassage().getTitle());
-        roomContent.setText(game.getStory().getOpeningPassage().getContent());
+        writeOpeningPassage(game);
 
 
         //TODO Implement goals here!!!
@@ -352,4 +375,18 @@ public class GameDisplay extends Application {
         stage.getIcons().add(new Image("/gruppe/fire/Media/icon.png"));
         stage.show();
     }
+
+    public void writeOpeningPassage(Game game){
+        gameTitle.setText(game.getStory().getTitle());
+        roomTitle.setText(game.getStory().getOpeningPassage().getTitle());
+        roomContent.setText(game.getStory().getOpeningPassage().getContent());
+    }
+
+    public void getAllPassages(Game game){
+        Collection<Passage> passages = game.getStory().getPassages();
+        for (Passage passage : passages) {
+            System.out.println(passage);
+        }
+    }
+
 }
