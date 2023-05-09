@@ -66,7 +66,7 @@ public class Game {
      * @param link
      * @return The passage which matches the provided Link.
      */
-    public Passage go(Link link){
+    public Passage go2(Link link){
         Passage currentPassage = null;
         for (Passage passage : story.getPassages()) {
             if (passage.hasLinks(link)) {
@@ -74,6 +74,12 @@ public class Game {
                 break;
             }
         }
+        return currentPassage;
+    }
+
+    public Passage go(Link link){
+        Passage currentPassage = story.getPassage(link);
+        System.out.println(currentPassage);
         return currentPassage;
     }
 
