@@ -11,17 +11,21 @@ import javafx.animation.*;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.FileChooser;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 import javafx.util.Duration;
 import java.io.File;
 import java.nio.file.Paths;
@@ -30,6 +34,8 @@ import java.util.Objects;
 public class PlayerMenu extends Application {
 
     private GameDisplay gameDisplay;
+
+    private MainUI mainUI;
 
     private ParallelTransition parallelTransition;
 
@@ -40,13 +46,15 @@ public class PlayerMenu extends Application {
     @Override
     public void start(Stage stage) {
 
+
+        //Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
         this.gameDisplay =  new GameDisplay();
+        this.mainUI = new MainUI();
         this.controller = new PlayerMenuController();
 
         DataBase dataBase = new DataBase();
         GameBuilder gameBuilder = new GameBuilder(new File(dataBase.getActivePlayerPath()), new File(dataBase.getActiveStoryPath()));
-        Story story = gameBuilder.createGame().getStory();
-        Player player = gameBuilder.createGame().getPlayer();
+
         //Background
         BorderPane root = new BorderPane();
         root.setStyle("-fx-background-color: linear-gradient(#5130b4, #402593)");
@@ -229,10 +237,7 @@ public class PlayerMenu extends Application {
         Spinner healthSpinner = new Spinner(healthFactory);
         Spinner goldSpinner = new Spinner(goldFactory);
 
-        Button addGoalsButton = new Button("Add goal");
-        addGoalsButton.setOnAction(event -> {
-            //TODO: Implement goals.
-        });
+
         Button createPlayerButton = new Button("Create player");
 
         newUserOptions.add(playerNameLabel,0,0);
@@ -241,13 +246,11 @@ public class PlayerMenu extends Application {
         newUserOptions.add(healthSpinner,1,1);
         newUserOptions.add(playerGoldLabel,0,2);
         newUserOptions.add(goldSpinner,1,2);
-        newUserOptions.add(playerGoalsLabel,0,3);
-        newUserOptions.add(addGoalsButton,1,3);
-        newUserOptions.add(createPlayerButton,0,4);
+        //newUserOptions.add(playerGoalsLabel,0,3);
+        //newUserOptions.add(addGoalsButton,1,3);
+        newUserOptions.add(createPlayerButton,0,3);
 
-        ListView goalsList = new ListView();
-        Label goalsTitle = new Label("Active goals");
-        goalsTitle.setFont(font);
+
 
         ImageView imageDisplay = new ImageView("/gruppe/fire/Media/noSelect.png");
         imageDisplay.setFitHeight(100);
@@ -283,34 +286,68 @@ public class PlayerMenu extends Application {
         });
 
         imageSelectBox.getChildren().addAll(imageDisplay, uploadImage);
-        goalsListBox.getChildren().addAll(goalsTitle, goalsList);
+        //goalsListBox.getChildren().addAll(goalsTitle, goalsList);
         newUserVBox.getChildren().addAll(createPlayerTitle, newUserOptions);
-        newUserHBox.getChildren().addAll(backButton, goalsListBox, newUserVBox, imageSelectBox);
+        newUserHBox.getChildren().addAll(backButton, newUserVBox, imageSelectBox);
 
-        VBox playerBox = new VBox();
-        playerBox.getChildren().addAll(playerTitle, ppImageBox);
+        //Goal Menu
+        VBox goalMenu = new VBox();
+        goalMenu.setStyle("-fx-background-color: rgba(0,0,0,0.7); -fx-background-radius: 40px");
+        goalMenu.setPrefSize(400, 400);
+        goalMenu.setMaxHeight(700);
+        goalMenu.setMaxWidth(1000);
+        goalMenu.setMinWidth(400);
+        goalMenu.setAlignment(Pos.CENTER);
+        goalMenu.setEffect(dropShadow);
+        goalMenu.setSpacing(30);
+        ListView goalsList = new ListView();
+        Label goalsTitle = new Label("Active goals");
+        goalsTitle.setFont(font);
+        Button addGoalsButton = new Button("Add goal");
+        addGoalsButton.setOnAction(event -> {
+            //TODO: Implement goals.
+        });
+
+        goalMenu.getChildren().addAll(goalsTitle, goalsList, addGoalsButton);
+
+        HBox playerHBox = new HBox();
+        playerHBox.setPrefWidth(900);
+        playerHBox.setAlignment(Pos.CENTER);
+        playerHBox.setSpacing(30);
+
+        VBox playerVBox = new VBox();
+        playerVBox.setMinWidth(400);
+        playerHBox.getChildren().addAll(goalMenu, playerVBox);
+        playerVBox.getChildren().addAll(playerTitle, ppImageBox);
         newPlayerButton.setOnAction(e ->{
-            playerBox.getChildren().removeAll(playerTitle, ppImageBox);
-            playerBox.getChildren().add(newUserHBox);
+            playerVBox.getChildren().removeAll(playerTitle, ppImageBox);
+            playerVBox.getChildren().add(newUserHBox);
         });
         backButton.setOnAction(e ->{
-            playerBox.getChildren().remove(newUserHBox);
-            playerBox.getChildren().addAll(playerTitle, ppImageBox);
+            playerVBox.getChildren().remove(newUserHBox);
+            playerVBox.getChildren().addAll(playerTitle, ppImageBox);
         });
 
 
 
-        playerBox.setStyle("-fx-background-color: rgba(0,0,0,0.7); -fx-background-radius: 40px");
-        playerBox.setPrefSize(400, 400);
-        playerBox.setMaxHeight(700);
-        playerBox.setMaxWidth(1000);
-        playerBox.setAlignment(Pos.CENTER);
-        playerBox.setEffect(dropShadow);
-        playerBox.setSpacing(30);
+        playerVBox.setStyle("-fx-background-color: rgba(0,0,0,0.7); -fx-background-radius: 40px");
+        playerVBox.setPrefSize(400, 400);
+        playerVBox.setMaxHeight(700);
+        playerVBox.setMaxWidth(1000);
+        playerVBox.setAlignment(Pos.CENTER);
+        playerVBox.setEffect(dropShadow);
+        playerVBox.setSpacing(30);
 
         Button cancelButton = new Button("Cancel");
         cancelButton.setFont(font);
         cancelButton.setTextFill(Color.WHITE);
+        cancelButton.setOnAction(e ->{
+            try {
+                mainUI.start(new Stage());
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
+        });
         Button startButton = new Button("Start Game");
         startButton.setFont(font);
         startButton.setTextFill(Color.WHITE);
@@ -320,17 +357,23 @@ public class PlayerMenu extends Application {
 
         VBox menuBox = new VBox();
         menuBox.setAlignment(Pos.CENTER);
-        menuBox.getChildren().addAll(playerBox, buttonBox);
+        menuBox.getChildren().addAll(playerHBox, buttonBox);
         root.setCenter(menuBox);
 
         //Show stage
-        Scene playerScene = new Scene(root, 1300,800);
+
+
+        Scene playerScene = new Scene(root, 1300, 800);
         playerScene.getStylesheets().add(Objects.requireNonNull(this.getClass().getResource("/gruppe/fire/css/main.css")).toExternalForm());
         stage.setResizable(true);
         stage.setScene(playerScene);
         stage.setTitle("Paths");
         stage.getIcons().add(new Image("/gruppe/fire/Media/icon.png"));
+        stage.setFullScreen(true);
+        stage.setFullScreenExitHint("");
+        stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
         stage.show();
+
     }
 
 }

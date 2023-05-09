@@ -6,10 +6,7 @@ import gruppe.fire.actions.GoldAction;
 import gruppe.fire.actions.ScoreAction;
 import gruppe.fire.fileHandling.DataBase;
 import gruppe.fire.logic.*;
-import javafx.animation.Animation;
-import javafx.animation.Interpolator;
-import javafx.animation.ParallelTransition;
-import javafx.animation.TranslateTransition;
+import javafx.animation.*;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -20,6 +17,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -179,13 +177,12 @@ public class GameDisplay extends Application {
 
         Button saveButton = new Button();
         ImageView saveImage = new ImageView("/gruppe/fire/Media/diskette.png");
+        VBox saveBox = controller.saveStory();
+
         saveImage.setFitWidth(50);
         saveImage.setFitHeight(50);
         saveButton.setGraphic(saveImage);
         saveButton.setEffect(dropShadow);
-        saveButton.setOnAction(e ->{
-            controller.saveStory();
-        });
         Label unsavedChanges = new Label("Story is not saved");
         unsavedChanges.setPadding(new Insets(17));
         unsavedChanges.setTextFill(Color.WHITE);
@@ -298,7 +295,17 @@ public class GameDisplay extends Application {
         Text gameRoom = new Text();
         HBox titleBox = new HBox();
         VBox gameBox = new VBox();
+
         HBox actionBox = new HBox();
+        Button cancelButton = new Button("Cancel");
+        cancelButton.setOnAction(event1 -> {
+            root.setCenter(gameWindow);
+        });
+
+        saveButton.setOnAction(e ->{
+            saveBox.getChildren().add(cancelButton);
+            root.setCenter(saveBox);
+        });
         actionBox.setAlignment(Pos.CENTER);
         actionBox.setSpacing(20);
         gameTitle.setAlignment(Pos.CENTER);
@@ -356,11 +363,30 @@ public class GameDisplay extends Application {
         //Show stage
         Scene mainScene = new Scene(root, 1300,800);
         mainScene.getStylesheets().add(Objects.requireNonNull(this.getClass().getResource("/gruppe/fire/css/main.css")).toExternalForm());
+        mainScene.setFill(Color.MEDIUMPURPLE);
         stage.setResizable(true);
-        stage.setScene(mainScene);
+
+
         stage.setTitle("Paths");
         stage.getIcons().add(new Image("/gruppe/fire/Media/icon.png"));
-        stage.show();
+
+        FadeTransition ft = new FadeTransition(Duration.millis(1000), mainScene.getRoot());
+        ft.setFromValue(1);
+        ft.setToValue(0);
+        ft.play();
+        stage.setScene(mainScene);
+        FadeTransition ft2 = new FadeTransition(Duration.millis(1000), mainScene.getRoot());
+        ft2.setFromValue(0);
+        ft2 .setToValue(1);
+        //SequentialTransition seqTrans = new SequentialTransition(ft, ft2);
+        ft2.play();
+
+
+        stage.setFullScreenExitHint("");
+        stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
+        stage.setFullScreen(true);
+
+
     }
 
     public void writeOpeningPassage(Game game){

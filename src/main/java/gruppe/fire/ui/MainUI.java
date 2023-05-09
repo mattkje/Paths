@@ -11,6 +11,7 @@ import javafx.scene.control.*;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -64,62 +65,64 @@ public class MainUI extends Application {
         mainScene.getStylesheets().add("https://fonts.googleapis.com/css2?family=Pacifico");
         mainScene.getStylesheets().add("https://fonts.googleapis.com/css2?family=Comfortaa");
 
-        //Background Image
-        Image backgroundImage = new Image("/gruppe/fire/Media/titleBackground.png");
-        ImageView anim1 = new ImageView("/gruppe/fire/Media/anim1.png");
-        ImageView anim2 = new ImageView("/gruppe/fire/Media/anim2.png");
-        ImageView anim3 = new ImageView("/gruppe/fire/Media/anim3.png");
-        ImageView anim4 = new ImageView("/gruppe/fire/Media/anim4.png");
-        ImageView anim5 = new ImageView("/gruppe/fire/Media/anim5.png");
-        BackgroundImage background = new BackgroundImage(backgroundImage, null, null, null, null);
-        Background backgroundObject = new Background(background);
+        root.setStyle("-fx-background-color: linear-gradient(#6746a9, #3829cd)");
+        ImageView citySkyline = new ImageView("/gruppe/fire/Media/gameBG.png");
+        ImageView citySkyline2 = new ImageView("/gruppe/fire/Media/gameBG.png");
+        ImageView citySkyline3 = new ImageView("/gruppe/fire/Media/gameBG.png");
 
-        root.setBackground(backgroundObject);
+        TranslateTransition translateTransition =
+                new TranslateTransition(Duration.millis(10000), citySkyline);
+        translateTransition.setFromX(0);
+        translateTransition.setToX(-1 * 1300);
+        translateTransition.setInterpolator(Interpolator.LINEAR);
 
-        //Animated background letters.
-        Timeline timeline = new Timeline();
-        timeline.setCycleCount(Timeline.INDEFINITE);
+        TranslateTransition translateTransition2 =
+                new TranslateTransition(Duration.millis(10000), citySkyline2);
+        translateTransition2.setFromX(1300);
+        translateTransition2.setToX(0);
+        translateTransition2.setInterpolator(Interpolator.LINEAR);
 
-        Random random = new Random();
-        for (int i = 0; i < 1000; i++) {
-            int x1 = 100;
-            int y1 = random.nextInt(300);
-            int x2 = 300;
-            int y2 = random.nextInt(300);
-            int x3 = 600;
-            int y3 = random.nextInt(300);
-            int x4 = 900;
-            int y4 = random.nextInt(300);
-            int x5 = 1100;
-            int y5 = random.nextInt(300);
-            KeyFrame keyFrame1 = new KeyFrame(Duration.seconds(i * 10), new KeyValue(anim1.translateXProperty(), x1), new KeyValue(anim1.translateYProperty(), y1));
-            KeyFrame keyFrame2 = new KeyFrame(Duration.seconds(i * 10), new KeyValue(anim2.translateXProperty(), x2), new KeyValue(anim2.translateYProperty(), y2));
-            KeyFrame keyFrame3 = new KeyFrame(Duration.seconds(i * 10), new KeyValue(anim3.translateXProperty(), x3), new KeyValue(anim3.translateYProperty(), y3));
-            KeyFrame keyFrame4 = new KeyFrame(Duration.seconds(i * 10), new KeyValue(anim4.translateXProperty(), x4), new KeyValue(anim4.translateYProperty(), y4));
-            KeyFrame keyFrame5 = new KeyFrame(Duration.seconds(i * 10), new KeyValue(anim5.translateXProperty(), x5), new KeyValue(anim5.translateYProperty(), y5));
-            timeline.getKeyFrames().addAll(keyFrame1, keyFrame2, keyFrame3, keyFrame4, keyFrame5);
-        }
-        timeline.play();
-        Pane animPane = new Pane();
-        animPane.getChildren().addAll(anim1, anim2, anim3, anim4, anim5);
-        animPane.setLayoutX(-200);
-        animPane.setLayoutY(100);
-        animPane.setOpacity(0.2);
-        root.getChildren().addAll(animPane);
+        TranslateTransition translateTransition3 =
+                new TranslateTransition(Duration.millis(10000), citySkyline3);
+        translateTransition3.setFromX(2600);
+        translateTransition3.setToX(1300);
+        translateTransition3.setInterpolator(Interpolator.LINEAR);
+
+        ParallelTransition parallelTransition = new ParallelTransition(translateTransition, translateTransition2, translateTransition3);
+        parallelTransition.setCycleCount(Animation.INDEFINITE);
+
+        parallelTransition.play();
+
+        //citySkyline.fitWidthProperty().bind(root.widthProperty());
+        citySkyline.fitHeightProperty().bind(root.heightProperty());
+        //citySkyline2.fitWidthProperty().bind(root.widthProperty());
+        citySkyline2.fitHeightProperty().bind(root.heightProperty());
+        citySkyline3.fitHeightProperty().bind(root.heightProperty());
+
+        citySkyline.setStyle("-fx-opacity: 0.1");
+        citySkyline2.setStyle("-fx-opacity: 0.1");
+        citySkyline3.setStyle("-fx-opacity: 0.1");
+        root.getChildren().addAll(citySkyline, citySkyline2, citySkyline3);
 
 
         //Main menu title
         BorderPane titlePane = new BorderPane();
-        ImageView title = new ImageView("/gruppe/fire/Media/title.png");
-        title.setFitHeight(200);
-        title.setFitWidth(512);
-        titlePane.setCenter(title);
-        root.setTop(titlePane);
+        //ImageView title = new ImageView("/gruppe/fire/Media/title.png");
+        //title.setFitHeight(root.getPrefHeight() * 0.25 );
+        //title.setFitWidth(root.getPrefWidth() * 0.25 );
+
 
         //Shadows and fonts
         DropShadow dropShadow = new DropShadow();
         dropShadow.setOffsetY(5.0);
         dropShadow.setColor(Color.color(0, 0, 0, 0.5));
+        DropShadow solidShadow = new DropShadow();
+        solidShadow.setHeight(0.0);
+        solidShadow.setOffsetY(10.0);
+        solidShadow.setRadius(1.4475);
+        solidShadow.setSpread(1.0);
+        solidShadow.setWidth(15.79);
+        solidShadow.setColor(Color.color(0, 0, 0, 0.5));
         DropShadow titleShadow = new DropShadow();
         titleShadow.setColor(Color.color(1,1,1));
         titleShadow.setSpread(1);
@@ -129,8 +132,30 @@ public class MainUI extends Application {
         glow.setSpread(1);
         glow.setRadius(2);
         Font font = Font.font("Comfortaa",FontWeight.BOLD, 24);
-        Font titleFont = Font.font("Freestyle Script",FontWeight.BOLD, 24);
+        Font titleFont = Font.font("Pacifico",FontWeight.BOLD, 300);
         Font menuFont = Font.font("Pacifico",FontWeight.BOLD, 34);
+        Font menuFontLarge = Font.font("Pacifico",FontWeight.BOLD, 64);
+
+        Label title = new Label("Paths");
+        title.setEffect(solidShadow);
+        title.setFont(titleFont);
+
+        TranslateTransition translate = new TranslateTransition();
+        translate.setNode(title);
+        translate.setDuration(Duration.millis(2500));
+        translate.setCycleCount(Animation.INDEFINITE);
+        translate.setByY(-25);
+        translate.setAutoReverse(true);
+        translate.play();
+        FadeTransition fade = new FadeTransition();
+        fade.setNode(title);
+        fade.setDuration(Duration.millis(2000));
+        fade.setInterpolator(Interpolator.LINEAR);
+        fade.setFromValue(0);
+        fade.setToValue(1);
+        fade.play();
+        titlePane.setCenter(title);
+        root.setTop(titlePane);
 
         //Import file menu.
         VBox importMenu = new VBox();
@@ -451,8 +476,7 @@ public class MainUI extends Application {
 
         VBox startMenu = new VBox();
         startMenu.setStyle("-fx-background-color: rgba(0,0,0,0); -fx-background-radius: 40px");
-        startMenu.setPrefSize(400, 400);
-        startMenu.setMaxHeight(400);
+
         startMenu.setAlignment(Pos.CENTER);
         startMenu.setEffect(dropShadow);
         startMenu.setSpacing(30);
@@ -461,7 +485,7 @@ public class MainUI extends Application {
         Button settings = new Button("Settings");
         Button howToPlay = new Button("Tutorial");
         Button exit = new Button("Exit Game");
-        story.setFont(menuFont);
+        story.setFont(menuFontLarge);
         story.setTextFill(Color.WHITE);
         story.setId("startButton");
         settings.setFont(menuFont);
@@ -489,21 +513,7 @@ public class MainUI extends Application {
         });
 
         exit.setOnAction(e -> {
-            Alert alertDialog = new Alert(Alert.AlertType.CONFIRMATION);
-            alertDialog.setTitle("Exit game");
-            alertDialog.setHeaderText("Do you really want to exit the game?");
-            alertDialog.setGraphic(null);
-            alertDialog.initStyle(StageStyle.UNDECORATED);
-            alertDialog.initModality(Modality.APPLICATION_MODAL);
-            ButtonType buttonTypeOne = new ButtonType("Yes", ButtonBar.ButtonData.YES);
-            ButtonType buttonTypeTwo = new ButtonType("No", ButtonBar.ButtonData.NO);
-            alertDialog.getButtonTypes().setAll(buttonTypeOne, buttonTypeTwo);
-            DialogPane dialogPane = alertDialog.getDialogPane();
-            dialogPane.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/gruppe/fire/css/main.css")).toExternalForm());
-            Optional<ButtonType> respons = alertDialog.showAndWait();
-            if (respons.get().getText().equals("Yes")) {
-                Platform.exit();
-            }
+            Platform.exit();
         });
         menuBox.getChildren().add(startMenu);
         startMenu.getChildren().addAll(story, settings, howToPlay, exit);
@@ -547,10 +557,13 @@ public class MainUI extends Application {
 
         //Show stage
 
-        stage.setResizable(false);
+        stage.setResizable(true);
+        stage.setFullScreen(true);
         stage.setScene(mainScene);
         stage.setTitle("Paths");
         stage.getIcons().add(new Image("/gruppe/fire/Media/icon.png"));
+        stage.setFullScreenExitHint("");
+        stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
         stage.show();
     }
 
