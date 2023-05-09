@@ -1,6 +1,9 @@
 package gruppe.fire.ui;
 
 
+import gruppe.fire.actions.Action;
+import gruppe.fire.actions.GoldAction;
+import gruppe.fire.actions.ScoreAction;
 import gruppe.fire.fileHandling.DataBase;
 import gruppe.fire.logic.*;
 import javafx.animation.Animation;
@@ -13,6 +16,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -25,6 +29,7 @@ import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import javax.swing.*;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -39,6 +44,24 @@ public class GameDisplay extends Application {
     private PlayerMenu playerMenu;
 
     private GameDisplayController controller;
+
+    private Link link;
+    private Label gameTitle;
+    private Label roomTitle;
+    private Text roomContent;
+    private Label healthAmount;
+    private Label goldAmount;
+
+    private Label scoreAmount;
+
+    private ListView inventoryList;
+
+    private HBox actionBar;
+
+    private Font font;
+
+    private DropShadow dropShadow;
+
     /**
      * Starting point for the game.
      * @param stage
@@ -101,7 +124,7 @@ public class GameDisplay extends Application {
 
 
         //Shadows and fonts
-        DropShadow dropShadow = new DropShadow();
+        this.dropShadow = new DropShadow();
         dropShadow.setOffsetY(5.0);
         dropShadow.setColor(Color.color(0, 0, 0, 0.5));
         DropShadow hopShadow = new DropShadow();
@@ -111,7 +134,7 @@ public class GameDisplay extends Application {
         glow.setColor(Color.WHITE);
         glow.setSpread(1);
         glow.setRadius(2);
-        Font font = Font.font("Arial Rounded MT Bold", FontWeight.BOLD, 24);
+        this.font = Font.font("Arial Rounded MT Bold", FontWeight.BOLD, 24);
         Font titleFont = Font.font("Freestyle Script", 44);
 
         //logo
@@ -197,11 +220,11 @@ public class GameDisplay extends Application {
 
         //Stats
         GridPane inventory = new GridPane();
-        inventory.setAlignment(Pos.TOP_CENTER);
-        inventory.setPrefHeight(500);
-        inventory.setPrefWidth(300);
+        inventory.setAlignment(Pos.CENTER_LEFT);
+        //inventory.setPrefHeight(500);
+        //inventory.setPrefWidth(300);
         inventory.setVgap(40);
-        inventory.setStyle("-fx-background-color: rgba(0,0,0,0.7); -fx-padding: 10px");
+        inventory.setHgap(100);
 
 
         Image profileImage = player.getImage();
@@ -217,23 +240,33 @@ public class GameDisplay extends Application {
         Label health = new Label("Health:");
         Label gold = new Label("Gold:");
         Label score = new Label("Score:");
+        Label inventoryTitle= new Label("Inventory");
+        this.inventoryList = new ListView();
 
         playerName.setTextFill(Color.WHITE);
+
         info.setTextFill(Color.WHITE);
         health.setTextFill(Color.WHITE);
         gold.setTextFill(Color.WHITE);
         score.setTextFill(Color.WHITE);
+        inventoryTitle.setTextFill(Color.WHITE);
         playerName.setFont(font);
         info.setFont(titleFont);
         health.setFont(font);
         gold.setFont(font);
         score.setFont(font);
+        inventoryTitle.setFont(titleFont);
         inventory.add(playerPicture,1,0);
         inventory.add(playerName,0,0);
         inventory.add(info,0,1);
         inventory.add(health,0,2);
         inventory.add(gold,0,3);
         inventory.add(score,0,4);
+        VBox inventoryBox = new VBox();
+        inventoryBox.setStyle("-fx-background-color: rgba(0,0,0,0.7); -fx-padding: 10px");
+        inventoryBox.getChildren().addAll(inventory, inventoryTitle ,inventoryList);
+        //double rootWidth = root.getWidth();
+        inventoryBox.prefWidthProperty().bind(root.widthProperty().multiply(0.35));
         HBox sideBox = new HBox();
         Button showInventory = new Button();
         ImageView showImage = new ImageView("/gruppe/fire/Media/back.png");
@@ -242,14 +275,14 @@ public class GameDisplay extends Application {
         showInventory.setStyle("-fx-background-color: rgba(0,0,0,0.7); -fx-background-radius: 0px; -fx-translate-y: 0px;");
         showInventory.setPrefSize(80, 2000);
 
-        sideBox.getChildren().addAll(showInventory, inventory);
+        sideBox.getChildren().addAll(showInventory, inventoryBox);
         root.setRight(sideBox);
         showInventory.setOnAction(e ->{
-            if(!sideBox.getChildren().contains(inventory)){
-                sideBox.getChildren().add(inventory);
+            if(!sideBox.getChildren().contains(inventoryBox)){
+                sideBox.getChildren().add(inventoryBox);
                 showImage.setScaleX(-1);
             } else {
-                sideBox.getChildren().remove(inventory);
+                sideBox.getChildren().remove(inventoryBox);
                 showInventory.setGraphic(showImage);
                 showImage.setScaleX(1);
             }
@@ -258,9 +291,9 @@ public class GameDisplay extends Application {
         //root.setRight(sideBox);
 
         //The Game
-        Label gameTitle = new Label();
-        Label roomTitle = new Label();
-        Text roomContent = new Text();
+        this.gameTitle = new Label();
+        this.roomTitle = new Label();
+        this.roomContent = new Text();
         roomContent.setWrappingWidth(400);
         Text gameRoom = new Text();
         HBox titleBox = new HBox();
@@ -281,14 +314,14 @@ public class GameDisplay extends Application {
         gameRoom.setFill(Color.WHITE);
         ImageView lives = new ImageView("/gruppe/fire/Media/health.png");
         ImageView livesLost = new ImageView("/gruppe/fire/Media/lostHealth.png");
-        Label healthAmount = new Label();
-        Label goldAmount = new Label();
-        Label scoreAmount = new Label();
+        this.healthAmount = new Label();
+        this.goldAmount = new Label();
+        this.scoreAmount = new Label();
         inventory.add(healthAmount,1,2);
         inventory.add(goldAmount,1,3);
         inventory.add(scoreAmount,1,4);
 
-        HBox actionBar = new HBox();
+        this.actionBar = new HBox();
         actionBar.setEffect(hopShadow);
         actionBar.setSpacing(30);
         actionBar.setAlignment(Pos.CENTER);
@@ -297,31 +330,8 @@ public class GameDisplay extends Application {
 
 
 
-        ArrayList links = story.getOpeningPassage().getLinks();
-        int linkCount = links.size();
-
-        for (int i = 0; i < linkCount; i++) {
-            Link link = (Link) links.get(i);
-            //String linkVariableName = "link" + (i + 1);
-            Button nextPath = new Button("");
-            nextPath.setFont(font);
-            nextPath.setEffect(dropShadow);
-            nextPath.setTextFill(Color.WHITE);
-            nextPath.setText(link.getText());
-            actionBar.getChildren().add(nextPath);
-        }
-
-
         //Import text
-        gameTitle.setText(game.getStory().getTitle());
-        roomTitle.setText(game.getStory().getOpeningPassage().getTitle());
-        roomContent.setText(game.getStory().getOpeningPassage().getContent());
-
-
-        //TODO Implement goals here!!!
-        healthAmount.setText(String.valueOf(game.getPlayer().getHealth()));
-        goldAmount.setText(String.valueOf(game.getPlayer().getGold()));
-        scoreAmount.setText(String.valueOf(game.getPlayer().getScore()));
+        writeOpeningPassage(game);
 
         titleBox.getChildren().add(gameTitle);
         titleBox.setAlignment(Pos.CENTER);
@@ -351,5 +361,85 @@ public class GameDisplay extends Application {
         stage.setTitle("Paths");
         stage.getIcons().add(new Image("/gruppe/fire/Media/icon.png"));
         stage.show();
+    }
+
+    public void writeOpeningPassage(Game game){
+        ArrayList links = game.getStory().getOpeningPassage().getLinks();
+        int linkCount = links.size();
+
+        for (int i = 0; i < linkCount; i++) {
+            this.link = (Link) links.get(i);
+            Button nextPath = new Button("");
+            Passage passage = game.go(link);
+            nextPath.setTextFill(Color.WHITE);
+            nextPath.setText(link.getText());
+            nextPath.setOnAction(e ->{
+                writePassage(game, passage);
+            });
+            nextPath.setFont(font);
+            nextPath.setEffect(dropShadow);
+            actionBar.getChildren().add(nextPath);
+        }
+
+        gameTitle.setText(game.getStory().getTitle());
+        roomTitle.setText(game.getStory().getOpeningPassage().getTitle());
+        roomContent.setText(game.getStory().getOpeningPassage().getContent());
+
+        healthAmount.setText(String.valueOf(game.getPlayer().getHealth()));
+        goldAmount.setText(String.valueOf(game.getPlayer().getGold()));
+        scoreAmount.setText(String.valueOf(game.getPlayer().getScore()));
+    }
+
+    public void writePassage(Game game, Passage passage){
+
+        //Refresh text
+        roomTitle.setText(passage.getTitle());
+        roomContent.setText(passage.getContent());
+
+
+        //Refresh buttons
+        actionBar.getChildren().clear();
+
+        ArrayList links2 = passage.getLinks();
+        int linkCount = links2.size();
+
+        for (int i = 0; i < linkCount; i++) {
+            this.link = (Link) links2.get(i);
+            //String linkVariableName = "link" + (i + 1);
+            Button nextPath = new Button("");
+            Passage nextPassage = game.go(link);
+            nextPath.setTextFill(Color.WHITE);
+            nextPath.setText(link.getText());
+            nextPath.setOnAction(e ->{
+                //System.out.println(nextPassage);
+                writePassage(game, nextPassage);
+
+
+
+            });
+            nextPath.setFont(font);
+            nextPath.setEffect(dropShadow);
+            actionBar.getChildren().add(nextPath);
+
+        }
+
+        ArrayList<Action> actionArrayList = link.getActions();
+        System.out.println(actionArrayList.size());
+        for (int j = 0; j < actionArrayList.size(); j++){
+
+            Action action = actionArrayList.get(j);
+            action.execute(game.getPlayer());
+
+            healthAmount.setText(String.valueOf(game.getPlayer().getHealth()));
+            goldAmount.setText(String.valueOf(game.getPlayer().getGold()));
+            scoreAmount.setText(String.valueOf(game.getPlayer().getScore()));
+            for (String item : game.getPlayer().getInventory()){
+                inventoryList.getItems().clear();
+                if (!inventoryList.getItems().contains(item)){
+                    inventoryList.getItems().add(j+1 + ". " + item);
+                }
+            }
+        }
+
     }
 }
