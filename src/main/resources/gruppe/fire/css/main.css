@@ -284,3 +284,14 @@
     -fx-background-radius: 30px;
     -fx-pref-height: 300;
 }
+
+.list-view .list-cell {
+    -fx-text-fill: white;
+    -fx-font-family: Comfortaa;
+    -fx-font-size: 15;
+    -fx-padding: 10;
+}
+
+.list-cell {
+    -fx-background-color: transparent;
+}
