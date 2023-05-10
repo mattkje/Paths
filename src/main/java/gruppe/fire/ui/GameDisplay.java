@@ -169,7 +169,7 @@ public class GameDisplay extends Application {
         playerMenuButton.setEffect(dropShadow);
         playerMenuButton.setOnAction(e ->{
             try {
-                playerMenu.start(stage);
+                playerMenu.getPlayerMenu();
             } catch (Exception ex) {
                 throw new RuntimeException(ex);
             }

@@ -31,11 +31,13 @@ import java.io.File;
 import java.nio.file.Paths;
 import java.util.Objects;
 
-public class PlayerMenu extends Application {
+public class PlayerMenu {
 
     private GameDisplay gameDisplay;
 
     private MainUI mainUI;
+
+    private MainUiController mainUiController;
 
     private ParallelTransition parallelTransition;
 
@@ -43,8 +45,8 @@ public class PlayerMenu extends Application {
 
     private Image newProfileImage;
 
-    @Override
-    public void start(Stage stage) {
+
+    public BorderPane getPlayerMenu() {
 
 
         //Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
@@ -121,7 +123,7 @@ public class PlayerMenu extends Application {
         button.setTextFill(Color.WHITE);
         button.setOnAction(e ->{
             try {
-                gameDisplay.start(stage);
+                //gameDisplay.start(stage);
             } catch (Exception ex) {
                 throw new RuntimeException(ex);
             }
@@ -178,7 +180,7 @@ public class PlayerMenu extends Application {
             String activePlayerString = "player"+i+".txt";
             playerButton.setOnAction(event -> {
                 controller.setActivePlayer(activePlayerString);
-                gameDisplay.start(stage);
+                //gameDisplay.start(stage);
             });
             ppImageBox.getChildren().add(playerButton);
         }
@@ -260,7 +262,7 @@ public class PlayerMenu extends Application {
             FileChooser fileChooser = new FileChooser();
             FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("PNG files (*.png)", "*.png");
             fileChooser.getExtensionFilters().add(extFilter);
-            File newProfileImageFile = fileChooser.showOpenDialog(stage);
+            File newProfileImageFile = fileChooser.showOpenDialog(new Stage());
             if (newProfileImageFile != null) {
                 this.newProfileImage = new Image(newProfileImageFile.toURI().toString());
                 imageDisplay.setImage(newProfileImage);
@@ -343,7 +345,7 @@ public class PlayerMenu extends Application {
         cancelButton.setTextFill(Color.WHITE);
         cancelButton.setOnAction(e ->{
             try {
-                mainUI.start(new Stage());
+                //TODO: FIX MAJOR BUG
             } catch (Exception ex) {
                 throw new RuntimeException(ex);
             }
@@ -363,16 +365,7 @@ public class PlayerMenu extends Application {
         //Show stage
 
 
-        Scene playerScene = new Scene(root, 1300, 800);
-        playerScene.getStylesheets().add(Objects.requireNonNull(this.getClass().getResource("/gruppe/fire/css/main.css")).toExternalForm());
-        stage.setResizable(true);
-        stage.setScene(playerScene);
-        stage.setTitle("Paths");
-        stage.getIcons().add(new Image("/gruppe/fire/Media/icon.png"));
-        stage.setFullScreen(true);
-        stage.setFullScreenExitHint("");
-        stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
-        stage.show();
+        return root;
 
     }
 

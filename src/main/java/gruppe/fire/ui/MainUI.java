@@ -5,7 +5,9 @@ import gruppe.fire.fileHandling.FileToStory;
 import javafx.animation.*;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.effect.DropShadow;
@@ -13,14 +15,14 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.*;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-import javafx.stage.FileChooser;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
+import javafx.stage.*;
 import javafx.scene.paint.Color;
-import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import java.io.File;
 import java.io.FileWriter;
@@ -28,7 +30,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Random;
 
 /**
  * This class represents a starting point for the GUI (Main menu).
@@ -42,8 +43,15 @@ public class MainUI extends Application {
 
     private File selectedFile;
 
+    private MediaPlayer player;
+
+    private BorderPane root;
+
+    private Scene mainScene;
+
+    private StackPane rootContainer;
+
     /**
-     *
      * @param stage
      * @throws Exception
      */
@@ -53,17 +61,55 @@ public class MainUI extends Application {
         String version = "Version: 2023.05.03";
 
 
+
         this.controller = new MainUiController();
 
         this.playerMenu = new PlayerMenu();
 
         this.game = new GameDisplay();
 
-        BorderPane root = new BorderPane();
-        Scene mainScene = new Scene(root, 1300,800);
-        mainScene.getStylesheets().add(Objects.requireNonNull(this.getClass().getResource("/gruppe/fire/css/main.css")).toExternalForm());
+        this.root = new BorderPane();
+
+        this.rootContainer = new StackPane();
+        MediaView mediaView = controller.getLoadingVideo();
+        Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+        double screenWidth = screenBounds.getWidth();
+        double screenHeight = screenBounds.getHeight();
+
+        HBox group = new HBox();
+        mediaView.fitWidthProperty().bind(group.widthProperty());
+        mediaView.fitHeightProperty().bind(group.heightProperty());
+        group.setPrefSize(screenWidth, screenHeight);
+        group.setAlignment(Pos.CENTER);
+        group.getChildren().add(mediaView);
+
+        //Hides menu when app is started
+        root.setVisible(false);
+        PauseTransition pause = new PauseTransition(Duration.seconds(5));
+        ParallelTransition smoothTransition = new ParallelTransition(root, pause);
+        smoothTransition.setOnFinished(event -> root.setVisible(true));
+        smoothTransition.play();
+        rootContainer.getChildren().addAll(root, group);
+
+        mediaView.getMediaPlayer().setOnEndOfMedia(() -> {
+            Platform.runLater(() -> {
+                rootContainer.getChildren().removeAll(group);
+                MediaView mediaPlayer = controller.getLoadingVideo();
+                mediaPlayer.getMediaPlayer().dispose();
+                this.player = controller.getBackgroundMusic();
+                player.setVolume(0.5);
+                player.play();
+
+            });
+        });
+
+        this.mainScene = new Scene(rootContainer, 1300,800);
+
         mainScene.getStylesheets().add("https://fonts.googleapis.com/css2?family=Pacifico");
         mainScene.getStylesheets().add("https://fonts.googleapis.com/css2?family=Comfortaa");
+
+
+        mainScene.getStylesheets().add(Objects.requireNonNull(this.getClass().getResource("/gruppe/fire/css/main.css")).toExternalForm());
 
         root.setStyle("-fx-background-color: linear-gradient(#6746a9, #3829cd)");
         ImageView citySkyline = new ImageView("/gruppe/fire/Media/gameBG.png");
@@ -131,30 +177,39 @@ public class MainUI extends Application {
         glow.setColor(Color.WHITE);
         glow.setSpread(1);
         glow.setRadius(2);
+
         Font font = Font.font("Comfortaa",FontWeight.BOLD, 24);
         Font titleFont = Font.font("Pacifico",FontWeight.BOLD, 300);
         Font menuFont = Font.font("Pacifico",FontWeight.BOLD, 34);
         Font menuFontLarge = Font.font("Pacifico",FontWeight.BOLD, 64);
 
-        Label title = new Label("Paths");
-        title.setEffect(solidShadow);
-        title.setFont(titleFont);
+
+        Label title1 = new Label("P");
+        Label title2 = new Label("aths");
+        HBox titleBox = new HBox();
+        titleBox.setSpacing(-50);
+        titleBox.setAlignment(Pos.CENTER);
+        titleBox.getChildren().addAll(title1,title2);
+        title1.setEffect(solidShadow);
+        title1.setFont(titleFont);
+        title2.setEffect(solidShadow);
+        title2.setFont(titleFont);
 
         TranslateTransition translate = new TranslateTransition();
-        translate.setNode(title);
+        translate.setNode(titleBox);
         translate.setDuration(Duration.millis(2500));
         translate.setCycleCount(Animation.INDEFINITE);
         translate.setByY(-25);
         translate.setAutoReverse(true);
         translate.play();
         FadeTransition fade = new FadeTransition();
-        fade.setNode(title);
+        fade.setNode(titleBox);
         fade.setDuration(Duration.millis(2000));
         fade.setInterpolator(Interpolator.LINEAR);
         fade.setFromValue(0);
         fade.setToValue(1);
         fade.play();
-        titlePane.setCenter(title);
+        titlePane.setCenter(titleBox);
         root.setTop(titlePane);
 
         //Import file menu.
@@ -223,7 +278,7 @@ public class MainUI extends Application {
         startGame.setOnAction(e -> {
             if(String.valueOf(selectedFile).endsWith(".paths") && selectedFile != null){
                 try {
-                    playerMenu.start(stage);
+                    playerMenu.getPlayerMenu();
                 } catch (Exception ex) {
                     noFile.setText("Could not load file. Wrong format?");
                 }
@@ -253,7 +308,7 @@ public class MainUI extends Application {
         customStory1.setOnAction(e ->{
             try {
                 controller.setActiveFile("paths1.paths");
-                playerMenu.start(stage);
+                playerMenu.getPlayerMenu();
             } catch (Exception ex) {
                 noFile.setText("This slot is empty");
             }
@@ -268,7 +323,7 @@ public class MainUI extends Application {
         customStory2.setOnAction(e ->{
             try {
                 controller.setActiveFile("paths2.paths");
-                playerMenu.start(stage);
+                playerMenu.getPlayerMenu();
             } catch (Exception ex) {
                 noFile.setText("This slot is empty");
             }
@@ -283,7 +338,7 @@ public class MainUI extends Application {
         customStory3.setOnAction(e ->{
             try {
                 controller.setActiveFile("paths3.paths");
-                playerMenu.start(stage);
+                playerMenu.getPlayerMenu();
             } catch (Exception ex) {
                 noFile.setText("This slot is empty");
             }
@@ -298,7 +353,7 @@ public class MainUI extends Application {
         customStory4.setOnAction(e ->{
             try {
                 controller.setActiveFile("paths4.paths");
-                playerMenu.start(stage);
+                playerMenu.getPlayerMenu();
             } catch (Exception ex) {
                 noFile.setText("This slot is empty");
             }
@@ -354,7 +409,7 @@ public class MainUI extends Application {
         defaultStory1.setOnAction(e ->{
             try {
                 controller.setDefaultPath("HauntedHouse.paths");
-                playerMenu.start(stage);
+                playerMenu.getPlayerMenu();
             } catch (Exception ex) {
                 noFile.setText("Something went wrong");
             }
@@ -372,7 +427,7 @@ public class MainUI extends Application {
         defaultStory2.setOnAction(e ->{
             try {
                 controller.setDefaultPath("MurderMystery.paths");
-                playerMenu.start(stage);
+                mainScene.setRoot(playerMenu.getPlayerMenu());
             } catch (Exception ex) {
                 noFile.setText("Something went wrong");
             }
@@ -390,7 +445,7 @@ public class MainUI extends Application {
         defaultStory3.setOnAction(e ->{
             try {
                 controller.setDefaultPath("Castle.paths");
-                playerMenu.start(stage);
+                playerMenu.getPlayerMenu();
             } catch (Exception ex) {
                 noFile.setText("Something went wrong");
             }
@@ -408,7 +463,7 @@ public class MainUI extends Application {
         defaultStory4.setOnAction(e ->{
             try {
                 controller.setDefaultPath("SpaceShip.paths");
-                playerMenu.start(stage);
+                playerMenu.getPlayerMenu();
             } catch (Exception ex) {
                 noFile.setText("Something went wrong");
             }
@@ -553,9 +608,18 @@ public class MainUI extends Application {
         growBox.setMaxWidth(Double.MAX_VALUE); // set maximum width to a large value
         bottom.getChildren().addAll(versionLabel, growBox, dev, about);
         root.setBottom(bottom);
-
-
         //Show stage
+
+        // Create a Media object for the sound file
+        Media sound = new Media(getClass().getResource("/gruppe/fire/Media/button.wav").toString());
+
+        MediaPlayer mediaPlayer = new MediaPlayer(sound);
+
+        mainScene.addEventFilter(ActionEvent.ACTION, event -> {
+            mediaPlayer.seek(Duration.ZERO);
+            mediaPlayer.play();
+        });
+
 
         stage.setResizable(true);
         stage.setFullScreen(true);
@@ -565,6 +629,7 @@ public class MainUI extends Application {
         stage.setFullScreenExitHint("");
         stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
         stage.show();
+
     }
 
 
