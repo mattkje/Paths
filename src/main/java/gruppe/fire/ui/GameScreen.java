@@ -2,8 +2,6 @@ package gruppe.fire.ui;
 
 
 import gruppe.fire.actions.Action;
-import gruppe.fire.actions.GoldAction;
-import gruppe.fire.actions.ScoreAction;
 import gruppe.fire.fileHandling.DataBase;
 import gruppe.fire.logic.*;
 import javafx.animation.*;
@@ -27,19 +25,19 @@ import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-import javax.swing.*;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
 
 /**
  * This class represents the GUI for the game itself.
  */
-public class GameDisplay extends Application {
+public class GameScreen {
 
-    private MainUI mainMenu;
+    private MainMenu mainMenu;
 
-    private PlayerMenu playerMenu;
+    private PlayerScreen playerMenu;
 
     private GameDisplayController controller;
 
@@ -62,11 +60,9 @@ public class GameDisplay extends Application {
 
     /**
      * Starting point for the game.
-     * @param stage
      * @throws Exception
      */
-    @Override
-    public void start(Stage stage) {
+    public void start(Scene scene) {
 
         this.controller = new GameDisplayController();
         DataBase dataBase = new DataBase();
@@ -74,13 +70,13 @@ public class GameDisplay extends Application {
         File playerFile = new File(dataBase.getActivePlayerPath());
         GameBuilder handler = new GameBuilder(playerFile, gameFile);
         Game game = handler.createGame();
-        Story story = game.getStory();
         Player player = game.getPlayer();
 
                 //Background
-        BorderPane root = new BorderPane();
-        this.mainMenu = new MainUI();
-        this.playerMenu = new PlayerMenu();
+        BorderPane root = (BorderPane) scene.getRoot();
+        root.getChildren().clear();
+        this.mainMenu = new MainMenu();
+        this.playerMenu = new PlayerScreen();
         root.setStyle("-fx-background-color: linear-gradient(#5130b4, #402593)");
         ImageView citySkyline = new ImageView("/gruppe/fire/Media/gameBG.png");
         ImageView citySkyline2 = new ImageView("/gruppe/fire/Media/gameBG.png");
@@ -133,12 +129,11 @@ public class GameDisplay extends Application {
         glow.setSpread(1);
         glow.setRadius(2);
         this.font = Font.font("Arial Rounded MT Bold", FontWeight.BOLD, 24);
-        Font titleFont = Font.font("Freestyle Script", 44);
+        Font menuFont = Font.font("Pacifico",FontWeight.BOLD, 44);
 
         //logo
-        ImageView title = new ImageView("/gruppe/fire/Media/logo.png");
-        title.setFitWidth(107);
-        title.setFitHeight(50);
+        Label title = new Label("Paths");
+        title.setFont(menuFont);
 
         HBox growBox = new HBox();
         growBox.setHgrow(growBox, Priority.ALWAYS); // set horizontal grow priority
@@ -152,10 +147,8 @@ public class GameDisplay extends Application {
         mainMenuButton.setGraphic(mainMenuImage);
         mainMenuButton.setEffect(dropShadow);
         mainMenuButton.setOnAction(e ->{
-            stage.close();
-            Stage menuStage = new Stage();
             try {
-                mainMenu.start(menuStage);
+                mainMenu.start(scene);
             } catch (Exception ex) {
                 throw new RuntimeException(ex);
             }
@@ -248,11 +241,11 @@ public class GameDisplay extends Application {
         score.setTextFill(Color.WHITE);
         inventoryTitle.setTextFill(Color.WHITE);
         playerName.setFont(font);
-        info.setFont(titleFont);
+        info.setFont(menuFont);
         health.setFont(font);
         gold.setFont(font);
         score.setFont(font);
-        inventoryTitle.setFont(titleFont);
+        inventoryTitle.setFont(menuFont);
         inventory.add(playerPicture,1,0);
         inventory.add(playerName,0,0);
         inventory.add(info,0,1);
@@ -309,7 +302,7 @@ public class GameDisplay extends Application {
         actionBox.setAlignment(Pos.CENTER);
         actionBox.setSpacing(20);
         gameTitle.setAlignment(Pos.CENTER);
-        gameTitle.setFont(titleFont);
+        gameTitle.setFont(menuFont);
         gameTitle.setTextFill(Color.WHITE);
         roomTitle.setAlignment(Pos.CENTER);
         roomTitle.setFont(font);
@@ -360,31 +353,6 @@ public class GameDisplay extends Application {
         root.setBottom(actionBar);
 
 
-        //Show stage
-        Scene mainScene = new Scene(root, 1300,800);
-        mainScene.getStylesheets().add(Objects.requireNonNull(this.getClass().getResource("/gruppe/fire/css/main.css")).toExternalForm());
-        mainScene.setFill(Color.MEDIUMPURPLE);
-        stage.setResizable(true);
-
-
-        stage.setTitle("Paths");
-        stage.getIcons().add(new Image("/gruppe/fire/Media/icon.png"));
-
-        FadeTransition ft = new FadeTransition(Duration.millis(1000), mainScene.getRoot());
-        ft.setFromValue(1);
-        ft.setToValue(0);
-        ft.play();
-        stage.setScene(mainScene);
-        FadeTransition ft2 = new FadeTransition(Duration.millis(1000), mainScene.getRoot());
-        ft2.setFromValue(0);
-        ft2 .setToValue(1);
-        //SequentialTransition seqTrans = new SequentialTransition(ft, ft2);
-        ft2.play();
-
-
-        stage.setFullScreenExitHint("");
-        stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
-        stage.setFullScreen(true);
 
 
     }

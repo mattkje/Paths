@@ -2,16 +2,14 @@ package gruppe.fire.ui;
 
 import gruppe.fire.fileHandling.DataBase;
 import gruppe.fire.fileHandling.FileToPlayer;
-import gruppe.fire.fileHandling.FileToStory;
 import gruppe.fire.logic.GameBuilder;
-import gruppe.fire.logic.Link;
 import gruppe.fire.logic.Player;
-import gruppe.fire.logic.Story;
-import javafx.animation.*;
-import javafx.application.Application;
+import javafx.animation.Animation;
+import javafx.animation.Interpolator;
+import javafx.animation.ParallelTransition;
+import javafx.animation.TranslateTransition;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.effect.DropShadow;
@@ -23,19 +21,18 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.FileChooser;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
-import javafx.stage.Window;
 import javafx.util.Duration;
+
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.Objects;
 
-public class PlayerMenu extends Application {
+public class PlayerScreen {
 
-    private GameDisplay gameDisplay;
+    private GameScreen gameScreen;
 
-    private MainUI mainUI;
+    private MainMenu mainMenu;
 
     private ParallelTransition parallelTransition;
 
@@ -43,20 +40,22 @@ public class PlayerMenu extends Application {
 
     private Image newProfileImage;
 
-    @Override
-    public void start(Stage stage) {
+
+    public void start(Scene scene) {
 
 
         //Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
-        this.gameDisplay =  new GameDisplay();
-        this.mainUI = new MainUI();
+        this.gameScreen =  new GameScreen();
+        this.mainMenu = new MainMenu();
         this.controller = new PlayerMenuController();
 
         DataBase dataBase = new DataBase();
         GameBuilder gameBuilder = new GameBuilder(new File(dataBase.getActivePlayerPath()), new File(dataBase.getActiveStoryPath()));
 
         //Background
-        BorderPane root = new BorderPane();
+
+        BorderPane root = (BorderPane) scene.getRoot();
+        root.getChildren().clear();
         root.setStyle("-fx-background-color: linear-gradient(#5130b4, #402593)");
         ImageView citySkyline = new ImageView("/gruppe/fire/Media/gameBG.png");
         ImageView citySkyline2 = new ImageView("/gruppe/fire/Media/gameBG.png");
@@ -114,21 +113,6 @@ public class PlayerMenu extends Application {
         title.setFitWidth(107);
         title.setFitHeight(50);
 
-        ToolBar playerToolBar = new ToolBar();
-        Button button = new Button("BACK");
-        button.setFont(font);
-        button.setEffect(dropShadow);
-        button.setTextFill(Color.WHITE);
-        button.setOnAction(e ->{
-            try {
-                gameDisplay.start(stage);
-            } catch (Exception ex) {
-                throw new RuntimeException(ex);
-            }
-        });
-
-        playerToolBar.getItems().add(button);
-        root.setTop(playerToolBar);
 
         Label playerTitle = new Label("Select player");
         playerTitle.setAlignment(Pos.CENTER);
@@ -178,7 +162,7 @@ public class PlayerMenu extends Application {
             String activePlayerString = "player"+i+".txt";
             playerButton.setOnAction(event -> {
                 controller.setActivePlayer(activePlayerString);
-                gameDisplay.start(stage);
+                gameScreen.start(scene);
             });
             ppImageBox.getChildren().add(playerButton);
         }
@@ -260,7 +244,7 @@ public class PlayerMenu extends Application {
             FileChooser fileChooser = new FileChooser();
             FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("PNG files (*.png)", "*.png");
             fileChooser.getExtensionFilters().add(extFilter);
-            File newProfileImageFile = fileChooser.showOpenDialog(stage);
+            File newProfileImageFile = fileChooser.showOpenDialog(new Stage());
             if (newProfileImageFile != null) {
                 this.newProfileImage = new Image(newProfileImageFile.toURI().toString());
                 imageDisplay.setImage(newProfileImage);
@@ -343,7 +327,7 @@ public class PlayerMenu extends Application {
         cancelButton.setTextFill(Color.WHITE);
         cancelButton.setOnAction(e ->{
             try {
-                mainUI.start(new Stage());
+                mainMenu.start(scene);
             } catch (Exception ex) {
                 throw new RuntimeException(ex);
             }
@@ -357,23 +341,11 @@ public class PlayerMenu extends Application {
 
         VBox menuBox = new VBox();
         menuBox.setAlignment(Pos.CENTER);
-        menuBox.getChildren().addAll(playerHBox, buttonBox);
+        menuBox.getChildren().addAll(playerVBox, buttonBox);
         root.setCenter(menuBox);
 
-        //Show stage
 
 
-
-        Scene playerScene = new Scene(root, 1300, 800);
-        playerScene.getStylesheets().add(Objects.requireNonNull(this.getClass().getResource("/gruppe/fire/css/main.css")).toExternalForm());
-        stage.setResizable(true);
-        stage.setScene(playerScene);
-        stage.setTitle("Paths");
-        stage.getIcons().add(new Image("/gruppe/fire/Media/icon.png"));
-        stage.setFullScreen(true);
-        stage.setFullScreenExitHint("");
-        stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
-        stage.show();
 
     }
 

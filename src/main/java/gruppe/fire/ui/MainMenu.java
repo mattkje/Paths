@@ -6,43 +6,44 @@ import javafx.animation.*;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
-import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCombination;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-import javafx.stage.*;
-import javafx.scene.paint.Color;
+import javafx.stage.FileChooser;
+import javafx.stage.Screen;
+import javafx.stage.Stage;
 import javafx.util.Duration;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Random;
 
 /**
  * This class represents a starting point for the GUI (Main menu).
  */
-public class MainUI extends Application {
+public class MainMenu {
 
     private GameDisplay game;
-    private PlayerMenu playerMenu;
+    private PlayerScreen playerMenu;
 
     private MainUiController controller;
 
@@ -50,19 +51,14 @@ public class MainUI extends Application {
 
     private MediaPlayer player;
 
-    private BorderPane root;
-
-
-
     private StackPane rootContainer;
 
     /**
      *
-     * @param stage
      * @throws Exception
      */
-    @Override
-    public void start(Stage stage) throws Exception {
+
+    public void start(Scene mainScene) throws Exception {
         //Universal app version
         String version = "Version: 2023.05.03";
 
@@ -70,46 +66,20 @@ public class MainUI extends Application {
 
         this.controller = new MainUiController();
 
-        this.playerMenu = new PlayerMenu();
+        this.playerMenu = new PlayerScreen();
 
         this.game = new GameDisplay();
 
-        this.root = new BorderPane();
 
-        this.rootContainer = new StackPane();
-        MediaView mediaView = controller.getLoadingVideo();
-        Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
-        double screenWidth = screenBounds.getWidth();
-        double screenHeight = screenBounds.getHeight();
 
-        HBox group = new HBox();
-        mediaView.fitWidthProperty().bind(group.widthProperty());
-        mediaView.fitHeightProperty().bind(group.heightProperty());
-        group.setPrefSize(screenWidth, screenHeight);
-        group.setAlignment(Pos.CENTER);
-        group.getChildren().add(mediaView);
 
-        //Hides menu when app is started
-        root.setVisible(false);
-        PauseTransition pause = new PauseTransition(Duration.seconds(5));
-        ParallelTransition smoothTransition = new ParallelTransition(root, pause);
-        smoothTransition.setOnFinished(event -> root.setVisible(true));
-        smoothTransition.play();
-        rootContainer.getChildren().addAll(root, group);
+        BorderPane root = (BorderPane) mainScene.getRoot();
+        root.getChildren().clear();
 
-        mediaView.getMediaPlayer().setOnEndOfMedia(() -> {
-            Platform.runLater(() -> {
-                rootContainer.getChildren().removeAll(group);
-                MediaView mediaPlayer = controller.getLoadingVideo();
-                mediaPlayer.getMediaPlayer().dispose();
-                this.player = controller.getBackgroundMusic();
-                player.setVolume(0.5);
-                player.play();
+        this.player = controller.getBackgroundMusic();
+        player.setVolume(0.5);
+        player.play();
 
-            });
-        });
-
-        Scene mainScene = new Scene(rootContainer, 1300,800);
 
 
 
@@ -251,7 +221,7 @@ public class MainUI extends Application {
         Label noFile = new Label("No file selected");
         noFile.setStyle("-fx-font-family: Comfortaa");
         continueButton.setOnAction(e -> {
-            this.selectedFile = fileChooser.showOpenDialog(stage);
+            this.selectedFile = fileChooser.showOpenDialog(new Stage());
 
             //Prevents user from opening non-paths files (typing direct path will bypass filter)
             if(!String.valueOf(selectedFile).endsWith(".paths") && selectedFile != null){
@@ -286,7 +256,7 @@ public class MainUI extends Application {
         startGame.setOnAction(e -> {
             if(String.valueOf(selectedFile).endsWith(".paths") && selectedFile != null){
                 try {
-                    playerMenu.start(stage);
+                    playerMenu.start(mainScene);
                 } catch (Exception ex) {
                     noFile.setText("Could not load file. Wrong format?");
                 }
@@ -316,7 +286,7 @@ public class MainUI extends Application {
         customStory1.setOnAction(e ->{
             try {
                 controller.setActiveFile("paths1.paths");
-                playerMenu.start(stage);
+                playerMenu.start(mainScene);
             } catch (Exception ex) {
                 noFile.setText("This slot is empty");
             }
@@ -331,7 +301,7 @@ public class MainUI extends Application {
         customStory2.setOnAction(e ->{
             try {
                 controller.setActiveFile("paths2.paths");
-                playerMenu.start(stage);
+                playerMenu.start(mainScene);
             } catch (Exception ex) {
                 noFile.setText("This slot is empty");
             }
@@ -346,7 +316,7 @@ public class MainUI extends Application {
         customStory3.setOnAction(e ->{
             try {
                 controller.setActiveFile("paths3.paths");
-                playerMenu.start(stage);
+                playerMenu.start(mainScene);
             } catch (Exception ex) {
                 noFile.setText("This slot is empty");
             }
@@ -361,7 +331,7 @@ public class MainUI extends Application {
         customStory4.setOnAction(e ->{
             try {
                 controller.setActiveFile("paths4.paths");
-                playerMenu.start(stage);
+                playerMenu.start(mainScene);
             } catch (Exception ex) {
                 noFile.setText("This slot is empty");
             }
@@ -387,12 +357,7 @@ public class MainUI extends Application {
         noFile.setId("noFile");
 
         HBox gameControl = new HBox();
-        Button dev = new Button();
-        dev.setStyle("-fx-background-color: #FFFFFF");
-        dev.setText("PREVIEW");
-        dev.setOnAction(e ->{
-            game.start(stage);
-        });
+
         gameControl.getChildren().addAll(continueButton, startGame);
         gameControl.setAlignment(Pos.CENTER);
         gameControl.setSpacing(3);
@@ -417,7 +382,7 @@ public class MainUI extends Application {
         defaultStory1.setOnAction(e ->{
             try {
                 controller.setDefaultPath("HauntedHouse.paths");
-                playerMenu.start(stage);
+                playerMenu.start(mainScene);
             } catch (Exception ex) {
                 noFile.setText("Something went wrong");
             }
@@ -435,9 +400,10 @@ public class MainUI extends Application {
         defaultStory2.setOnAction(e ->{
             try {
                 controller.setDefaultPath("MurderMystery.paths");
-                playerMenu.start(stage);
+                PlayerScreen playerScreen = new PlayerScreen();
+                playerScreen.start(mainScene);
             } catch (Exception ex) {
-                noFile.setText("Something went wrong");
+                throw new RuntimeException(ex);
             }
         });
 
@@ -453,7 +419,7 @@ public class MainUI extends Application {
         defaultStory3.setOnAction(e ->{
             try {
                 controller.setDefaultPath("Castle.paths");
-                playerMenu.start(stage);
+                playerMenu.start(mainScene);
             } catch (Exception ex) {
                 noFile.setText("Something went wrong");
             }
@@ -471,7 +437,7 @@ public class MainUI extends Application {
         defaultStory4.setOnAction(e ->{
             try {
                 controller.setDefaultPath("SpaceShip.paths");
-                playerMenu.start(stage);
+                playerMenu.start(mainScene);
             } catch (Exception ex) {
                 noFile.setText("Something went wrong");
             }
@@ -614,7 +580,7 @@ public class MainUI extends Application {
         HBox growBox = new HBox();
         growBox.setHgrow(growBox, Priority.ALWAYS); // set horizontal grow priority
         growBox.setMaxWidth(Double.MAX_VALUE); // set maximum width to a large value
-        bottom.getChildren().addAll(versionLabel, growBox, dev, about);
+        bottom.getChildren().addAll(versionLabel, growBox,  about);
         root.setBottom(bottom);
         //Show stage
 
@@ -625,27 +591,11 @@ public class MainUI extends Application {
 
         mainScene.addEventFilter(ActionEvent.ACTION, event -> {
             mediaPlayer.seek(Duration.ZERO);
+            mediaPlayer.setVolume(0.5);
             mediaPlayer.play();
         });
 
 
-        stage.setResizable(true);
-        stage.setFullScreen(true);
-        stage.setScene(mainScene);
-        stage.setTitle("Paths");
-        stage.getIcons().add(new Image("/gruppe/fire/Media/icon.png"));
-        stage.setFullScreenExitHint("");
-        stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
-        stage.show();
     }
 
-
-
-    /**
-     * Launch method.
-     * @param args
-     */
-    public static void appMain(String[] args) {
-        launch(args);
-    }
 }
