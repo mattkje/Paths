@@ -2,12 +2,10 @@ package gruppe.fire.ui;
 
 
 import gruppe.fire.actions.Action;
-import gruppe.fire.actions.GoldAction;
-import gruppe.fire.actions.ScoreAction;
 import gruppe.fire.fileHandling.DataBase;
 import gruppe.fire.logic.*;
-import javafx.animation.*;
-import javafx.application.Application;
+import javafx.animation.Animation;
+import javafx.animation.TranslateTransition;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -17,27 +15,24 @@ import javafx.scene.control.ListView;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
-import javafx.stage.Stage;
 import javafx.util.Duration;
 
-import javax.swing.*;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Objects;
 
 /**
  * This class represents the GUI for the game itself.
  */
-public class GameDisplay extends Application {
+public class GameDisplay {
 
-    private MainUI mainMenu;
+    private MainMenu mainMenu;
 
     private PlayerMenu playerMenu;
 
@@ -62,11 +57,9 @@ public class GameDisplay extends Application {
 
     /**
      * Starting point for the game.
-     * @param stage
      * @throws Exception
      */
-    @Override
-    public void start(Stage stage) {
+    public void start(Scene scene) {
 
         this.controller = new GameDisplayController();
         DataBase dataBase = new DataBase();
@@ -74,51 +67,21 @@ public class GameDisplay extends Application {
         File playerFile = new File(dataBase.getActivePlayerPath());
         GameBuilder handler = new GameBuilder(playerFile, gameFile);
         Game game = handler.createGame();
-        Story story = game.getStory();
         Player player = game.getPlayer();
 
                 //Background
-        BorderPane root = new BorderPane();
-        this.mainMenu = new MainUI();
+        BorderPane root = (BorderPane) scene.getRoot();
+        root.getChildren().clear();
+        this.mainMenu = new MainMenu();
         this.playerMenu = new PlayerMenu();
-        root.setStyle("-fx-background-color: linear-gradient(#5130b4, #402593)");
-        ImageView citySkyline = new ImageView("/gruppe/fire/Media/gameBG.png");
-        ImageView citySkyline2 = new ImageView("/gruppe/fire/Media/gameBG.png");
-        ImageView citySkyline3 = new ImageView("/gruppe/fire/Media/gameBG.png");
+        root.setStyle("-fx-background-color: linear-gradient(#6746a9, #3829cd)");
+        MainMenuController mainMenuController = new MainMenuController();
+        mainMenuController.getBackground(root);
 
-        TranslateTransition translateTransition =
-                new TranslateTransition(Duration.millis(10000), citySkyline);
-        translateTransition.setFromX(0);
-        translateTransition.setToX(-1 * 1300);
-        translateTransition.setInterpolator(Interpolator.LINEAR);
-
-        TranslateTransition translateTransition2 =
-                new TranslateTransition(Duration.millis(10000), citySkyline2);
-        translateTransition2.setFromX(1300);
-        translateTransition2.setToX(0);
-        translateTransition2.setInterpolator(Interpolator.LINEAR);
-
-        TranslateTransition translateTransition3 =
-                new TranslateTransition(Duration.millis(10000), citySkyline3);
-        translateTransition3.setFromX(2600);
-        translateTransition3.setToX(1300);
-        translateTransition3.setInterpolator(Interpolator.LINEAR);
-
-        ParallelTransition parallelTransition = new ParallelTransition(translateTransition, translateTransition2, translateTransition3);
-        parallelTransition.setCycleCount(Animation.INDEFINITE);
-
-        parallelTransition.play();
-
-        //citySkyline.fitWidthProperty().bind(root.widthProperty());
-        citySkyline.fitHeightProperty().bind(root.heightProperty());
-        //citySkyline2.fitWidthProperty().bind(root.widthProperty());
-        citySkyline2.fitHeightProperty().bind(root.heightProperty());
-        citySkyline3.fitHeightProperty().bind(root.heightProperty());
-
-        citySkyline.setStyle("-fx-opacity: 0.1");
-        citySkyline2.setStyle("-fx-opacity: 0.1");
-        citySkyline3.setStyle("-fx-opacity: 0.1");
-        root.getChildren().addAll(citySkyline, citySkyline2, citySkyline3);
+        //Fonts
+        Font font = Font.loadFont(GameDisplay.class.getResource("/gruppe/fire/fonts/Comfortaa.ttf").toExternalForm(), 24);
+        Font pauseFont = Font.loadFont(GameDisplay.class.getResource("/gruppe/fire/fonts/Comfortaa.ttf").toExternalForm(), 34);
+        Font menuFont = Font.loadFont(GameDisplay.class.getResource("/gruppe/fire/fonts/Pacifico-Regular.ttf").toExternalForm(), 44);
 
 
         //Shadows and fonts
@@ -133,12 +96,11 @@ public class GameDisplay extends Application {
         glow.setSpread(1);
         glow.setRadius(2);
         this.font = Font.font("Arial Rounded MT Bold", FontWeight.BOLD, 24);
-        Font titleFont = Font.font("Freestyle Script", 44);
+        //Font menuFont = Font.font("Pacifico",FontWeight.BOLD, 44);
 
         //logo
-        ImageView title = new ImageView("/gruppe/fire/Media/logo.png");
-        title.setFitWidth(107);
-        title.setFitHeight(50);
+        Label title = new Label("Paths");
+        title.setFont(menuFont);
 
         HBox growBox = new HBox();
         growBox.setHgrow(growBox, Priority.ALWAYS); // set horizontal grow priority
@@ -152,24 +114,56 @@ public class GameDisplay extends Application {
         mainMenuButton.setGraphic(mainMenuImage);
         mainMenuButton.setEffect(dropShadow);
         mainMenuButton.setOnAction(e ->{
-            stage.close();
-            Stage menuStage = new Stage();
             try {
-                mainMenu.start(menuStage);
+                mainMenu.start(scene);
             } catch (Exception ex) {
                 throw new RuntimeException(ex);
             }
         });
 
-        Button playerMenuButton = new Button();
+        //Options
+        VBox optionsBox = new VBox();
+        optionsBox.setSpacing(30);
+        optionsBox.setStyle("-fx-background-color: rgba(0,0,0,0.7)");
+        optionsBox.setAlignment(Pos.CENTER);
+        Button resume = new Button("Resume game");
+        resume.setFont(pauseFont);
+        resume.setPrefSize(400,100);
+        Button restart = new Button("Restart game");
+        restart.setFont(pauseFont);
+        restart.setPrefSize(400,100);
+        Button tutorial = new Button("Help");
+        tutorial.setFont(pauseFont);
+        tutorial.setPrefSize(400,100);
+        Button settings = new Button("Settings");
+        settings.setFont(pauseFont);
+        settings.setPrefSize(400, 100);
+        Button back = new Button("Exit to main menu");
+        back.setFont(pauseFont);
+        back.setPrefSize(400, 100);
+        optionsBox.getChildren().addAll(resume, restart, tutorial, settings, back);
+
+        StackPane gameWindowPane = new StackPane();
+        Button optionsButton = new Button();
         ImageView playerMenuImage = new ImageView("/gruppe/fire/Media/menu.png");
         playerMenuImage.setFitWidth(50);
         playerMenuImage.setFitHeight(50);
-        playerMenuButton.setGraphic(playerMenuImage);
-        playerMenuButton.setEffect(dropShadow);
-        playerMenuButton.setOnAction(e ->{
+        optionsButton.setGraphic(playerMenuImage);
+        optionsButton.setEffect(dropShadow);
+        optionsButton.setOnAction(e ->{
+            gameWindowPane.getChildren().add(optionsBox);
+            root.setBottom(null);
+        });
+        resume.setOnAction(e ->{
+            gameWindowPane.getChildren().remove(optionsBox);
+            root.setBottom(actionBar);
+        });
+        restart.setOnAction(e ->{
+            start(scene);
+        });
+        back.setOnAction(e ->{
             try {
-               // playerMenu.getPlayerMenu(stage,);
+                mainMenu.start(scene);
             } catch (Exception ex) {
                 throw new RuntimeException(ex);
             }
@@ -193,9 +187,9 @@ public class GameDisplay extends Application {
 
         try {
             if(controller.checkIfDefault() == true) {
-                menuBar.getChildren().addAll(title, growBox, unsavedChanges, saveButton, playerMenuButton, mainMenuButton);
+                menuBar.getChildren().addAll(title, growBox, unsavedChanges, saveButton, optionsButton, mainMenuButton);
             } else {
-                menuBar.getChildren().addAll(title, growBox, playerMenuButton, mainMenuButton);
+                menuBar.getChildren().addAll(title, growBox, optionsButton, mainMenuButton);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -211,8 +205,9 @@ public class GameDisplay extends Application {
         gameWindow.setMaxHeight(500);
         gameWindow.setEffect(dropShadow);
 
-        //gameWindow.getChildren().add();
-        root.setCenter(gameWindow);
+
+        gameWindowPane.getChildren().add(gameWindow);
+        root.setCenter(gameWindowPane);
 
 
         //Stats
@@ -248,11 +243,11 @@ public class GameDisplay extends Application {
         score.setTextFill(Color.WHITE);
         inventoryTitle.setTextFill(Color.WHITE);
         playerName.setFont(font);
-        info.setFont(titleFont);
+        info.setFont(menuFont);
         health.setFont(font);
         gold.setFont(font);
         score.setFont(font);
-        inventoryTitle.setFont(titleFont);
+        inventoryTitle.setFont(menuFont);
         inventory.add(playerPicture,1,0);
         inventory.add(playerName,0,0);
         inventory.add(info,0,1);
@@ -267,6 +262,15 @@ public class GameDisplay extends Application {
         HBox sideBox = new HBox();
         Button showInventory = new Button();
         ImageView showImage = new ImageView("/gruppe/fire/Media/back.png");
+        TranslateTransition translate = new TranslateTransition();
+        translate.setNode(showImage);
+        translate.setDuration(Duration.millis(1500));
+        translate.setCycleCount(Animation.INDEFINITE);
+        translate.setFromX(-5);
+        translate.setToX(5);
+        translate.setAutoReverse(true);
+        translate.play();
+
         showImage.setScaleX(-1);
         showInventory.setGraphic(showImage);
         showInventory.setStyle("-fx-background-color: rgba(0,0,0,0.7); -fx-background-radius: 0px; -fx-translate-y: 0px;");
@@ -309,7 +313,7 @@ public class GameDisplay extends Application {
         actionBox.setAlignment(Pos.CENTER);
         actionBox.setSpacing(20);
         gameTitle.setAlignment(Pos.CENTER);
-        gameTitle.setFont(titleFont);
+        gameTitle.setFont(menuFont);
         gameTitle.setTextFill(Color.WHITE);
         roomTitle.setAlignment(Pos.CENTER);
         roomTitle.setFont(font);
@@ -360,31 +364,6 @@ public class GameDisplay extends Application {
         root.setBottom(actionBar);
 
 
-        //Show stage
-        Scene mainScene = new Scene(root, 1300,800);
-        mainScene.getStylesheets().add(Objects.requireNonNull(this.getClass().getResource("/gruppe/fire/css/main.css")).toExternalForm());
-        mainScene.setFill(Color.MEDIUMPURPLE);
-        stage.setResizable(true);
-
-
-        stage.setTitle("Paths");
-        stage.getIcons().add(new Image("/gruppe/fire/Media/icon.png"));
-
-        FadeTransition ft = new FadeTransition(Duration.millis(1000), mainScene.getRoot());
-        ft.setFromValue(1);
-        ft.setToValue(0);
-        ft.play();
-        stage.setScene(mainScene);
-        FadeTransition ft2 = new FadeTransition(Duration.millis(1000), mainScene.getRoot());
-        ft2.setFromValue(0);
-        ft2 .setToValue(1);
-        //SequentialTransition seqTrans = new SequentialTransition(ft, ft2);
-        ft2.play();
-
-
-        stage.setFullScreenExitHint("");
-        stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
-        stage.setFullScreen(true);
 
 
     }

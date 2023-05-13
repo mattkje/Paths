@@ -12,10 +12,10 @@ class PlayerBuilderTest {
     @Test
     void testPlayerBuilderClass() {
         PlayerBuilder builder = new PlayerBuilder();
-        builder.setName("Matti");
+        builder.setName("Mathias");
         builder.setHealth(200);
         Player player = builder.getPlayer();
-        assertEquals("Matti", player.getName());
+        assertEquals("Mathias", player.getName());
         assertEquals(200, player.getHealth());
         assertEquals(0, player.getGold());
     }

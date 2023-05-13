@@ -1,0 +1,5 @@
+TRGS
+Data\PlayerData\Images\pp6.png
+4
+0
+300

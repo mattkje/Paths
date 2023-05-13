@@ -1,0 +1,5 @@
+NoPic
+Data\PlayerData\Images\noSelect.png
+4
+0
+100

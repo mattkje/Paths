@@ -8,12 +8,6 @@ import gruppe.fire.logic.Story;
 import gruppe.fire.actions.*;
 import gruppe.fire.logic.Link;
 
-// TODO: Fix issue with whitespaces causing crashes
-// TODO: Add actions availability to reading files - DONE
-// TODO: add toLowerCase for actions and other features
-// TODO: fix exception handling
-// TODO: Fix crashes on typos etc
-
 /**
  * Class responsible for handling all file imports and exports
  * An object represents one file and contains methods for handling it

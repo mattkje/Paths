@@ -3,30 +3,26 @@ package gruppe.fire.ui;
 
 import gruppe.fire.fileHandling.FileToStory;
 import javafx.animation.*;
-import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
-import javafx.geometry.Rectangle2D;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.effect.DropShadow;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.*;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
-import javafx.scene.media.MediaView;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
-import javafx.stage.Screen;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -42,10 +38,9 @@ import java.util.Optional;
  */
 public class MainMenu {
 
-    private GameDisplay game;
-    private PlayerScreen playerMenu;
+    private PlayerMenu playerMenu;
 
-    private MainUiController controller;
+    private MainMenuController controller;
 
     private File selectedFile;
 
@@ -64,11 +59,9 @@ public class MainMenu {
 
 
 
-        this.controller = new MainUiController();
+        this.controller = new MainMenuController();
 
-        this.playerMenu = new PlayerScreen();
-
-        this.game = new GameDisplay();
+        this.playerMenu = new PlayerMenu();
 
 
 
@@ -89,51 +82,13 @@ public class MainMenu {
 
         mainScene.getStylesheets().add(Objects.requireNonNull(this.getClass().getResource("/gruppe/fire/css/main.css")).toExternalForm());
 
+        //Style background
         root.setStyle("-fx-background-color: linear-gradient(#6746a9, #3829cd)");
-        ImageView citySkyline = new ImageView("/gruppe/fire/Media/gameBG.png");
-        ImageView citySkyline2 = new ImageView("/gruppe/fire/Media/gameBG.png");
-        ImageView citySkyline3 = new ImageView("/gruppe/fire/Media/gameBG.png");
-
-        TranslateTransition translateTransition =
-                new TranslateTransition(Duration.millis(10000), citySkyline);
-        translateTransition.setFromX(0);
-        translateTransition.setToX(-1 * 1300);
-        translateTransition.setInterpolator(Interpolator.LINEAR);
-
-        TranslateTransition translateTransition2 =
-                new TranslateTransition(Duration.millis(10000), citySkyline2);
-        translateTransition2.setFromX(1300);
-        translateTransition2.setToX(0);
-        translateTransition2.setInterpolator(Interpolator.LINEAR);
-
-        TranslateTransition translateTransition3 =
-                new TranslateTransition(Duration.millis(10000), citySkyline3);
-        translateTransition3.setFromX(2600);
-        translateTransition3.setToX(1300);
-        translateTransition3.setInterpolator(Interpolator.LINEAR);
-
-        ParallelTransition parallelTransition = new ParallelTransition(translateTransition, translateTransition2, translateTransition3);
-        parallelTransition.setCycleCount(Animation.INDEFINITE);
-
-        parallelTransition.play();
-
-        //citySkyline.fitWidthProperty().bind(root.widthProperty());
-        citySkyline.fitHeightProperty().bind(root.heightProperty());
-        //citySkyline2.fitWidthProperty().bind(root.widthProperty());
-        citySkyline2.fitHeightProperty().bind(root.heightProperty());
-        citySkyline3.fitHeightProperty().bind(root.heightProperty());
-
-        citySkyline.setStyle("-fx-opacity: 0.1");
-        citySkyline2.setStyle("-fx-opacity: 0.1");
-        citySkyline3.setStyle("-fx-opacity: 0.1");
-        root.getChildren().addAll(citySkyline, citySkyline2, citySkyline3);
+        controller.getBackground(root);
 
 
         //Main menu title
         BorderPane titlePane = new BorderPane();
-        //ImageView title = new ImageView("/gruppe/fire/Media/title.png");
-        //title.setFitHeight(root.getPrefHeight() * 0.25 );
-        //title.setFitWidth(root.getPrefWidth() * 0.25 );
 
 
         //Shadows and fonts
@@ -157,10 +112,11 @@ public class MainMenu {
         glow.setRadius(2);
 
         Font font = Font.font("Comfortaa",FontWeight.BOLD, 24);
-        Font titleFont = Font.font("Pacifico",FontWeight.BOLD, 300);
+        Font titleFont2 = Font.font("Pacifico",FontWeight.BOLD, 300);
         Font menuFont = Font.font("Pacifico",FontWeight.BOLD, 34);
         Font menuFontLarge = Font.font("Pacifico",FontWeight.BOLD, 64);
 
+        Font titleFont = Font.loadFont(MainMenu.class.getResource("/gruppe/fire/fonts/Pacifico-Regular.ttf").toExternalForm(), 300);
 
         Label title1 = new Label("P");
         Label title2 = new Label("aths");
@@ -221,7 +177,7 @@ public class MainMenu {
         Label noFile = new Label("No file selected");
         noFile.setStyle("-fx-font-family: Comfortaa");
         continueButton.setOnAction(e -> {
-            this.selectedFile = fileChooser.showOpenDialog(new Stage());
+            this.selectedFile = fileChooser.showOpenDialog(mainScene.getWindow());
 
             //Prevents user from opening non-paths files (typing direct path will bypass filter)
             if(!String.valueOf(selectedFile).endsWith(".paths") && selectedFile != null){
@@ -284,12 +240,10 @@ public class MainMenu {
         customStory1.setTextFill(Color.WHITE);
         customStory1.setPrefWidth(300);
         customStory1.setOnAction(e ->{
-            try {
-                controller.setActiveFile("paths1.paths");
-                playerMenu.start(mainScene);
-            } catch (Exception ex) {
-                noFile.setText("This slot is empty");
-            }
+            //controller.setActiveFile("paths1.paths");
+            //playerMenu.start(mainScene);
+
+            noFile.setText("This slot is empty");
         });
         customStories.add(customStory1, 0, 0);
 
@@ -299,12 +253,11 @@ public class MainMenu {
         customStory2.setTextFill(Color.WHITE);
         customStory2.setPrefWidth(300);
         customStory2.setOnAction(e ->{
-            try {
-                controller.setActiveFile("paths2.paths");
-                playerMenu.start(mainScene);
-            } catch (Exception ex) {
-                noFile.setText("This slot is empty");
-            }
+
+            //    controller.setActiveFile("paths2.paths");
+            //    playerMenu.start(mainScene);
+
+            noFile.setText("This slot is empty");
         });
         customStories.add(customStory2, 0, 1);
 
@@ -314,12 +267,11 @@ public class MainMenu {
         customStory3.setTextFill(Color.WHITE);
         customStory3.setPrefWidth(300);
         customStory3.setOnAction(e ->{
-            try {
-                controller.setActiveFile("paths3.paths");
-                playerMenu.start(mainScene);
-            } catch (Exception ex) {
-                noFile.setText("This slot is empty");
-            }
+
+            //controller.setActiveFile("paths3.paths");
+            //playerMenu.start(mainScene);
+            noFile.setText("This slot is empty");
+
         });
         customStories.add(customStory3, 0, 2);
 
@@ -329,28 +281,15 @@ public class MainMenu {
         customStory4.setTextFill(Color.WHITE);
         customStory4.setPrefWidth(300);
         customStory4.setOnAction(e ->{
-            try {
-                controller.setActiveFile("paths4.paths");
-                playerMenu.start(mainScene);
-            } catch (Exception ex) {
-                noFile.setText("This slot is empty");
-            }
+
+            //controller.setActiveFile("paths4.paths");
+            //playerMenu.start(mainScene);
+
+            noFile.setText("This slot is empty");
+
         });
         customStories.add(customStory4, 0, 3);
         customStories.setVgap(5);
-
-
-        //I don't think this will work.
-        /*
-        for (int i = 0; i < storyTitles.length; i++) {
-            Button defaultStory = new Button();
-            defaultStory.setText(storyTitles[i]);
-            defaultStory.setTextFill(Color.WHITE);
-            defaultStory.setId("storyButtons");
-            customStories.add(defaultStory, 0, i + 1);
-        }
-        */
-
 
         noFile.setTextFill(Color.WHITE);
         noFile.setAlignment(Pos.CENTER);
@@ -400,7 +339,7 @@ public class MainMenu {
         defaultStory2.setOnAction(e ->{
             try {
                 controller.setDefaultPath("MurderMystery.paths");
-                PlayerScreen playerScreen = new PlayerScreen();
+                PlayerMenu playerScreen = new PlayerMenu();
                 playerScreen.start(mainScene);
             } catch (Exception ex) {
                 throw new RuntimeException(ex);
@@ -503,6 +442,35 @@ public class MainMenu {
         tutorialBox.setEffect(dropShadow);
         tutorialBox.getChildren().addAll(tutorialTitle, tutorialText);
 
+        //Settings screen
+        Label settingsTitle = new Label("Settings");
+        settingsTitle.setTextFill(Color.WHITE);
+        settingsTitle.setFont(font);
+
+        Label someLabel = new Label("Display");
+        Button toggleFullscreen = new Button("Toggle fullscreen");
+        toggleFullscreen.setOnAction(e ->{
+            Node source = (Node) e.getSource();
+            Stage stage = (Stage) source.getScene().getWindow();
+            if (stage.isFullScreen()){
+                stage.setFullScreen(false);
+            } else {
+                stage.setFullScreen(true);
+                stage.setFullScreenExitHint("");
+                stage.setFullScreenExitKeyCombination(null);
+            }
+
+        });
+
+        HBox fsBox = new HBox(someLabel, toggleFullscreen);
+
+        VBox settingsBox = new VBox();
+        settingsBox.setStyle("-fx-background-color: rgba(0,0,0,0.7); -fx-background-radius: 40px");
+        settingsBox.setPrefSize(1000, 800);
+        settingsBox.setAlignment(Pos.CENTER);
+        settingsBox.setEffect(dropShadow);
+        settingsBox.getChildren().addAll(settingsTitle, fsBox);
+
         VBox startMenu = new VBox();
         startMenu.setStyle("-fx-background-color: rgba(0,0,0,0); -fx-background-radius: 40px");
 
@@ -532,12 +500,16 @@ public class MainMenu {
             menuBox.getChildren().remove(startMenu);
             menuBox.getChildren().addAll(backButton, defaultStoriesBox, importMenu);
         });
+        settings.setOnAction(e ->{
+            menuBox.getChildren().remove(startMenu);
+            menuBox.getChildren().addAll(backButton, settingsBox);
+        });
         howToPlay.setOnAction(e ->{
             menuBox.getChildren().remove(startMenu);
             menuBox.getChildren().addAll(backButton, tutorialBox);
         });
         backButton.setOnAction(e ->{
-            menuBox.getChildren().removeAll(backButton, defaultStoriesBox, importMenu, tutorialBox);
+            menuBox.getChildren().clear();
             menuBox.getChildren().add(startMenu);
         });
 
@@ -558,7 +530,12 @@ public class MainMenu {
         info.setFitWidth(20);
         about.setGraphic(info);
         about.setOnMouseClicked(mouseEvent -> {
-            //On clicked
+            // Create a new stage for the alert dialog
+            Stage alertStage = new Stage();
+            alertStage.initOwner(mainScene.getWindow()); // Set the owner to the current full-screen stage
+            alertStage.initModality(Modality.APPLICATION_MODAL); // Make the alert dialog modal
+
+            // Create the alert dialog
             Alert alertDialog = new Alert(Alert.AlertType.INFORMATION);
             ImageView logo = new ImageView("/gruppe/fire/Media/title.png");
             logo.setFitWidth(256);
@@ -567,8 +544,11 @@ public class MainMenu {
             alertDialog.setTitle("About");
             alertDialog.setHeaderText(version);
             alertDialog.setContentText("Created by: Gruppe 4");
-            Optional<ButtonType> respons = alertDialog.showAndWait();
+
+            // Show the alert dialog
+            Optional<ButtonType> response = alertDialog.showAndWait();
         });
+
 
         //Version label.
         Label versionLabel = new Label(version);
