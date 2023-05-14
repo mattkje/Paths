@@ -5,13 +5,13 @@ import gruppe.fire.fileHandling.FileToStory;
 import javafx.animation.*;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
@@ -21,17 +21,17 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-import javafx.stage.FileChooser;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
+import javafx.stage.*;
 import javafx.util.Duration;
 
+import java.awt.event.WindowFocusListener;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Stack;
 
 /**
  * This class represents a starting point for the GUI (Main menu).
@@ -46,7 +46,6 @@ public class MainMenu {
 
     private MediaPlayer player;
 
-    private StackPane rootContainer;
 
     /**
      *
@@ -73,7 +72,15 @@ public class MainMenu {
         player.setVolume(0.5);
         player.play();
 
+        Media sound = new Media(getClass().getResource("/gruppe/fire/Media/button.wav").toString());
 
+        MediaPlayer mediaPlayer = new MediaPlayer(sound);
+        mediaPlayer.setVolume(0.5);
+
+        mainScene.addEventFilter(ActionEvent.ACTION, event -> {
+            mediaPlayer.seek(Duration.ZERO);
+            mediaPlayer.play();
+        });
 
 
         mainScene.getStylesheets().add("https://fonts.googleapis.com/css2?family=Pacifico");
@@ -111,23 +118,33 @@ public class MainMenu {
         glow.setSpread(1);
         glow.setRadius(2);
 
-        Font font = Font.font("Comfortaa",FontWeight.BOLD, 24);
-        Font titleFont2 = Font.font("Pacifico",FontWeight.BOLD, 300);
-        Font menuFont = Font.font("Pacifico",FontWeight.BOLD, 34);
-        Font menuFontLarge = Font.font("Pacifico",FontWeight.BOLD, 64);
 
+        Font font = Font.loadFont(MainMenu.class.getResource("/gruppe/fire/fonts/Comfortaa.ttf").toExternalForm(), 24);
         Font titleFont = Font.loadFont(MainMenu.class.getResource("/gruppe/fire/fonts/Pacifico-Regular.ttf").toExternalForm(), 300);
+        Font titleFontSmall = Font.loadFont(MainMenu.class.getResource("/gruppe/fire/fonts/Pacifico-Regular.ttf").toExternalForm(), 100);
+        Font menuFont = Font.loadFont(MainMenu.class.getResource("/gruppe/fire/fonts/Pacifico-Regular.ttf").toExternalForm(), 34);
+        Font menuFontLarge = Font.loadFont(MainMenu.class.getResource("/gruppe/fire/fonts/Pacifico-Regular.ttf").toExternalForm(), 64);
 
         Label title1 = new Label("P");
         Label title2 = new Label("aths");
         HBox titleBox = new HBox();
-        titleBox.setSpacing(-50);
         titleBox.setAlignment(Pos.CENTER);
         titleBox.getChildren().addAll(title1,title2);
         title1.setEffect(solidShadow);
-        title1.setFont(titleFont);
         title2.setEffect(solidShadow);
-        title2.setFont(titleFont);
+
+        //Screen size check
+        Stage stage = (Stage) mainScene.getWindow();
+        if (stage.getWidth() > 1300){
+            title1.setFont(titleFont);
+            title2.setFont(titleFont);
+            titleBox.setSpacing(-50);
+        } else {
+            title1.setFont(titleFontSmall);
+            title2.setFont(titleFontSmall);
+            titleBox.setSpacing(-26);
+        }
+
 
         TranslateTransition translate = new TranslateTransition();
         translate.setNode(titleBox);
@@ -443,34 +460,117 @@ public class MainMenu {
         tutorialBox.getChildren().addAll(tutorialTitle, tutorialText);
 
         //Settings screen
+
         Label settingsTitle = new Label("Settings");
-        settingsTitle.setTextFill(Color.WHITE);
+        settingsTitle.setPadding(new Insets(20));
         settingsTitle.setFont(font);
 
         Label someLabel = new Label("Display");
+        someLabel.setFont(font);
+        someLabel.setAlignment(Pos.CENTER);
         Button toggleFullscreen = new Button("Toggle fullscreen");
+        toggleFullscreen.setFont(font);
+        toggleFullscreen.setAlignment(Pos.CENTER);
         toggleFullscreen.setOnAction(e ->{
-            Node source = (Node) e.getSource();
-            Stage stage = (Stage) source.getScene().getWindow();
             if (stage.isFullScreen()){
                 stage.setFullScreen(false);
+                stage.setWidth(1380);
+                stage.setHeight(800);
+                title1.setFont(titleFontSmall);
+                title2.setFont(titleFontSmall);
+                titleBox.setSpacing(-26);
             } else {
                 stage.setFullScreen(true);
                 stage.setFullScreenExitHint("");
                 stage.setFullScreenExitKeyCombination(null);
+                title1.setFont(titleFont);
+                title2.setFont(titleFont);
+                titleBox.setSpacing(-50);
+
             }
 
         });
 
+        //Change Resolution
+        Label smallScreen = new Label("Set resolution");
+        smallScreen.setFont(font);
+        smallScreen.setAlignment(Pos.CENTER);
+        Button res1 = new Button("1920 x 1080");
+        res1.setFont(font);
+        res1.setAlignment(Pos.CENTER);
+        res1.setOnAction(e ->{
+            if (stage.isFullScreen()){
+                stage.setFullScreen(false);
+            }
+            stage.setWidth(1920);
+            stage.setHeight(1080);
+
+        });
+        Button res2 = new Button("800 x 600");
+        res2.setFont(font);
+        res2.setAlignment(Pos.CENTER);
+        res2.setOnAction(e ->{
+
+            if (stage.isFullScreen()){
+                stage.setFullScreen(false);
+            }
+            title1.setFont(titleFontSmall);
+            title2.setFont(titleFontSmall);
+            titleBox.setSpacing(-26);
+            stage.setWidth(800);
+            stage.setHeight(600);
+
+        });
+
         HBox fsBox = new HBox(someLabel, toggleFullscreen);
+        fsBox.setAlignment(Pos.CENTER);
+        fsBox.setSpacing(60);
 
-        VBox settingsBox = new VBox();
-        settingsBox.setStyle("-fx-background-color: rgba(0,0,0,0.7); -fx-background-radius: 40px");
-        settingsBox.setPrefSize(1000, 800);
+        HBox ssBox = new HBox(smallScreen, res1, res2);
+        ssBox.setAlignment(Pos.CENTER);
+        ssBox.setSpacing(60);
+
+        //Settings containers
+        TabPane settingsPane = new TabPane();
+        settingsPane.setStyle("-fx-background-color: rgba(0,0,0,0.7); -fx-background-radius: 40px");
+        settingsPane.setPrefSize(1000, 800);
+        settingsPane.setEffect(dropShadow);
+
+        VBox displayBox = new VBox(fsBox, ssBox);
+        displayBox.setAlignment(Pos.CENTER);
+        displayBox.setSpacing(30);
+        Tab display = new Tab("Display");
+        display.setContent(displayBox);
+        display.setClosable(false);
+        settingsPane.getTabs().add(display);
+
+        //Volume control
+        Slider musicVolumeSlider = new Slider(0, 1, player.getVolume());
+        Label musicVolume = new Label("Music volume");
+        musicVolume.setFont(font);
+        HBox msBox = new HBox(musicVolume, musicVolumeSlider);
+        msBox.setAlignment(Pos.CENTER);
+        msBox.setSpacing(60);
+
+        Slider fxVolumeSlider = new Slider(0, 1, mediaPlayer.getVolume());
+        Label fxVolume = new Label("FX volume");
+        fxVolume.setFont(font);
+        HBox fxBox = new HBox(fxVolume, fxVolumeSlider);
+        fxBox.setAlignment(Pos.CENTER);
+        fxBox.setSpacing(60);
+
+        VBox audioBox = new VBox(msBox, fxBox);
+        audioBox.setAlignment(Pos.CENTER);
+        audioBox.setSpacing(30);
+        Tab audio = new Tab("Audio");
+        audio.setContent(audioBox);
+        audio.setClosable(false);
+        settingsPane.getTabs().add(audio);
+
+        VBox settingsBox = new VBox(settingsTitle, settingsPane);
         settingsBox.setAlignment(Pos.CENTER);
-        settingsBox.setEffect(dropShadow);
-        settingsBox.getChildren().addAll(settingsTitle, fsBox);
 
+        //Start menu
         VBox startMenu = new VBox();
         startMenu.setStyle("-fx-background-color: rgba(0,0,0,0); -fx-background-radius: 40px");
 
@@ -494,8 +594,8 @@ public class MainMenu {
         exit.setFont(menuFont);
         exit.setTextFill(Color.WHITE);
         exit.setId("exitButton");
-        //defaultStories.getChildren().add(story);
 
+        //Story menu button functions
         story.setOnAction(e ->{
             menuBox.getChildren().remove(startMenu);
             menuBox.getChildren().addAll(backButton, defaultStoriesBox, importMenu);
@@ -503,6 +603,8 @@ public class MainMenu {
         settings.setOnAction(e ->{
             menuBox.getChildren().remove(startMenu);
             menuBox.getChildren().addAll(backButton, settingsBox);
+            musicVolumeSlider.valueProperty().bindBidirectional(player.volumeProperty());
+            fxVolumeSlider.valueProperty().bindBidirectional(mediaPlayer.volumeProperty());
         });
         howToPlay.setOnAction(e ->{
             menuBox.getChildren().remove(startMenu);
@@ -513,9 +615,7 @@ public class MainMenu {
             menuBox.getChildren().add(startMenu);
         });
 
-        exit.setOnAction(e -> {
-            Platform.exit();
-        });
+
         menuBox.getChildren().add(startMenu);
         startMenu.getChildren().addAll(story, settings, howToPlay, exit);
         //Menu box
@@ -530,23 +630,26 @@ public class MainMenu {
         info.setFitWidth(20);
         about.setGraphic(info);
         about.setOnMouseClicked(mouseEvent -> {
-            // Create a new stage for the alert dialog
-            Stage alertStage = new Stage();
-            alertStage.initOwner(mainScene.getWindow()); // Set the owner to the current full-screen stage
-            alertStage.initModality(Modality.APPLICATION_MODAL); // Make the alert dialog modal
 
-            // Create the alert dialog
-            Alert alertDialog = new Alert(Alert.AlertType.INFORMATION);
-            ImageView logo = new ImageView("/gruppe/fire/Media/title.png");
-            logo.setFitWidth(256);
-            logo.setFitHeight(100);
-            alertDialog.setGraphic(logo);
-            alertDialog.setTitle("About");
-            alertDialog.setHeaderText(version);
-            alertDialog.setContentText("Created by: Gruppe 4");
-
-            // Show the alert dialog
-            Optional<ButtonType> response = alertDialog.showAndWait();
+            Label aboutTitle = new Label("About");
+            Label team = new Label("Created by G4");
+            team.setFont(font);
+            Label versionLabel = new Label(version);
+            Button dismissButton = new Button("Dismiss");
+            dismissButton.setFont(font);
+            aboutTitle.setFont(menuFontLarge);
+            aboutTitle.setAlignment(Pos.CENTER);
+            VBox aboutBox = new VBox(aboutTitle, team, versionLabel, dismissButton);
+            aboutBox.setSpacing(20);
+            aboutBox.setPrefSize(600, 400);
+            aboutBox.setStyle("-fx-background-color: rgba(0,0,0,0.9); -fx-background-radius: 30px");
+            aboutBox.setAlignment(Pos.CENTER);
+            Popup popup = new Popup();
+            popup.getContent().add(aboutBox);
+            popup.show(mainScene.getWindow());
+            dismissButton.setOnAction(e ->{
+                popup.hide();
+            });
         });
 
 
@@ -562,17 +665,41 @@ public class MainMenu {
         growBox.setMaxWidth(Double.MAX_VALUE); // set maximum width to a large value
         bottom.getChildren().addAll(versionLabel, growBox,  about);
         root.setBottom(bottom);
-        //Show stage
 
-        // Create a Media object for the sound file
-        Media sound = new Media(getClass().getResource("/gruppe/fire/Media/button.wav").toString());
+        exit.setOnAction(e -> {
 
-        MediaPlayer mediaPlayer = new MediaPlayer(sound);
 
-        mainScene.addEventFilter(ActionEvent.ACTION, event -> {
-            mediaPlayer.seek(Duration.ZERO);
-            mediaPlayer.setVolume(0.5);
-            mediaPlayer.play();
+            Label quitTitle = new Label("Exit the game");
+            Label confirmationLabel = new Label("Are you sure you want to quit?");
+            confirmationLabel.setFont(font);
+            Button yesButton = new Button("Yes");
+            Button noButton = new Button("No");
+            HBox quitButtons = new HBox(yesButton, noButton);
+            quitButtons.setSpacing(40);
+            quitButtons.setAlignment(Pos.CENTER);
+            yesButton.setFont(font);
+            noButton.setFont(font);
+            quitTitle.setFont(menuFontLarge);
+            quitTitle.setAlignment(Pos.CENTER);
+            VBox quitBox = new VBox(quitTitle, confirmationLabel, quitButtons);
+            quitBox.setSpacing(20);
+            quitBox.setMinSize(600, 300);
+            quitBox.setStyle("-fx-background-color: rgba(0,0,0,0.9)");
+            quitBox.setAlignment(Pos.CENTER);
+            root.setTop(null);
+            root.setBottom(null);
+            root.setCenter(quitBox);
+
+
+            yesButton.setOnAction(exitEvent ->{
+                Platform.exit();
+            });
+            noButton.setOnAction(exitEvent ->{
+                root.setTop(titleBox);
+                root.setBottom(bottom);
+                root.setCenter(menuBox);
+            });
+
         });
 
 
