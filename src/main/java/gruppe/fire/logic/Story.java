@@ -65,8 +65,8 @@ public class Story {
      * @return The passage with the specified link, or null if it does not exist.
      */
     public Passage getPassage(Link link) {
-        Link newLink = new Link(link.getReference(), link.getReference());
-        return passages.get(newLink);
+        link = new Link(link.getReference(), link.getReference());
+        return passages.get(link);
     }
 
     /**

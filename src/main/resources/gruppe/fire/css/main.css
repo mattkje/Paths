@@ -51,27 +51,27 @@
 
 #startButton {
     -fx-background-color: rgba(0, 0, 0, 0.7);
-    -fx-background-radius: 20px;
+    -fx-background-radius: 30px;
     -fx-cursor: HAND;
-    -fx-effect: dropshadow(gaussian, rgb(29, 3, 89), 0, 6.8025, 0, 3);
-    -fx-pref-width: 300;
-    -fx-pref-height: 70;
+    -fx-effect: dropshadow(gaussian, rgb(128, 80, 234), 0, 6.8025, 0, 3);
+    -fx-pref-width: 600;
+    -fx-pref-height: 140;
 }
 #startButton:hover{
     -fx-background-color: rgba(46,4,143,0.62);
-    -fx-background-radius: 20px;
+    -fx-background-radius: 30px;
     -fx-cursor: HAND;
-    -fx-pref-width: 300;
-    -fx-pref-height: 70;
+    -fx-pref-width: 600;
+    -fx-pref-height: 140;
 }
 #startButton:pressed {
     -fx-background-color: rgba(46,4,143,0.41);
-    -fx-background-radius: 20px;
+    -fx-background-radius: 30px;
     -fx-cursor: HAND;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 0, 2, 0, 1);
     -fx-translate-y: 2px;
-    -fx-pref-width: 300;
-    -fx-pref-height: 70;
+    -fx-pref-width: 600;
+    -fx-pref-height: 140;
 
 }
 
@@ -79,7 +79,7 @@
     -fx-background-color: rgba(0, 0, 0, 0.7);
     -fx-background-radius: 20px;
     -fx-cursor: HAND;
-    -fx-effect: dropshadow(gaussian, rgb(29, 3, 89), 0, 6.8025, 0, 3);
+    -fx-effect: dropshadow(gaussian, rgb(128, 80, 234), 0, 6.8025, 0, 3);
     -fx-pref-width: 300;
     -fx-pref-height: 70;
 }
@@ -105,7 +105,7 @@
     -fx-background-color: rgba(0, 0, 0, 0.7);
     -fx-background-radius: 20px;
     -fx-cursor: HAND;
-    -fx-effect: dropshadow(gaussian, rgb(29, 3, 89), 0, 6.8025, 0, 3);
+    -fx-effect: dropshadow(gaussian, rgb(128, 80, 234), 0, 6.8025, 0, 3);
     -fx-pref-width: 300;
     -fx-pref-height: 70;
 }
@@ -131,7 +131,7 @@
     -fx-background-color: rgba(0, 0, 0, 0.7);
     -fx-background-radius: 20px;
     -fx-cursor: HAND;
-    -fx-effect: dropshadow(gaussian, rgb(29, 3, 89), 0, 6.8025, 0, 3);
+    -fx-effect: dropshadow(gaussian, rgb(128, 80, 234), 0, 6.8025, 0, 3);
     -fx-pref-width: 300;
     -fx-pref-height: 70;
 }
@@ -283,4 +283,15 @@
     -fx-background-color: rgba(255, 255, 255, 0.46);
     -fx-background-radius: 30px;
     -fx-pref-height: 300;
+}
+
+.list-view .list-cell {
+    -fx-text-fill: white;
+    -fx-font-family: Comfortaa;
+    -fx-font-size: 15;
+    -fx-padding: 10;
+}
+
+.list-cell {
+    -fx-background-color: transparent;
 }

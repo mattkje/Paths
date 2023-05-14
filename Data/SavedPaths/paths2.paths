@@ -1,13 +1,20 @@
 Justin Timberlake sim
 ::Bedroom
 You wake up as Justin Timberlake, There is a door in front of you.
-[Try to open the door](Another);
-[Look at pp](Gay);
+[Try to open the door](Another);GoldAction;6;
+[Look at pp](Third);
+::Bedroom
+You wake up as Justin Timberlake, There is a door in front of you.
+[Try to open the door](Another);GoldAction;6;
+[Look at pp](Third);
 ::Another
-HUAJHDSFPUKHOIASHBFIOUAHBSÅOFHUA
-[Try 2](Gay);
-[Try 3](Bedroom);
-::Gay
-dfkajdpfajfpajsdfpqa
-[Try to opendf the door](Another room);
-d
+You are in another room. what do you do?
+[Try to escape](Bedroom);
+[Stay and poop](Dead);
+::Third
+You are in the third room.
+[Fart really loud](Bedroom);
+[Stay and lose game](Dead);
+::Dead
+You died
+[Restart game](Bedroom);

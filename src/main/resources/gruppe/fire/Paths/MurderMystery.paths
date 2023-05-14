@@ -1,13 +1,92 @@
 Murder Mystery
 ::Beginning
 You are in a small, dimly lit room. There is a door in front of you.
-[Try to open the door](Another room)
-[Stay where you are](Third)
-::Another room
-The door opens to another room. You see a knife covered in blood.
-[Look at the knife](clue knife)
-[Go back](Beginning)
-::Third
-The thried
-[Look at the knasdife](clue knife)
-[Go bdasdack](Beginning)
+[Try to open the door](Hall way);ScoreAction;0;
+[Stay where you are](Beginning 2);ScoreAction;0;
+::Beginning
+You are in a small, dimly lit room. There is a door in front of you.
+[Try to open the door](Hall way);GoldAction;0;
+[Stay where you are](Beginning 2);ScoreAction;0;
+::Beginning 2
+You turn around, there is a man in a black coat, he stabs you to death
+[Restart game](Beginning);InventoryAction;TokenOfDeath;
+::Hall way
+The door opens to a hall way. You see a knife covered in blood. You also see some gold coins on the floor.
+[Take the knife](Clue);InventoryAction;Knife;
+[Take the gold](Clue);GoldAction;100;
+[Go back](Beginning 2);ScoreAction;-10;
+::Clue
+You proceed to walk down the hallway. You notice that someone is following you.
+[Start running](Bathroom)
+[Turn around and confront the person](Meeting)
+::Bathroom
+You end up hiding in a bathroom. You are too afraid to leave.
+[Restart game](Beginning)
+::Meeting
+You confront the person, and it turned out to be a butler who is just as confused as you are. What do you tell him?
+[What is this place?](Question 1)
+[Who are you?](Question 2)
+::Question 1
+The butler tells you that you are in a mansion owned by a wealthy businessman. The businessman was found dead this morning, and the police are currently investigating the murder. You realize that you must find out who the killer is before it's too late.
+[Continue talking to the butler](Butler)
+[Search for clues](Clue 2)
+::Question 2
+The butler tells you that he is the butler of the mansion and has been working there for years. He was close to the businessman and is devastated by his death. You realize that he could be a valuable source of information.
+[Continue talking to the butler](Butler)
+[Search for clues](Clue 2)
+::Butler
+You continue talking to the butler and he tells you that he has noticed some strange behavior from a few of the guests at the mansion. He thinks that one of them could be the killer. You ask him for more details.
+[Ask for the names of the suspicious guests](Suspects)
+[Ask about the strange behavior](Behavior)
+::Clue 2
+You search for clues and find a torn piece of paper with the name "John" written on it. You realize that this could be a valuable piece of evidence.
+[Continue searching for clues](Clue 3)
+[Show the paper to the butler](Butler 2)
+::Suspects
+The butler tells you that there are three guests who have been acting suspiciously: Mr. Smith, Ms. Johnson, and Dr. Brown. You thank him for the information and decide to investigate each one of them.
+[Investigate Mr. Smith](Smith)
+[Investigate Ms. Johnson](Johnson)
+[Investigate Dr. Brown](Brown)
+::Behavior
+The butler tells you that he saw Mr. Smith leaving the mansion late at night, and Ms. Johnson has been acting nervous and jumpy. He also mentions that Dr. Brown has been constantly checking his watch, as if he is in a hurry. You thank him for the information and decide to investigate each one of them.
+[Investigate Mr. Smith](Smith)
+[Investigate Ms. Johnson](Johnson)
+[Investigate Dr. Brown](Brown)
+::Clue 3
+You find a bloody handprint on the wall. This could be the most valuable piece of evidence you have found so far.
+[Continue searching for clues](Clue 4)
+[Show the handprint to the butler](Butler 2)
+::Butler 2
+You show the torn piece of paper to the butler and he recognizes it as a note written by the businessman to his lawyer. The note is about a large sum of money that the businessman was planning to donate to charity. The butler tells you that the businessman was a kind-hearted man and had no enemies. You realize that this information could be crucial in solving the murder case.
+[Continue talking to the butler](Butler)
+[Search for more clues](Clue 4)
+::Smith
+You find out that Mr. Smith had a heated argument with the businessman the night before he was murdered. Mr. Smith denies any involvement in the murder and claims that the argument was about a business deal. You are not convinced and decide to keep investigating.
+[Investigate Ms. Johnson](Johnson)
+[Investigate Dr. Brown](Brown)
+[Search for more clues](Clue 4)
+::Johnson
+You find out that Ms. Johnson had a close relationship with the businessman and was seen arguing with him the night before he was murdered. She claims that the argument was about a personal matter and denies any involvement in the murder. You are not convinced and decide to keep investigating.
+[Investigate Mr. Smith](Smith)
+[Investigate Dr. Brown](Brown)
+[Search for more clues](Clue 4)
+::Brown
+You find out that Dr. Brown has a history of violent behavior and has been in trouble with the law before. He denies any involvement in the murder and claims that he was in his room all night. You are not convinced and decide to keep investigating.
+[Investigate Mr. Smith](Smith)
+[Investigate Ms. Johnson](Johnson)
+[Search for more clues](Clue 4)
+::Clue 4
+You find a letter addressed to the businessman from someone named "M." The letter talks about a possible threat to the businessman's life and suggests that he should be careful. You realize that this could be a major breakthrough in the case.
+[Continue searching for clues](Clue 5)
+[Show the letter to the butler](Butler 2)
+::Clue 5
+You find a hidden camera in the room where the businessman was murdered. You realize that the killer could have been caught on camera and decide to look through the footage.
+[Continue searching for clues](Clue 6)
+[Show the camera to the butler](Butler 2)
+::Clue 6
+You find the footage from the hidden camera and watch it carefully. You see a figure wearing a black coat entering the room and stabbing the businessman. The figure's face is not visible, but you notice that they are wearing a distinctive ring on their finger. You realize that this could be the key to solving the case.
+[Continue investigating the suspects](Suspects 2)
+[Show the footage to the butler](Butler 2)
+::Suspects 2
+You go back to each of the suspects and look for a distinctive ring on their finger. You finally find the ring on Dr. Brown's finger. You confront him and he confesses to the murder. He tells you that he was jealous of the businessman's success and wanted to take over his company. You turn him over to the police and the case is solved.
+[Congratulations, you have solved the murder mystery!](Beginning)

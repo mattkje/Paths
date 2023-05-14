@@ -1,5 +1,5 @@
-Zacciboi
-Data\PlayerData\Images\pp7.png
-10
+NoPic
+Data\PlayerData\Images\noSelect.png
+4
 0
-15000
+100

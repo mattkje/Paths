@@ -1,5 +1,5 @@
-ToePain
+One Cook too many
 Data\PlayerData\Images\pp5.png
-10
+3
 0
-3000
+200

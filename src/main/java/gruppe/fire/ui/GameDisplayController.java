@@ -6,6 +6,7 @@ import gruppe.fire.logic.GameBuilder;
 import gruppe.fire.logic.Passage;
 import gruppe.fire.logic.Story;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -22,7 +23,7 @@ import java.io.*;
 import java.util.Objects;
 
 public class GameDisplayController {
-    public void saveStory() {
+    public VBox saveStory() {
 
         // Create a GridPane to hold the controls
         GridPane gridPane = new GridPane();
@@ -36,6 +37,7 @@ public class GameDisplayController {
         Label infoLabel = new Label("Select slot to save/overwrite");
         infoLabel.setStyle("-fx-background-color: transparent");
         infoLabel.setFont(Font.font("Arial", FontWeight.BOLD, 20));
+
 
         //gridPane.add(infoLabel, 0, 0);
 
@@ -59,10 +61,7 @@ public class GameDisplayController {
             ((Stage) saveButton4.getScene().getWindow()).close();
         });
 
-        Button cancelButton = new Button("Cancel");
-        cancelButton.setOnAction(event1 -> {
-            ((Stage) cancelButton.getScene().getWindow()).close();
-        });
+
 
         DataBase dataBase = new DataBase();
         File gameFile = new File(dataBase.getActiveStoryPath());
@@ -100,7 +99,9 @@ public class GameDisplayController {
         gridPane.add(saveButton2, 2, 1);
         gridPane.add(saveButton3, 2, 2);
         gridPane.add(saveButton4, 2, 3);
-        gridPane.add(cancelButton,0,4);
+        gridPane.setAlignment(Pos.CENTER);
+        gridPane.setMaxHeight(400);
+        gridPane.setMinWidth(400);
 
 
         //String activeStory = handler.getStoryTitle();
@@ -111,25 +112,18 @@ public class GameDisplayController {
         Label activeFile = new Label("   Active story: " + activeStory);
         activeFile.setFont(Font.font("Segoe UI", FontWeight.BOLD, 15));
         activeFile.setStyle("-fx-background-color: transparent; -fx-padding: 10; -fx-text-fill: rgba(255,255,255,0.84); -fx-min-width: 100");
+        activeFile.setMaxHeight(400);
+        activeFile.setMinWidth(400);
 
         VBox vbox = new VBox();
-        vbox.setStyle("-fx-background-color: rgb(14,0,44); -fx-border-color: #33029d; -fx-border-width: 10px");
+        vbox.setMaxHeight(400);
+        vbox.setMinWidth(400);
+        vbox.setAlignment(Pos.CENTER);
+        vbox.setStyle("-fx-background-color: rgb(14,0,44); -fx-background-radius: 30px");
         vbox.getChildren().addAll(infoLabel,activeFile, gridPane);
 
         // Create a new Scene with the GridPane as the root node
-        Scene scene = new Scene(vbox);
-        scene.getStylesheets().add(Objects.requireNonNull(this.getClass().getResource("/gruppe/fire/css/popUp.css")).toExternalForm());
-
-        // Create a new Stage to hold the Scene
-        Stage popupStage = new Stage();
-        popupStage.setScene(scene);
-        popupStage.initStyle(StageStyle.UNDECORATED);
-        popupStage.initModality(Modality.APPLICATION_MODAL);
-        // Set the title of the Stage and show it
-        popupStage.setTitle("Save story");
-        popupStage.setResizable(false);
-        popupStage.getIcons().add(new Image("/gruppe/fire/Media/icon.png"));
-        popupStage.show();
+        return vbox;
     }
 
     /**

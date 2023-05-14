@@ -1,5 +1,5 @@
-Håkon
+Adrian
 Data\PlayerData\Images\pp3.png
-7
+3
 0
-600
+300

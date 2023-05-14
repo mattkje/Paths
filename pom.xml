@@ -120,6 +120,12 @@
             <artifactId>javafx-fxml</artifactId>
             <version>20-ea+9</version>
         </dependency>
+        <!-- Maven dependency for JavaFX media classes -->
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-media</artifactId>
+            <version>20-ea+9</version>
+        </dependency>
 
         <!--
         And of course we need to add support for JUnit5-testing ;-)

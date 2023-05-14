@@ -1,5 +1,5 @@
-Kjetil med Hår
+TRGS
 Data\PlayerData\Images\pp6.png
-2
+4
 0
-100
+300
