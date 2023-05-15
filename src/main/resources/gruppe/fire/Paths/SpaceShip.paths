@@ -1,5 +1,61 @@
 Space Ship
 ::Sleeping quarters
-You wake up for another day in your space mission. \n You must do the following tasks: \n - Make breakfast for crew \n - Clean floors
-[Procrastinate](Hall);GoldAction;6;
-[Start doing tasks](Bed room);
+You wake up for another day in your space mission. You must do the following tasks: - Make breakfast for crew - Clean floors
+[Procrastinate](10 minutes later);ScoreAction;-100;
+[Start doing tasks](Hall);GoldAction;100;
+::10 minutes later
+Your boss pulls you out of the bed. You are forced to start doing your tasks;
+[Start doing tasks](Hall);ScoreAction;0;
+::Hall
+You walk you to the ship hall. What task do you do first?
+[Make breakfast for crew](Breakfast);HealthAction;2;
+[Clean floors](Slip);HealthAction;-2;
+::Slip
+You slipped on the floor and hit your head. Due to your accident, your boss sends you to make dinner instead.
+[Make breakfast for crew](Breakfast);ScoreAction;-100;
+::Breakfast
+You head to the kitchen area to prepare breakfast for the crew. As you gather the ingredients and start cooking, the aroma of freshly brewed coffee fills the air. The crew members start to trickle in, eagerly awaiting their morning meal.
+[Serve the breakfast](Dining Area);ScoreAction;50;
+[Taste-test the food](Kitchen);HealthAction;1;
+::Dining Area
+The crew members gather around the table, chatting and laughing as they enjoy the breakfast you prepared. The atmosphere is lively, and you feel a sense of accomplishment as you witness their satisfaction.
+[Join the crew for breakfast](Conversation);ScoreAction;10;
+[Clean up the dining area](Cleaning);ScoreAction;20;
+::Kitchen
+You take a moment to taste-test the food before serving it to the crew. The flavors meld together perfectly, and you are proud of your culinary skills. With confidence, you proceed to serve the breakfast.
+[Serve the breakfast](Dining Area);ScoreAction;50;
+[Clean up the kitchen](Cleaning);ScoreAction;20;
+::Conversation
+As you join the crew for breakfast, the conversation flows freely. You share stories, jokes, and insights about life on the space ship. The camaraderie among the crew members strengthens, creating a sense of unity.
+[Discuss the upcoming mission](Mission Briefing);ScoreAction;10;
+[Share a personal story](Storytelling);ScoreAction;10;
+::Cleaning
+With determination, you start cleaning the dining area or kitchen, ensuring everything is spotless. As you wipe the tables and mop the floors, a sense of satisfaction washes over you, knowing that you're contributing to the ship's cleanliness.
+[Continue cleaning](Cleaning);ScoreAction;20;
+[Take a break](Rest);HealthAction;2;
+::Mission Briefing
+During the mission briefing, the captain outlines the upcoming tasks and objectives. Each crew member receives their assigned responsibilities, and the seriousness of the mission becomes apparent. The success of the mission relies on the collective effort of the team.
+[Prepare for the mission](Preparation);ScoreAction;10;
+[Seek clarification on a task](Captain);ScoreAction;10;
+::Storytelling
+You share a personal story with the crew, captivating their attention. Laughter and smiles fill the air as the crew members relate to your experiences. Through storytelling, bonds are strengthened, and a sense of unity flourishes.
+[Listen to others stories](Listening);ScoreAction;10;
+[Wrap up the breakfast](Continue with the tasks);ScoreAction;20;
+::Rest
+You take a well-deserved break, allowing yourself a moment of relaxation. As you sit down and recharge, you feel rejuvenated and ready to tackle the tasks ahead with renewed energy.
+[Continue with the tasks](Dead);ScoreAction;10;
+[Take a longer break](Rest Area);HealthAction;5;
+::Preparation
+With the mission briefing concluded, you begin preparing for the tasks assigned to you. You gather the necessary equipment and materials, ensuring everything is in order for a smooth execution.
+[Complete the preparation](Dead);ScoreAction;10;
+[Double-check your supplies](Dead);ScoreAction;10;
+::Captain
+You approach the captain, seeking clarification on a particular task. The captain provides you with the necessary guidance and information, ensuring that you have a clear understanding of your responsibilities.
+[Express gratitude to the captain](Dead);ScoreAction;10;
+[Discuss further details](Dead);ScoreAction;10;
+::Listening
+You lend an ear to the stories shared by your fellow crew members. Each tale carries a unique perspective, deepening your connection with your colleagues. Through active listening, you foster an environment of understanding and support.
+[Share](Dead);ScoreAction;1000;
+::Dead
+You died.
+[Restart](openingPassage);ScoreAction;0;

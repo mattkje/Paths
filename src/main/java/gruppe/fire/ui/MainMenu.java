@@ -577,11 +577,18 @@ public class MainMenu {
 
         });
 
+        Button disableAnimation = new Button("Disable background");
+        disableAnimation.setFont(font);
+        disableAnimation.setAlignment(Pos.CENTER);
+        disableAnimation.setOnAction(e ->{
+            controller.removeBackground(root);
+        });
+
         HBox fsBox = new HBox(someLabel, toggleFullscreen);
         fsBox.setAlignment(Pos.CENTER);
         fsBox.setSpacing(60);
 
-        HBox ssBox = new HBox(smallScreen, res1, res2);
+        HBox ssBox = new HBox(smallScreen, res1, res2, disableAnimation);
         ssBox.setAlignment(Pos.CENTER);
         ssBox.setSpacing(60);
 

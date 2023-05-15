@@ -3,6 +3,7 @@ package gruppe.fire.ui;
 
 
 
+import gruppe.fire.fileHandling.DataBase;
 import javafx.animation.Animation;
 import javafx.animation.Interpolator;
 import javafx.animation.ParallelTransition;
@@ -17,6 +18,7 @@ import javafx.scene.media.MediaView;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
+import javax.xml.crypto.Data;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -25,6 +27,13 @@ import java.nio.file.Path;
 public class MainMenuController {
 
     private File selectedFile;
+
+    private ImageView citySkyline;
+    private ImageView citySkyline2;
+    private ImageView citySkyline3;
+    private ImageView citySkyline4;
+    private ImageView citySkyline5;
+    private ImageView citySkyline6;
     private static final String PATH = "Data/SavedPaths/";
 
 
@@ -54,17 +63,18 @@ public class MainMenuController {
         }
     }
 
-    public void getBackground(BorderPane root){
+    public BorderPane getBackground(BorderPane root, Boolean bg){
+
 
         ColorAdjust colorAdjust = new ColorAdjust();
         colorAdjust.setBrightness(0);
 
-        ImageView citySkyline = new ImageView("/gruppe/fire/Media/gameBG.png");
-        ImageView citySkyline2 = new ImageView("/gruppe/fire/Media/gameBG.png");
-        ImageView citySkyline3 = new ImageView("/gruppe/fire/Media/gameBG.png");
-        ImageView citySkyline4 = new ImageView("/gruppe/fire/Media/gameBGC.png");
-        ImageView citySkyline5 = new ImageView("/gruppe/fire/Media/gameBGC.png");
-        ImageView citySkyline6 = new ImageView("/gruppe/fire/Media/gameBGC.png");
+        this.citySkyline = new ImageView("/gruppe/fire/Media/gameBG.png");
+        this.citySkyline2 = new ImageView("/gruppe/fire/Media/gameBG.png");
+        this.citySkyline3 = new ImageView("/gruppe/fire/Media/gameBG.png");
+        this.citySkyline4 = new ImageView("/gruppe/fire/Media/gameBGC.png");
+        this.citySkyline5 = new ImageView("/gruppe/fire/Media/gameBGC.png");
+        this.citySkyline6 = new ImageView("/gruppe/fire/Media/gameBGC.png");
 
         TranslateTransition translateTransition =
                 new TranslateTransition(Duration.millis(20000), citySkyline);
@@ -102,14 +112,12 @@ public class MainMenuController {
         translateTransition6.setToX(1300);
         translateTransition6.setInterpolator(Interpolator.LINEAR);
 
-        ParallelTransition parallelTransition = new ParallelTransition(translateTransition4, translateTransition5, translateTransition6 );
+        ParallelTransition parallelTransition = new ParallelTransition(translateTransition, translateTransition2, translateTransition3,
+                translateTransition4, translateTransition5, translateTransition6 );
         parallelTransition.setCycleCount(Animation.INDEFINITE);
 
-        ParallelTransition parallelTransition2 = new ParallelTransition(translateTransition, translateTransition2, translateTransition3);
-        parallelTransition2.setCycleCount(Animation.INDEFINITE);
 
         parallelTransition.play();
-        parallelTransition2.play();
 
         citySkyline.fitHeightProperty().bind(root.heightProperty());
         citySkyline2.fitHeightProperty().bind(root.heightProperty());
@@ -128,7 +136,18 @@ public class MainMenuController {
         citySkyline4.setEffect(colorAdjust);
         citySkyline5.setEffect(colorAdjust);
         citySkyline6.setEffect(colorAdjust);
-        root.getChildren().addAll(citySkyline, citySkyline2, citySkyline3, citySkyline4, citySkyline5, citySkyline6);
+        if(bg = false){
+            root.getChildren().addAll(citySkyline, citySkyline2, citySkyline3, citySkyline4, citySkyline5, citySkyline6);
+        }
+
+
+        return root;
+    }
+
+    public void removeBackground(BorderPane root){
+        root.getChildren().removeAll(citySkyline, citySkyline2, citySkyline3, citySkyline4, citySkyline5, citySkyline6);
+        DataBase dataBase = new DataBase();
+        dataBase.writeSettingsToFile(true, false, 0.5,0.5);
     }
 
     public MediaView getLoadingVideo()   {

@@ -91,4 +91,15 @@ public class DataBase {
             throw new RuntimeException(e);
         }
     }
+
+    public void writeSettingsToFile(Boolean fs, Boolean bg, double vlm, double vlm2){
+        try (FileWriter fileWriter = new FileWriter("Data/settings.cfg")) {
+            fileWriter.write("fullscreen = "+ fs +"\n");
+            fileWriter.write("background = "+ bg +"\n");
+            fileWriter.write("music = "+ vlm +"\n");
+            fileWriter.write("fx = "+ vlm2 +"\n");
+        } catch (IOException e) {
+            System.out.println("Something went wrong");
+        }
+    }
 }

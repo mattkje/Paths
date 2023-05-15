@@ -79,7 +79,7 @@ public class GameDisplay {
         this.playerMenu = new PlayerMenu();
         root.setStyle("-fx-background-color: linear-gradient(#6746a9, #3829cd)");
         MainMenuController mainMenuController = new MainMenuController();
-        mainMenuController.getBackground(root);
+        mainMenuController.getBackground(root, false);
 
         //Fonts
         //Font font = Font.loadFont(GameDisplay.class.getResource("/gruppe/fire/fonts/Comfortaa.ttf").toExternalForm(), 24);
@@ -244,7 +244,9 @@ public class GameDisplay {
         Label gold = new Label("Gold:");
         Label score = new Label("Score:");
         Label inventoryTitle= new Label("Inventory");
-        this.inventoryList = new ListView();
+        //this.inventoryList = new ListView();
+        FlowPane inventoryPane = new FlowPane();
+        inventoryPane.setId("inventoryPane");
 
         playerName.setTextFill(Color.WHITE);
 
@@ -267,7 +269,7 @@ public class GameDisplay {
         inventory.add(score,0,4);
         VBox inventoryBox = new VBox();
         inventoryBox.setStyle("-fx-background-color: rgba(0,0,0,0.7); -fx-padding: 50px");
-        inventoryBox.getChildren().addAll(inventory, inventoryTitle ,inventoryList);
+        inventoryBox.getChildren().addAll(inventory, inventoryTitle ,inventoryPane);
         //double rootWidth = root.getWidth();
         inventoryBox.prefWidthProperty().bind(root.widthProperty().multiply(0.3));
         HBox sideBox = new HBox();
@@ -300,7 +302,6 @@ public class GameDisplay {
             }
 
         });
-        //root.setRight(sideBox);
 
         //The Game
         this.gameTitle = new Label();
@@ -311,7 +312,6 @@ public class GameDisplay {
         HBox titleBox = new HBox();
         VBox gameBox = new VBox();
 
-        HBox actionBox = new HBox();
         Button cancelButton = new Button("Cancel");
         cancelButton.setOnAction(event1 -> {
             root.setCenter(gameWindow);
@@ -321,8 +321,7 @@ public class GameDisplay {
             saveBox.getChildren().add(cancelButton);
             root.setCenter(saveBox);
         });
-        actionBox.setAlignment(Pos.CENTER);
-        actionBox.setSpacing(20);
+
         gameTitle.setAlignment(Pos.CENTER);
         gameTitle.setFont(menuFont);
         gameTitle.setTextFill(Color.WHITE);
@@ -339,9 +338,10 @@ public class GameDisplay {
         this.healthAmount = new Label();
         this.goldAmount = new Label();
         this.scoreAmount = new Label();
-        inventory.add(healthAmount,1,2);
-        inventory.add(goldAmount,1,3);
-        inventory.add(scoreAmount,1,4);
+        inventory.add(healthAmount,2,2);
+        inventory.add(lives,1,2);
+        inventory.add(goldAmount,2,3);
+        inventory.add(scoreAmount,2,4);
 
         this.actionBar = new HBox();
         actionBar.setEffect(hopShadow);
@@ -361,16 +361,16 @@ public class GameDisplay {
         if(ifSaved == true){
             this.fileToGame = new FileToGame();
             Game game1 = fileToGame.readFile();
-            writeOpeningPassage(game1);
+            controller.writeOpeningPassage(game1, actionBar, inventoryPane, gameTitle, roomTitle,
+                    roomContent, healthAmount, goldAmount, scoreAmount, font, dropShadow);
         } else {
-            writeOpeningPassage(game);
+            controller.writeOpeningPassage(game, actionBar, inventoryPane, gameTitle, roomTitle,
+                    roomContent, healthAmount, goldAmount, scoreAmount, font, dropShadow);
         }
 
 
         titleBox.getChildren().add(gameTitle);
         titleBox.setAlignment(Pos.CENTER);
-
-        //TODO: ADD FUNC HERE
 
         healthAmount.setFont(font);
         healthAmount.setTextFill(Color.WHITE);
@@ -381,94 +381,10 @@ public class GameDisplay {
         gameWindow.setTop(titleBox);
         gameBox.setSpacing(50);
         gameBox.setAlignment(Pos.CENTER);
-        gameBox.getChildren().addAll(roomTitle, gameRoom, roomContent, actionBox);
+        gameBox.getChildren().addAll(roomTitle, gameRoom, roomContent);
         gameBox.setPadding(new Insets(20));
         gameWindow.setCenter(gameBox);
         root.setBottom(actionBar);
-
-
-    }
-
-    public void writeOpeningPassage(Game game){
-        ArrayList links = game.getStory().getOpeningPassage().getLinks();
-        int linkCount = links.size();
-
-        for (int i = 0; i < linkCount; i++) {
-            this.link = (Link) links.get(i);
-            Button nextPath = new Button("");
-            Passage passage = game.go(link);
-            game.setCurrentPassage(passage);
-            nextPath.setTextFill(Color.WHITE);
-            nextPath.setText(link.getText());
-            nextPath.setOnAction(e ->{
-                writePassage(game, passage);
-            });
-            nextPath.setFont(font);
-            nextPath.setEffect(dropShadow);
-            actionBar.getChildren().add(nextPath);
-        }
-
-        gameTitle.setText(game.getStory().getTitle());
-        roomTitle.setText(game.getStory().getOpeningPassage().getTitle());
-        roomContent.setText(game.getStory().getOpeningPassage().getContent());
-
-        healthAmount.setText(String.valueOf(game.getPlayer().getHealth()));
-        goldAmount.setText(String.valueOf(game.getPlayer().getGold()));
-        scoreAmount.setText(String.valueOf(game.getPlayer().getScore()));
-    }
-
-    public void writePassage(Game game, Passage passage){
-
-        //Refresh text
-        roomTitle.setText(passage.getTitle());
-        roomContent.setText(passage.getContent());
-
-
-        //Refresh buttons
-        actionBar.getChildren().clear();
-
-        ArrayList<Action> actionArrayList = link.getActions();
-        for (int j = 0; j < actionArrayList.size(); j++){
-
-            Action action = actionArrayList.get(j);
-            action.execute(game.getPlayer());
-
-            healthAmount.setText(String.valueOf(game.getPlayer().getHealth()));
-            goldAmount.setText(String.valueOf(game.getPlayer().getGold()));
-            scoreAmount.setText(String.valueOf(game.getPlayer().getScore()));
-            for (String item : game.getPlayer().getInventory()){
-                inventoryList.getItems().clear();
-                if (!inventoryList.getItems().contains(item)){
-                    inventoryList.getItems().add(j+1 + ". " + item);
-                }
-            }
-        }
-
-        ArrayList links2 = passage.getLinks();
-        int linkCount = links2.size();
-
-        for (int i = 0; i < linkCount; i++) {
-            this.link = (Link) links2.get(i);
-            //String linkVariableName = "link" + (i + 1);
-            Button nextPath = new Button("");
-            Passage nextPassage = game.go(link);
-            game.setCurrentPassage(passage);
-            nextPath.setTextFill(Color.WHITE);
-            nextPath.setText(link.getText());
-            nextPath.setOnAction(e ->{
-
-                writePassage(game, nextPassage);
-
-
-
-            });
-            nextPath.setFont(font);
-            nextPath.setEffect(dropShadow);
-            actionBar.getChildren().add(nextPath);
-
-        }
-
-
 
 
     }

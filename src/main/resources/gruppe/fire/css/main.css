@@ -285,6 +285,7 @@
     -fx-pref-height: 300;
 }
 
+
 .list-view .list-cell {
     -fx-text-fill: white;
     -fx-font-family: Comfortaa;
@@ -294,6 +295,12 @@
 
 .list-cell {
     -fx-background-color: transparent;
+}
+
+#inventoryPane {
+    -fx-background-color: rgba(0, 0, 0, 0.5);
+    -fx-background-radius: 30px;
+    -fx-pref-height: 300;
 }
 
 .tab-header-area .tab-header-background {

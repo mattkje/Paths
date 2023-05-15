@@ -1,8 +1,8 @@
-src\main\resources\gruppe\fire\Paths\MurderMystery.paths
-Beginning
-Håkon
-600
-10
+D:\Users\Matti\IdeaProjects\mappe-prosjekt-paths-mappe-4\Data\SavedPaths\paths2.paths
+Third
+TRGS
+306
+4
 0
 []
 []
