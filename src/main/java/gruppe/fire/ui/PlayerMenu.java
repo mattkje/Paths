@@ -63,9 +63,15 @@ public class PlayerMenu {
         glow.setColor(Color.WHITE);
         glow.setSpread(1);
         glow.setRadius(2);
-        Font font = Font.loadFont(MainMenu.class.getResource("/gruppe/fire/fonts/Comfortaa.ttf").toExternalForm(), 24);
-        Font buttonFont = Font.loadFont(MainMenu.class.getResource("/gruppe/fire/fonts/Comfortaa.ttf").toExternalForm(), 34);
-        Font menuFont = Font.loadFont(MainMenu.class.getResource("/gruppe/fire/fonts/Pacifico-Regular.ttf").toExternalForm(), 44);
+
+        //Font font = Font.loadFont(MainMenu.class.getResource("/gruppe/fire/fonts/Comfortaa-Regular.ttf").toExternalForm(), 24);
+        //Font buttonFont = Font.loadFont(MainMenu.class.getResource("/gruppe/fire/fonts/Comfortaa-Regular.ttf").toExternalForm(), 34);
+        //Font menuFont = Font.loadFont(MainMenu.class.getResource("/gruppe/fire/fonts/Pacifico-Regular.ttf").toExternalForm(), 44);
+
+        Font font = Font.font("Comfortaa", 24);
+        Font buttonFont = Font.font("Comfortaa", 34);
+        Font menuFont = Font.font("Pacifico", 44);
+
 
         //logo
         ImageView title = new ImageView("/gruppe/fire/Media/logo.png");
@@ -121,7 +127,7 @@ public class PlayerMenu {
             String activePlayerString = "player"+i+".txt";
             playerButton.setOnAction(event -> {
                 controller.setActivePlayer(activePlayerString);
-                gameScreen.start(scene);
+                gameScreen.start(scene, false);
             });
             ppImageBox.getChildren().add(playerButton);
         }
@@ -306,7 +312,6 @@ public class PlayerMenu {
         menuBox.getChildren().add(playerHBox);
         root.setBottom(buttonBox);
         root.setCenter(menuBox);
-
 
 
 

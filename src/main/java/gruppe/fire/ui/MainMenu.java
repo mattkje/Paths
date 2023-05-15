@@ -1,7 +1,9 @@
 package gruppe.fire.ui;
 
 
+import gruppe.fire.fileHandling.FileToGame;
 import gruppe.fire.fileHandling.FileToStory;
+import gruppe.fire.logic.Game;
 import javafx.animation.*;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -40,11 +42,15 @@ public class MainMenu {
 
     private PlayerMenu playerMenu;
 
+    private GameDisplay gameDisplay;
+
     private MainMenuController controller;
 
     private File selectedFile;
 
     private MediaPlayer player;
+
+    private Boolean ifSaved = false;
 
 
     /**
@@ -54,13 +60,15 @@ public class MainMenu {
 
     public void start(Scene mainScene) throws Exception {
         //Universal app version
-        String version = "Version: 2023.05.03";
+        String version = "Version: 2023.05.15";
 
 
 
         this.controller = new MainMenuController();
 
         this.playerMenu = new PlayerMenu();
+
+        this.gameDisplay = new GameDisplay();
 
 
 
@@ -83,9 +91,9 @@ public class MainMenu {
         });
 
 
+
         mainScene.getStylesheets().add("https://fonts.googleapis.com/css2?family=Pacifico");
         mainScene.getStylesheets().add("https://fonts.googleapis.com/css2?family=Comfortaa");
-
 
         mainScene.getStylesheets().add(Objects.requireNonNull(this.getClass().getResource("/gruppe/fire/css/main.css")).toExternalForm());
 
@@ -119,11 +127,14 @@ public class MainMenu {
         glow.setRadius(2);
 
 
-        Font font = Font.loadFont(MainMenu.class.getResource("/gruppe/fire/fonts/Comfortaa.ttf").toExternalForm(), 24);
-        Font titleFont = Font.loadFont(MainMenu.class.getResource("/gruppe/fire/fonts/Pacifico-Regular.ttf").toExternalForm(), 300);
-        Font titleFontSmall = Font.loadFont(MainMenu.class.getResource("/gruppe/fire/fonts/Pacifico-Regular.ttf").toExternalForm(), 100);
-        Font menuFont = Font.loadFont(MainMenu.class.getResource("/gruppe/fire/fonts/Pacifico-Regular.ttf").toExternalForm(), 34);
-        Font menuFontLarge = Font.loadFont(MainMenu.class.getResource("/gruppe/fire/fonts/Pacifico-Regular.ttf").toExternalForm(), 64);
+        Font font = Font.font("Comfortaa", 24);
+        Font titleFont = Font.font("Pacifico", 300);
+        Font titleFontSmall = Font.font("Pacifico", 100);
+        Font menuFont = Font.font("Pacifico", 34);
+        Font menuFontLarge = Font.font("Pacifico", 64);
+
+
+
 
         Label title1 = new Label("P");
         Label title2 = new Label("aths");
@@ -190,6 +201,7 @@ public class MainMenu {
         Button continueButton = new Button("Open paths file");
         continueButton.setEffect(dropShadow);
         Button startGame = new Button("Start");
+
         startGame.setEffect(dropShadow);
         Label noFile = new Label("No file selected");
         noFile.setStyle("-fx-font-family: Comfortaa");
@@ -239,6 +251,7 @@ public class MainMenu {
 
 
         });
+
 
 
         //Buttons to open saved stories.
@@ -421,6 +434,48 @@ public class MainMenu {
         ourStories.setFont(menuFont);
         defaultStoriesBox.getChildren().addAll(ourStories, defaultStories);
 
+        VBox savedBox = new VBox();
+        Label savedTitle = new Label("Previously played");
+        Button continueGame = new Button("Continue");
+        continueGame.setFont(font);
+        continueGame.setOnAction(e ->{
+            this.ifSaved = true;
+            gameDisplay.start(mainScene, ifSaved);
+
+        });
+        FileToGame fileToGame = new FileToGame();
+        Game gamePreview = fileToGame.readFile();
+
+        Label savedStoryTitle = new Label("Game: "+gamePreview.getStory().getTitle());
+        savedStoryTitle.setFont(font);
+        Label savedStoryPassage = new Label("Room: "+gamePreview.getStory().getOpeningPassage().getTitle());
+        savedStoryPassage.setFont(font);
+        Label savedStoryPlayer = new Label("Player: "+gamePreview.getPlayer().getName());
+        savedStoryPlayer.setFont(font);
+        Label savedPlayerGold = new Label("Gold: "+ gamePreview.getPlayer().getGold());
+        Label savedPlayerHealth = new Label("Health: "+gamePreview.getPlayer().getHealth());
+        Label savedPlayerScore = new Label("Score: "+gamePreview.getPlayer().getScore());
+
+        savedTitle.setFont(menuFont);
+        savedTitle.setTextFill(Color.WHITE);
+        savedTitle.setAlignment(Pos.CENTER);
+        label.setFont(menuFont);
+        label.setTextFill(Color.WHITE);
+        HBox scoreHBox = new HBox(savedPlayerGold, savedPlayerHealth, savedPlayerScore);
+        scoreHBox.setAlignment(Pos.CENTER);
+        scoreHBox.setSpacing(10);
+        VBox savedVBox = new VBox(savedStoryTitle, savedStoryPassage, savedStoryPlayer, scoreHBox);
+        savedVBox.setAlignment(Pos.CENTER);
+        savedVBox.setStyle("-fx-background-color: rgba(54,54,54,0.5); -fx-background-radius: 30");
+        savedVBox.setMaxWidth(380);
+        savedBox.getChildren().addAll(savedTitle, savedVBox, continueGame);
+        savedBox.setStyle("-fx-background-color: rgba(0,0,0,0.7); -fx-background-radius: 40px");
+        savedBox.setPrefWidth(400);
+        savedBox.setMaxHeight(400);
+        savedBox.setSpacing(20);
+        savedBox.setAlignment(Pos.TOP_CENTER);
+        savedBox.setEffect(dropShadow);
+
         //Back Button
         ImageView backImage = new ImageView("/gruppe/fire/Media/back.png");
         Button backButton = new Button();
@@ -598,7 +653,7 @@ public class MainMenu {
         //Story menu button functions
         story.setOnAction(e ->{
             menuBox.getChildren().remove(startMenu);
-            menuBox.getChildren().addAll(backButton, defaultStoriesBox, importMenu);
+            menuBox.getChildren().addAll(backButton, defaultStoriesBox, importMenu, savedBox);
         });
         settings.setOnAction(e ->{
             menuBox.getChildren().remove(startMenu);

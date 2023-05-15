@@ -1,0 +1,23 @@
+Paths todo list :D
+
+IMPORTANT
+- Actions triggers no matter what link is pressed.
+- Item already exists in inventory fix.
+- Move all styling to css.
+- Move function code in ui classes to controller.
+- JavaDOC
+
+
+
+LESS IMPORTANT
+- Font hell, no clue why it crashes on some computers.
+- White screen when starting sometimes.
+- Rename some methods, paths, etc.
+
+NOT IMPORTANT
+- Fix music changing volume to 1.
+- Add features to program.
+
+
+
+

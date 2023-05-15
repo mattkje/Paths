@@ -1,0 +1,8 @@
+src\main\resources\gruppe\fire\Paths\MurderMystery.paths
+Beginning
+Håkon
+600
+10
+0
+[]
+[]

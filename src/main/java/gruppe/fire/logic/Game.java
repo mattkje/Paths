@@ -1,5 +1,6 @@
 package gruppe.fire.logic;
 
+import gruppe.fire.fileHandling.DataBase;
 import gruppe.fire.goals.Goal;
 
 import java.io.File;
@@ -16,6 +17,8 @@ public class Game {
     private Story story;
     private ArrayList<Goal> goals;
 
+    private Passage currentPassage;
+
     /**
      * Creates an instance of Game.
      * @param player The player of the game.
@@ -25,6 +28,7 @@ public class Game {
         this.player = player;
         this.story = story;
         this.goals = new ArrayList<>();
+        this.currentPassage = story.getOpeningPassage();
     }
 
     /**
@@ -51,6 +55,20 @@ public class Game {
         return goals;
     }
 
+    public void setGoalsList(ArrayList goals){
+        this.goals = goals;
+    }
+    public void addGoals(Goal goal){
+        this.goals.add(goal);
+    }
+
+    public Passage getCurrentPassage(){
+        return currentPassage;
+    }
+
+    public void setCurrentPassage(Passage currentPassage){
+        this.currentPassage = currentPassage;
+    }
     /**
      * This method should simply return the first passage in the story for
      * this game.
@@ -66,20 +84,8 @@ public class Game {
      * @param link
      * @return The passage which matches the provided Link.
      */
-    public Passage go2(Link link){
-        Passage currentPassage = null;
-        for (Passage passage : story.getPassages()) {
-            if (passage.hasLinks(link)) {
-                currentPassage = passage;
-                break;
-            }
-        }
-        return currentPassage;
-    }
-
     public Passage go(Link link){
         Passage currentPassage = story.getPassage(link);
-        System.out.println(currentPassage);
         return currentPassage;
     }
 
@@ -96,6 +102,22 @@ public class Game {
 
         String[] result = paths.toArray(new String[0]);
         return result;
+    }
+
+    public void gameToFile(Game game, Passage currentPassage){
+        DataBase dataBase = new DataBase();
+        String gameState =  dataBase.getActiveStoryPath() + "\n" +
+                            //game.getStory().getPassage(link).getTitle() + "\n" +
+                            //game.getStory().getPassage(link).getContent() + "\n" +
+                            currentPassage.getTitle() + "\n" +
+                            game.getPlayer().getName() + "\n" +
+                            game.getPlayer().getGold() + "\n" +
+                            game.getPlayer().getHealth() + "\n" +
+                            game.getPlayer().getScore() + "\n" +
+                            game.getGoals() + "\n" +
+                            game.getPlayer().getInventory();
+
+        dataBase.writeStateToFile(gameState);
     }
 
 }

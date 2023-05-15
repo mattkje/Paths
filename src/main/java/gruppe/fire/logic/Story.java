@@ -69,6 +69,7 @@ public class Story {
         return passages.get(link);
     }
 
+
     /**
      * Returns a collection of all the passages in the story.
      * @return A collection of all the passages in the story.

@@ -3,6 +3,7 @@ package gruppe.fire.ui;
 
 import gruppe.fire.actions.Action;
 import gruppe.fire.fileHandling.DataBase;
+import gruppe.fire.fileHandling.FileToGame;
 import gruppe.fire.logic.*;
 import javafx.animation.Animation;
 import javafx.animation.TranslateTransition;
@@ -36,6 +37,8 @@ public class GameDisplay {
 
     private PlayerMenu playerMenu;
 
+    private FileToGame fileToGame;
+
     private GameDisplayController controller;
 
     private Link link;
@@ -59,7 +62,7 @@ public class GameDisplay {
      * Starting point for the game.
      * @throws Exception
      */
-    public void start(Scene scene) {
+    public void start(Scene scene, Boolean ifSaved) {
 
         this.controller = new GameDisplayController();
         DataBase dataBase = new DataBase();
@@ -79,9 +82,13 @@ public class GameDisplay {
         mainMenuController.getBackground(root);
 
         //Fonts
-        Font font = Font.loadFont(GameDisplay.class.getResource("/gruppe/fire/fonts/Comfortaa.ttf").toExternalForm(), 24);
-        Font pauseFont = Font.loadFont(GameDisplay.class.getResource("/gruppe/fire/fonts/Comfortaa.ttf").toExternalForm(), 34);
-        Font menuFont = Font.loadFont(GameDisplay.class.getResource("/gruppe/fire/fonts/Pacifico-Regular.ttf").toExternalForm(), 44);
+        //Font font = Font.loadFont(GameDisplay.class.getResource("/gruppe/fire/fonts/Comfortaa.ttf").toExternalForm(), 24);
+        //Font pauseFont = Font.loadFont(GameDisplay.class.getResource("/gruppe/fire/fonts/Comfortaa.ttf").toExternalForm(), 34);
+        //Font menuFont = Font.loadFont(GameDisplay.class.getResource("/gruppe/fire/fonts/Pacifico-Regular.ttf").toExternalForm(), 44);
+
+        Font font = Font.font("Comfortaa", 24);
+        Font pauseFont = Font.font("Comfortaa", 34);
+        Font menuFont = Font.font("Pacifico", 44);
 
 
         //Shadows and fonts
@@ -159,7 +166,7 @@ public class GameDisplay {
             root.setBottom(actionBar);
         });
         restart.setOnAction(e ->{
-            start(scene);
+            start(scene, ifSaved);
         });
         back.setOnAction(e ->{
             try {
@@ -172,6 +179,10 @@ public class GameDisplay {
         Button saveButton = new Button();
         ImageView saveImage = new ImageView("/gruppe/fire/Media/diskette.png");
         VBox saveBox = controller.saveStory();
+
+        Button saveStateButton = new Button();
+        saveStateButton.setGraphic(saveImage);
+
 
         saveImage.setFitWidth(50);
         saveImage.setFitHeight(50);
@@ -189,7 +200,7 @@ public class GameDisplay {
             if(controller.checkIfDefault() == true) {
                 menuBar.getChildren().addAll(title, growBox, unsavedChanges, saveButton, optionsButton, mainMenuButton);
             } else {
-                menuBar.getChildren().addAll(title, growBox, optionsButton, mainMenuButton);
+                menuBar.getChildren().addAll(title, growBox, saveStateButton, optionsButton, mainMenuButton);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -255,10 +266,10 @@ public class GameDisplay {
         inventory.add(gold,0,3);
         inventory.add(score,0,4);
         VBox inventoryBox = new VBox();
-        inventoryBox.setStyle("-fx-background-color: rgba(0,0,0,0.7); -fx-padding: 10px");
+        inventoryBox.setStyle("-fx-background-color: rgba(0,0,0,0.7); -fx-padding: 50px");
         inventoryBox.getChildren().addAll(inventory, inventoryTitle ,inventoryList);
         //double rootWidth = root.getWidth();
-        inventoryBox.prefWidthProperty().bind(root.widthProperty().multiply(0.35));
+        inventoryBox.prefWidthProperty().bind(root.widthProperty().multiply(0.3));
         HBox sideBox = new HBox();
         Button showInventory = new Button();
         ImageView showImage = new ImageView("/gruppe/fire/Media/back.png");
@@ -342,7 +353,19 @@ public class GameDisplay {
 
 
         //Import text
-        writeOpeningPassage(game);
+        saveStateButton.setOnAction(e ->{
+            Passage currentPassage = game.getCurrentPassage();
+            game.gameToFile(game, currentPassage);
+        });
+
+        if(ifSaved == true){
+            this.fileToGame = new FileToGame();
+            Game game1 = fileToGame.readFile();
+            writeOpeningPassage(game1);
+        } else {
+            writeOpeningPassage(game);
+        }
+
 
         titleBox.getChildren().add(gameTitle);
         titleBox.setAlignment(Pos.CENTER);
@@ -364,8 +387,6 @@ public class GameDisplay {
         root.setBottom(actionBar);
 
 
-
-
     }
 
     public void writeOpeningPassage(Game game){
@@ -376,6 +397,7 @@ public class GameDisplay {
             this.link = (Link) links.get(i);
             Button nextPath = new Button("");
             Passage passage = game.go(link);
+            game.setCurrentPassage(passage);
             nextPath.setTextFill(Color.WHITE);
             nextPath.setText(link.getText());
             nextPath.setOnAction(e ->{
@@ -405,31 +427,7 @@ public class GameDisplay {
         //Refresh buttons
         actionBar.getChildren().clear();
 
-        ArrayList links2 = passage.getLinks();
-        int linkCount = links2.size();
-
-        for (int i = 0; i < linkCount; i++) {
-            this.link = (Link) links2.get(i);
-            //String linkVariableName = "link" + (i + 1);
-            Button nextPath = new Button("");
-            Passage nextPassage = game.go(link);
-            nextPath.setTextFill(Color.WHITE);
-            nextPath.setText(link.getText());
-            nextPath.setOnAction(e ->{
-                //System.out.println(nextPassage);
-                writePassage(game, nextPassage);
-
-
-
-            });
-            nextPath.setFont(font);
-            nextPath.setEffect(dropShadow);
-            actionBar.getChildren().add(nextPath);
-
-        }
-
         ArrayList<Action> actionArrayList = link.getActions();
-        System.out.println(actionArrayList.size());
         for (int j = 0; j < actionArrayList.size(); j++){
 
             Action action = actionArrayList.get(j);
@@ -445,6 +443,33 @@ public class GameDisplay {
                 }
             }
         }
+
+        ArrayList links2 = passage.getLinks();
+        int linkCount = links2.size();
+
+        for (int i = 0; i < linkCount; i++) {
+            this.link = (Link) links2.get(i);
+            //String linkVariableName = "link" + (i + 1);
+            Button nextPath = new Button("");
+            Passage nextPassage = game.go(link);
+            game.setCurrentPassage(passage);
+            nextPath.setTextFill(Color.WHITE);
+            nextPath.setText(link.getText());
+            nextPath.setOnAction(e ->{
+
+                writePassage(game, nextPassage);
+
+
+
+            });
+            nextPath.setFont(font);
+            nextPath.setEffect(dropShadow);
+            actionBar.getChildren().add(nextPath);
+
+        }
+
+
+
 
     }
 }

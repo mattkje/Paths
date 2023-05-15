@@ -80,4 +80,15 @@ public class DataBase {
             System.out.println("Something went wrong");
         }
     }
+
+    public void writeStateToFile(String gameState){
+        FileWriter fileWriter = null;
+        try {
+            fileWriter = new FileWriter("Data/GameStates/state1.txt");
+            fileWriter.write(gameState);
+            fileWriter.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

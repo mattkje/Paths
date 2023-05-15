@@ -1,10 +1,9 @@
 package gruppe.fire.ui;
 
+import gruppe.fire.actions.Action;
 import gruppe.fire.fileHandling.DataBase;
 import gruppe.fire.fileHandling.FileToStory;
-import gruppe.fire.logic.GameBuilder;
-import gruppe.fire.logic.Passage;
-import gruppe.fire.logic.Story;
+import gruppe.fire.logic.*;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -12,7 +11,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Modality;
@@ -20,6 +21,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class GameDisplayController {
@@ -144,5 +146,4 @@ public class GameDisplayController {
         }
 
     }
-
 }
