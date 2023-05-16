@@ -7,7 +7,8 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
+import java.util.HashMap;
+import java.util.Scanner;
 
 
 public class DataBase {
@@ -94,12 +95,37 @@ public class DataBase {
 
     public void writeSettingsToFile(Boolean fs, Boolean bg, double vlm, double vlm2){
         try (FileWriter fileWriter = new FileWriter("Data/settings.cfg")) {
-            fileWriter.write("fullscreen = "+ fs +"\n");
-            fileWriter.write("background = "+ bg +"\n");
-            fileWriter.write("music = "+ vlm +"\n");
-            fileWriter.write("fx = "+ vlm2 +"\n");
+            fileWriter.write("fullscreen="+ fs +"\n");
+            fileWriter.write("background="+ bg +"\n");
+            fileWriter.write("music="+ vlm +"\n");
+            fileWriter.write("fx="+ vlm2 +"\n");
         } catch (IOException e) {
             System.out.println("Something went wrong");
         }
+    }
+
+    public HashMap readSettingsFromFile() {
+        HashMap map = new HashMap<>();
+        File settingsFile = new File("Data/settings.cfg");
+        try (Scanner scanner = new Scanner(settingsFile)) {
+            String fs = scanner.nextLine();
+            boolean fullscreen = Boolean.parseBoolean(fs.replace("fullscreen=", ""));
+            String bg = scanner.nextLine();
+            boolean background = Boolean.parseBoolean(bg.replace("background=", ""));
+            String vlm = scanner.nextLine();
+            double volume= Double.parseDouble(vlm.replace("music=", ""));
+            String vlm2 = scanner.nextLine();
+            double volume2 = Double.parseDouble(vlm2.replace("fx=", ""));
+
+
+            map.put("fs", fullscreen);
+            map.put("bg", background);
+            map.put("vlm", volume);
+            map.put("vlm2", volume2);
+
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        return map;
     }
 }

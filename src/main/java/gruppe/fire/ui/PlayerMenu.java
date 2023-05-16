@@ -49,7 +49,7 @@ public class PlayerMenu {
         root.getChildren().clear();
         root.setStyle("-fx-background-color: linear-gradient(#6746a9, #3829cd)");
         MainMenuController mainMenuController = new MainMenuController();
-        mainMenuController.getBackground(root, false);
+        mainMenuController.getBackground(root);
 
 
         //Shadows and fonts

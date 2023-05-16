@@ -1,32 +1,36 @@
 package gruppe.fire.ui;
 
 
-
-
 import gruppe.fire.fileHandling.DataBase;
+import gruppe.fire.fileHandling.FileToStory;
+import gruppe.fire.logic.Game;
+import gruppe.fire.logic.Player;
 import javafx.animation.Animation;
 import javafx.animation.Interpolator;
 import javafx.animation.ParallelTransition;
 import javafx.animation.TranslateTransition;
+import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.effect.ColorAdjust;
-import javafx.scene.effect.Effect;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
-import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.stage.Stage;
 import javafx.util.Duration;
-
-import javax.xml.crypto.Data;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Map;
+import java.util.Objects;
 
 public class MainMenuController {
 
-    private File selectedFile;
 
     private ImageView citySkyline;
     private ImageView citySkyline2;
@@ -37,6 +41,10 @@ public class MainMenuController {
     private static final String PATH = "Data/SavedPaths/";
 
 
+    /**
+     * Responsible for writing the active ".paths" filepath to a file.
+     * @param filename Name of the file which is being written.
+     */
     public void setActiveFile(String filename){
         Path savedPaths = Path.of(PATH + filename);
         try {
@@ -50,6 +58,28 @@ public class MainMenuController {
         }
     }
 
+    /**
+     * Responsible for opening saved paths slots, and checking if the slots are empty.
+     * @param fileName File name of the slot.
+     * @param playerMenu The player menu.
+     * @param scene Game scene.
+     * @param noFile Feedback label.
+     */
+    public void openSavedPath(String fileName, PlayerMenu playerMenu, Scene scene, Label noFile){
+        setActiveFile(fileName);
+        try{
+            if(checkBrokenGame(new Game(new Player("Test", null, 0, 0, 0), new FileToStory(new File(PATH+fileName)).readFile()))){
+                playerMenu.start(scene);
+            }
+        } catch (Exception ex) {
+            noFile.setText("This slot is empty");
+        }
+    }
+
+    /**
+     * Sets one of the default paths as the active path.
+     * @param filename Default path file name.
+     */
     public void setDefaultPath(String filename){
         Path savedPaths = Path.of("src/main/resources/gruppe/fire/Paths/" + filename);
         try {
@@ -63,18 +93,25 @@ public class MainMenuController {
         }
     }
 
-    public BorderPane getBackground(BorderPane root, Boolean bg){
+    /**
+     * Responsible for the animated background of the game.
+     * @param root Root of the game scene.
+     */
+    public void getBackground(BorderPane root){
 
-
+        DataBase dataBase = new DataBase();
+        Map map = dataBase.readSettingsFromFile();
+        boolean bg = (Boolean) map.get("bg");
         ColorAdjust colorAdjust = new ColorAdjust();
         colorAdjust.setBrightness(0);
-
-        this.citySkyline = new ImageView("/gruppe/fire/Media/gameBG.png");
-        this.citySkyline2 = new ImageView("/gruppe/fire/Media/gameBG.png");
-        this.citySkyline3 = new ImageView("/gruppe/fire/Media/gameBG.png");
-        this.citySkyline4 = new ImageView("/gruppe/fire/Media/gameBGC.png");
-        this.citySkyline5 = new ImageView("/gruppe/fire/Media/gameBGC.png");
-        this.citySkyline6 = new ImageView("/gruppe/fire/Media/gameBGC.png");
+        Image cityImage = new Image("/gruppe/fire/Media/gameBG.png");
+        Image cityImage2 = new Image("/gruppe/fire/Media/gameBGC.png");
+        this.citySkyline = new ImageView(cityImage);
+        this.citySkyline2 = new ImageView(cityImage);
+        this.citySkyline3 = new ImageView(cityImage);
+        this.citySkyline4 = new ImageView(cityImage2);
+        this.citySkyline5 = new ImageView(cityImage2);
+        this.citySkyline6 = new ImageView(cityImage2);
 
         TranslateTransition translateTransition =
                 new TranslateTransition(Duration.millis(20000), citySkyline);
@@ -112,11 +149,12 @@ public class MainMenuController {
         translateTransition6.setToX(1300);
         translateTransition6.setInterpolator(Interpolator.LINEAR);
 
-        ParallelTransition parallelTransition = new ParallelTransition(translateTransition, translateTransition2, translateTransition3,
-                translateTransition4, translateTransition5, translateTransition6 );
+        //Need two parallelTransitions as it stops if all are in one.
+        ParallelTransition parallelTransition = new ParallelTransition(translateTransition, translateTransition2, translateTransition3);
         parallelTransition.setCycleCount(Animation.INDEFINITE);
-
-
+        ParallelTransition parallelTransition2 = new ParallelTransition(translateTransition4, translateTransition5, translateTransition6 );
+        parallelTransition2.setCycleCount(Animation.INDEFINITE);
+        parallelTransition2.play();
         parallelTransition.play();
 
         citySkyline.fitHeightProperty().bind(root.heightProperty());
@@ -136,24 +174,93 @@ public class MainMenuController {
         citySkyline4.setEffect(colorAdjust);
         citySkyline5.setEffect(colorAdjust);
         citySkyline6.setEffect(colorAdjust);
-        if(bg = false){
+        if(bg){
             root.getChildren().addAll(citySkyline, citySkyline2, citySkyline3, citySkyline4, citySkyline5, citySkyline6);
         }
-
-
-        return root;
     }
 
-    public void removeBackground(BorderPane root){
-        root.getChildren().removeAll(citySkyline, citySkyline2, citySkyline3, citySkyline4, citySkyline5, citySkyline6);
+    /**
+     * Responsible for handling user input from settings.
+     * @param fs Fullscreen
+     * @param bg Background
+     * @param vlm Music volume
+     * @param vlm2 FX volume
+     */
+    public void changeSettings(boolean fs, boolean bg, double vlm, double vlm2){
         DataBase dataBase = new DataBase();
-        dataBase.writeSettingsToFile(true, false, 0.5,0.5);
+        dataBase.writeSettingsToFile(fs, bg, vlm,vlm2);
     }
 
+    /**
+     * Responsible for giving the player instant feedback when disabling/enabling the background animation.
+     * @param root The game root node.
+     * @param bg Background boolean
+     */
+    public void updateBackground(BorderPane root, boolean bg){
+        if (!bg){
+            root.getChildren().removeAll(citySkyline, citySkyline2, citySkyline3, citySkyline4, citySkyline5, citySkyline6);
+        }
+        if (bg){
+            root.getChildren().addAll(citySkyline, citySkyline2, citySkyline3, citySkyline4, citySkyline5, citySkyline6);
+            citySkyline6.toBack();
+            citySkyline5.toBack();
+            citySkyline4.toBack();
+            citySkyline3.toBack();
+            citySkyline2.toBack();
+            citySkyline.toBack();
+        }
+    }
+
+    /**
+     * Responsible for changing the game resolution.
+     * @param resolution Selected resolution as string.
+     * @param stage Game stage
+     * @param title1 Part one of title text.
+     * @param title2 Part two of title text.
+     * @param titleBox Box containing oth title parts.
+     * @param titleFontSmall Smaller font for title text.
+     */
+    public void handleResolutionChange(String resolution, Stage stage, Label title1, Label title2, HBox titleBox, Font titleFontSmall) {
+        if (stage.isFullScreen()) {
+            stage.setFullScreen(false);
+        }
+
+        switch (resolution) {
+            case "1920 x 1080" -> {
+                stage.setWidth(1920);
+                stage.setHeight(1080);
+            }
+            case "800 x 600" -> {
+                title1.setFont(titleFontSmall);
+                title2.setFont(titleFontSmall);
+                titleBox.setSpacing(-26);
+                stage.setWidth(800);
+                stage.setHeight(600);
+            }
+            // Handle unknown resolution
+        }
+    }
+
+    /**
+     * Validates the imported paths file by creating a game object and checking if crucial content is null.
+     * @param game The created Game object.
+     * @return True if paths file is valid, false otherwise.
+     */
+    public boolean checkBrokenGame(Game game){
+        String one = game.getStory().getOpeningPassage().toString();
+        String two = game.getStory().getTitle();
+        String three = game.getStory().getPassages().toString();
+        String four = game.begin(game.getStory().getOpeningPassage()).toString();
+        return one != null && two != null && three != null && four != null;
+    }
+
+    /**
+     * Responsible for returning the startup animation.
+     * @return Startup animation
+     */
     public MediaView getLoadingVideo()   {
 
-
-        Media media = new Media (getClass().getResource("/gruppe/fire/Media/PathsLoad.mp4").toString());
+        Media media = new Media (Objects.requireNonNull(getClass().getResource("/gruppe/fire/Media/PathsLoad.mp4")).toString());
         MediaPlayer player = new MediaPlayer (media);
         MediaView view = new MediaView (player);
         player.play();
@@ -161,11 +268,30 @@ public class MainMenuController {
         return view;
     }
 
-    public MediaPlayer getBackgroundMusic(){
-        Media sound = new Media(getClass().getResource("/gruppe/fire/Media/backgroundMusic.mp3").toString());
+    /**
+     * Responsible for returning the background music.
+     * @param musicVolume Music volume set in settings.
+     * @return Background music
+     */
+    public MediaPlayer getBackgroundMusic(double musicVolume){
+        Media sound = new Media(Objects.requireNonNull(getClass().getResource("/gruppe/fire/Media/backgroundMusic.mp3")).toString());
         MediaPlayer mediaPlayer = new MediaPlayer(sound);
-        //mediaPlayer.play();
+        mediaPlayer.setVolume(musicVolume);
         return mediaPlayer;
+    }
+
+    /**
+     * Responsible for returning the button noise.
+     * @param fxVolume FX volume set in settings.
+     * @return FX noises.
+     */
+    public MediaPlayer getButtonClick(double fxVolume){
+        Media sound = new Media(Objects.requireNonNull(getClass().getResource("/gruppe/fire/Media/button.wav")).toString());
+        MediaPlayer mediaPlayer = new MediaPlayer(sound);
+        mediaPlayer.setVolume(fxVolume);
+
+        return mediaPlayer;
+
     }
 
 }

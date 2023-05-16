@@ -1,9 +1,12 @@
 package gruppe.fire.ui;
 
 
+import gruppe.fire.fileHandling.DataBase;
 import gruppe.fire.fileHandling.FileToGame;
+import gruppe.fire.fileHandling.FileToPlayer;
 import gruppe.fire.fileHandling.FileToStory;
 import gruppe.fire.logic.Game;
+import gruppe.fire.logic.Player;
 import javafx.animation.*;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -31,6 +34,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Stack;
@@ -44,11 +48,20 @@ public class MainMenu {
 
     private GameDisplay gameDisplay;
 
+    private DataBase dataBase;
+
+    private Map map;
+
     private MainMenuController controller;
 
     private File selectedFile;
 
+    private double musicVolume;
+
+    private double fxVolume;
+
     private MediaPlayer player;
+    private MediaPlayer fxPlayer;
 
     private Boolean ifSaved = false;
 
@@ -63,31 +76,28 @@ public class MainMenu {
         String version = "Version: 2023.05.15";
 
 
+        this.dataBase = new DataBase();
+        this.map = dataBase.readSettingsFromFile();
+        this.musicVolume = (Double) map.get("vlm");
+        this.fxVolume = (Double) map.get("vlm2");
 
         this.controller = new MainMenuController();
-
         this.playerMenu = new PlayerMenu();
-
         this.gameDisplay = new GameDisplay();
 
 
 
-
         BorderPane root = (BorderPane) mainScene.getRoot();
+        controller.changeSettings((Boolean) map.get("fs"), (Boolean) map.get("bg"), musicVolume, musicVolume);
         root.getChildren().clear();
 
-        this.player = controller.getBackgroundMusic();
-        player.setVolume(0.5);
+        this.player = controller.getBackgroundMusic(musicVolume);
         player.play();
 
-        Media sound = new Media(getClass().getResource("/gruppe/fire/Media/button.wav").toString());
-
-        MediaPlayer mediaPlayer = new MediaPlayer(sound);
-        mediaPlayer.setVolume(0.5);
-
+        this.fxPlayer = controller.getButtonClick(fxVolume);
         mainScene.addEventFilter(ActionEvent.ACTION, event -> {
-            mediaPlayer.seek(Duration.ZERO);
-            mediaPlayer.play();
+            fxPlayer.seek(Duration.ZERO);
+            fxPlayer.play();
         });
 
 
@@ -237,11 +247,13 @@ public class MainMenu {
         startGame.setFont(font);
         startGame.setTextFill(Color.WHITE);
 
-        //Game Starting point. Will open new stage.
+        //Game Starting point. Checks if imported file is valid, and opens the next menu.
         startGame.setOnAction(e -> {
             if(String.valueOf(selectedFile).endsWith(".paths") && selectedFile != null){
-                try {
-                    playerMenu.start(mainScene);
+                try{
+                    if(controller.checkBrokenGame(new Game(new Player("Test", null, 0, 0, 0),new FileToStory(selectedFile).readFile())) == true){
+                        playerMenu.start(mainScene);
+                    }
                 } catch (Exception ex) {
                     noFile.setText("Could not load file. Wrong format?");
                 }
@@ -270,10 +282,7 @@ public class MainMenu {
         customStory1.setTextFill(Color.WHITE);
         customStory1.setPrefWidth(300);
         customStory1.setOnAction(e ->{
-            //controller.setActiveFile("paths1.paths");
-            //playerMenu.start(mainScene);
-
-            noFile.setText("This slot is empty");
+            controller.openSavedPath("paths1.paths", playerMenu, mainScene, noFile);
         });
         customStories.add(customStory1, 0, 0);
 
@@ -284,10 +293,7 @@ public class MainMenu {
         customStory2.setPrefWidth(300);
         customStory2.setOnAction(e ->{
 
-            //    controller.setActiveFile("paths2.paths");
-            //    playerMenu.start(mainScene);
-
-            noFile.setText("This slot is empty");
+            controller.openSavedPath("paths2.paths", playerMenu, mainScene, noFile);
         });
         customStories.add(customStory2, 0, 1);
 
@@ -298,10 +304,7 @@ public class MainMenu {
         customStory3.setPrefWidth(300);
         customStory3.setOnAction(e ->{
 
-            //controller.setActiveFile("paths3.paths");
-            //playerMenu.start(mainScene);
-            noFile.setText("This slot is empty");
-
+            controller.openSavedPath("paths3.paths", playerMenu, mainScene, noFile);
         });
         customStories.add(customStory3, 0, 2);
 
@@ -312,10 +315,7 @@ public class MainMenu {
         customStory4.setPrefWidth(300);
         customStory4.setOnAction(e ->{
 
-            //controller.setActiveFile("paths4.paths");
-            //playerMenu.start(mainScene);
-
-            noFile.setText("This slot is empty");
+            controller.openSavedPath("paths4.paths", playerMenu, mainScene, noFile);
 
         });
         customStories.add(customStory4, 0, 3);
@@ -550,47 +550,45 @@ public class MainMenu {
         Label smallScreen = new Label("Set resolution");
         smallScreen.setFont(font);
         smallScreen.setAlignment(Pos.CENTER);
-        Button res1 = new Button("1920 x 1080");
-        res1.setFont(font);
-        res1.setAlignment(Pos.CENTER);
-        res1.setOnAction(e ->{
-            if (stage.isFullScreen()){
-                stage.setFullScreen(false);
-            }
-            stage.setWidth(1920);
-            stage.setHeight(1080);
 
-        });
-        Button res2 = new Button("800 x 600");
-        res2.setFont(font);
-        res2.setAlignment(Pos.CENTER);
-        res2.setOnAction(e ->{
-
-            if (stage.isFullScreen()){
-                stage.setFullScreen(false);
-            }
-            title1.setFont(titleFontSmall);
-            title2.setFont(titleFontSmall);
-            titleBox.setSpacing(-26);
-            stage.setWidth(800);
-            stage.setHeight(600);
-
+        ComboBox<String> resolutionComboBox = new ComboBox<>();
+        resolutionComboBox.setId("resolutionComboBox");
+        resolutionComboBox.getItems().addAll("1920 x 1080", "800 x 600");
+        resolutionComboBox.getSelectionModel().selectFirst();
+        resolutionComboBox.setOnAction(e -> {
+            String selectedResolution = resolutionComboBox.getSelectionModel().getSelectedItem();
+            controller.handleResolutionChange(selectedResolution, stage, title1, title2, titleBox, titleFontSmall);
         });
 
+        Label backgroundLabel = new Label("Background");
+        backgroundLabel.setFont(font);
+        backgroundLabel.setAlignment(Pos.CENTER);
         Button disableAnimation = new Button("Disable background");
         disableAnimation.setFont(font);
         disableAnimation.setAlignment(Pos.CENTER);
         disableAnimation.setOnAction(e ->{
-            controller.removeBackground(root);
+            controller.changeSettings((Boolean) map.get("fs"), false, (Double) map.get("vlm"), (Double) map.get("vlm2"));
+            controller.updateBackground(root, false);
+        });
+        Button enableBackground = new Button("Enable background");
+        enableBackground.setFont(font);
+        enableBackground.setAlignment(Pos.CENTER);
+        enableBackground.setOnAction(e ->{
+            controller.changeSettings((Boolean) map.get("fs"), true, (Double) map.get("vlm"), (Double) map.get("vlm2"));
+            controller.updateBackground(root, true);
         });
 
         HBox fsBox = new HBox(someLabel, toggleFullscreen);
         fsBox.setAlignment(Pos.CENTER);
         fsBox.setSpacing(60);
 
-        HBox ssBox = new HBox(smallScreen, res1, res2, disableAnimation);
+        HBox ssBox = new HBox(smallScreen, resolutionComboBox);
         ssBox.setAlignment(Pos.CENTER);
         ssBox.setSpacing(60);
+
+        HBox bgBox = new HBox(disableAnimation, enableBackground);
+        bgBox.setAlignment(Pos.CENTER);
+        bgBox.setSpacing(60);
 
         //Settings containers
         TabPane settingsPane = new TabPane();
@@ -598,7 +596,7 @@ public class MainMenu {
         settingsPane.setPrefSize(1000, 800);
         settingsPane.setEffect(dropShadow);
 
-        VBox displayBox = new VBox(fsBox, ssBox);
+        VBox displayBox = new VBox(fsBox, ssBox, backgroundLabel, bgBox);
         displayBox.setAlignment(Pos.CENTER);
         displayBox.setSpacing(30);
         Tab display = new Tab("Display");
@@ -607,21 +605,30 @@ public class MainMenu {
         settingsPane.getTabs().add(display);
 
         //Volume control
-        Slider musicVolumeSlider = new Slider(0, 1, player.getVolume());
-        Label musicVolume = new Label("Music volume");
-        musicVolume.setFont(font);
-        HBox msBox = new HBox(musicVolume, musicVolumeSlider);
+
+        Slider musicVolumeSlider = new Slider(0, 1, musicVolume);
+        Label musicVolumeLabel = new Label("Music volume");
+        musicVolumeLabel.setFont(font);
+        HBox msBox = new HBox(musicVolumeLabel, musicVolumeSlider);
         msBox.setAlignment(Pos.CENTER);
         msBox.setSpacing(60);
 
-        Slider fxVolumeSlider = new Slider(0, 1, mediaPlayer.getVolume());
-        Label fxVolume = new Label("FX volume");
-        fxVolume.setFont(font);
-        HBox fxBox = new HBox(fxVolume, fxVolumeSlider);
+        Slider fxVolumeSlider = new Slider(0, 1, fxVolume);
+        Label fxVolumeLabel = new Label("FX volume");
+        fxVolumeLabel.setFont(font);
+        HBox fxBox = new HBox(fxVolumeLabel, fxVolumeSlider);
         fxBox.setAlignment(Pos.CENTER);
         fxBox.setSpacing(60);
 
-        VBox audioBox = new VBox(msBox, fxBox);
+        Button setVol = new Button("Save settings");
+        setVol.setFont(font);
+        setVol.setAlignment(Pos.CENTER);
+        setVol.setOnAction(e ->{
+            controller.changeSettings((Boolean) map.get("fs"), (Boolean) map.get("bg"), musicVolumeSlider.getValue(), fxVolumeSlider.getValue());
+        });
+
+
+        VBox audioBox = new VBox(msBox, fxBox, setVol);
         audioBox.setAlignment(Pos.CENTER);
         audioBox.setSpacing(30);
         Tab audio = new Tab("Audio");
@@ -666,7 +673,7 @@ public class MainMenu {
             menuBox.getChildren().remove(startMenu);
             menuBox.getChildren().addAll(backButton, settingsBox);
             musicVolumeSlider.valueProperty().bindBidirectional(player.volumeProperty());
-            fxVolumeSlider.valueProperty().bindBidirectional(mediaPlayer.volumeProperty());
+            fxVolumeSlider.valueProperty().bindBidirectional(fxPlayer.volumeProperty());
         });
         howToPlay.setOnAction(e ->{
             menuBox.getChildren().remove(startMenu);

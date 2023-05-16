@@ -1,8 +1,8 @@
-D:\Users\Matti\IdeaProjects\mappe-prosjekt-paths-mappe-4\Data\SavedPaths\paths2.paths
+Data\SavedPaths\paths2.paths
 Third
-TRGS
+Adrian
 306
-4
+3
 0
 []
 []

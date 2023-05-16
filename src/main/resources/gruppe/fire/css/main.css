@@ -297,6 +297,32 @@
     -fx-background-color: transparent;
 }
 
+#resolutionComboBox {
+    -fx-background-color: #4f1fb9;
+    -fx-background-radius: 30;
+    -fx-padding: 10;
+    -fx-font-family: Comfortaa;
+}
+
+#resolutionComboBox .text {
+    -fx-text-fill: white;
+}
+
+#resolutionComboBox .list-view {
+    -fx-background-color: rgba(0, 0, 0, 0.5);
+}
+
+#resolutionComboBox .list-view .list-cell {
+    -fx-text-fill: white;
+    -fx-font-family: "Comfortaa";
+    -fx-font-size: 15px;
+    -fx-padding: 10px;
+}
+
+#resolutionComboBox .list-cell {
+    -fx-background-color: transparent;
+}
+
 #inventoryPane {
     -fx-background-color: rgba(0, 0, 0, 0.5);
     -fx-background-radius: 30px;

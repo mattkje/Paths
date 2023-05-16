@@ -79,7 +79,7 @@ public class GameDisplay {
         this.playerMenu = new PlayerMenu();
         root.setStyle("-fx-background-color: linear-gradient(#6746a9, #3829cd)");
         MainMenuController mainMenuController = new MainMenuController();
-        mainMenuController.getBackground(root, false);
+        mainMenuController.getBackground(root);
 
         //Fonts
         //Font font = Font.loadFont(GameDisplay.class.getResource("/gruppe/fire/fonts/Comfortaa.ttf").toExternalForm(), 24);
