@@ -1,8 +1,8 @@
-Data\SavedPaths\paths2.paths
-Third
-Adrian
-306
-3
+src\main\resources\gruppe\fire\Paths\MurderMystery.paths
+Clue 4
+NoPic
+100
+4
 0
 []
-[]
+[TokenOfDeath, Knife, Clue 2, Clue 3]

@@ -1,7 +1,6 @@
 package gruppe.fire.ui;
 
 
-import gruppe.fire.actions.Action;
 import gruppe.fire.fileHandling.DataBase;
 import gruppe.fire.fileHandling.FileToGame;
 import gruppe.fire.logic.*;
@@ -26,7 +25,6 @@ import javafx.util.Duration;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 
 /**
  * This class represents the GUI for the game itself.
@@ -122,7 +120,7 @@ public class GameDisplay {
         mainMenuButton.setEffect(dropShadow);
         mainMenuButton.setOnAction(e ->{
             try {
-                mainMenu.start(scene);
+                mainMenu.startMain(scene);
             } catch (Exception ex) {
                 throw new RuntimeException(ex);
             }
@@ -170,7 +168,7 @@ public class GameDisplay {
         });
         back.setOnAction(e ->{
             try {
-                mainMenu.start(scene);
+                mainMenu.startMain(scene);
             } catch (Exception ex) {
                 throw new RuntimeException(ex);
             }

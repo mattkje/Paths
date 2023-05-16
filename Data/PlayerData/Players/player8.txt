@@ -1,5 +1,0 @@
-Håkon
-Data\PlayerData\Images\pp8.png
-10
-0
-600

@@ -3,41 +3,26 @@ package gruppe.fire.ui;
 
 import gruppe.fire.fileHandling.DataBase;
 import gruppe.fire.fileHandling.FileToGame;
-import gruppe.fire.fileHandling.FileToPlayer;
 import gruppe.fire.fileHandling.FileToStory;
 import gruppe.fire.logic.Game;
-import gruppe.fire.logic.Player;
 import javafx.animation.*;
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.geometry.Rectangle2D;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
-import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.*;
 import javafx.util.Duration;
-
-import java.awt.event.WindowFocusListener;
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.file.Path;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
-import java.util.Stack;
 
 /**
  * This class represents a starting point for the GUI (Main menu).
@@ -67,15 +52,16 @@ public class MainMenu {
 
 
     /**
-     *
+     * The main menu of the game.
+     * @param mainScene The scene of the game
      * @throws Exception
      */
+    public void startMain(Scene mainScene) throws Exception {
 
-    public void start(Scene mainScene) throws Exception {
-        //Universal app version
-        String version = "Version: 2023.05.15";
+        //Universal app version String.
+        String version = "Version: 2023.05.16";
 
-
+        //Defining variables
         this.dataBase = new DataBase();
         this.map = dataBase.readSettingsFromFile();
         this.musicVolume = (Double) map.get("vlm");
@@ -86,11 +72,14 @@ public class MainMenu {
         this.gameDisplay = new GameDisplay();
 
 
-
+        //Get the root from the scene created in PathsGame and clears it.
         BorderPane root = (BorderPane) mainScene.getRoot();
-        controller.changeSettings((Boolean) map.get("fs"), (Boolean) map.get("bg"), musicVolume, musicVolume);
         root.getChildren().clear();
 
+        //Initializing saved settings.
+        controller.changeSettings((Boolean) map.get("fs"), (Boolean) map.get("bg"), musicVolume, musicVolume);
+
+        //Initializing sounds and music.
         this.player = controller.getBackgroundMusic(musicVolume);
         player.play();
 
@@ -101,19 +90,12 @@ public class MainMenu {
         });
 
 
-
+        //Styling.
         mainScene.getStylesheets().add("https://fonts.googleapis.com/css2?family=Pacifico");
         mainScene.getStylesheets().add("https://fonts.googleapis.com/css2?family=Comfortaa");
-
         mainScene.getStylesheets().add(Objects.requireNonNull(this.getClass().getResource("/gruppe/fire/css/main.css")).toExternalForm());
-
-        //Style background
-        root.setStyle("-fx-background-color: linear-gradient(#6746a9, #3829cd)");
+        root.setId("mainRoot");
         controller.getBackground(root);
-
-
-        //Main menu title
-        BorderPane titlePane = new BorderPane();
 
 
         //Shadows and fonts
@@ -145,7 +127,7 @@ public class MainMenu {
 
 
 
-
+        //Title (P and aths are separated to make them closer to each other)
         Label title1 = new Label("P");
         Label title2 = new Label("aths");
         HBox titleBox = new HBox();
@@ -166,7 +148,7 @@ public class MainMenu {
             titleBox.setSpacing(-26);
         }
 
-
+        //Title animation
         TranslateTransition translate = new TranslateTransition();
         translate.setNode(titleBox);
         translate.setDuration(Duration.millis(2500));
@@ -181,22 +163,18 @@ public class MainMenu {
         fade.setFromValue(0);
         fade.setToValue(1);
         fade.play();
-        titlePane.setCenter(titleBox);
-        root.setTop(titlePane);
+        root.setTop(titleBox);
 
         //Import file menu.
         VBox importMenu = new VBox();
         Label label = new Label("Saved stories:");
-        //ImageView selectGame = new ImageView("/gruppe/fire/Media/GameSelect.png");
-        //selectGame.setFitHeight(90);
-        //selectGame.setFitWidth(250);
         Label selectGame = new Label("Upload story");
         selectGame.setFont(menuFont);
         selectGame.setTextFill(Color.WHITE);
         label.setFont(menuFont);
         label.setTextFill(Color.WHITE);
         importMenu.getChildren().add(selectGame);
-        importMenu.setStyle("-fx-background-color: rgba(0,0,0,0.7); -fx-background-radius: 40px");
+        importMenu.setId("importMenu");
         importMenu.setPrefWidth(400);
         importMenu.setMaxHeight(400);
         importMenu.setSpacing(20);
@@ -207,63 +185,31 @@ public class MainMenu {
         fileChooser.getExtensionFilters().add(extFilter);
 
 
+        //Feedback label
+        Label noFile = new Label("No file selected");
+        noFile.setStyle("-fx-font-family: Comfortaa");
+        noFile.setTextFill(Color.WHITE);
+        noFile.setAlignment(Pos.CENTER);
+        noFile.setId("noFile");
+
         //Open file button.
         Button continueButton = new Button("Open paths file");
         continueButton.setEffect(dropShadow);
-        Button startGame = new Button("Start");
-
-        startGame.setEffect(dropShadow);
-        Label noFile = new Label("No file selected");
-        noFile.setStyle("-fx-font-family: Comfortaa");
-        continueButton.setOnAction(e -> {
-            this.selectedFile = fileChooser.showOpenDialog(mainScene.getWindow());
-
-            //Prevents user from opening non-paths files (typing direct path will bypass filter)
-            if(!String.valueOf(selectedFile).endsWith(".paths") && selectedFile != null){
-                noFile.setText("Incorrect file type!");
-
-                //Stores the file path to a txt file and also sets status as file path.
-            }else if(selectedFile != null) {
-                Path currentFile = Path.of(selectedFile.getPath());
-                try {
-                    FileWriter writer;
-                    writer = new FileWriter("Data/currentPathsFile.cfg");
-                    writer.write(String.valueOf(currentFile));
-                    writer.close();
-                    noFile.setText(String.valueOf(currentFile));
-
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
-                }
-
-                //Sets status if user cancels open file.
-            } else {
-                noFile.setText("No file was selected");
-            }
-        });
         continueButton.setFont(font);
         continueButton.setTextFill(Color.WHITE);
-
-        startGame.setFont(font);
-        startGame.setTextFill(Color.WHITE);
-
-        //Game Starting point. Checks if imported file is valid, and opens the next menu.
-        startGame.setOnAction(e -> {
-            if(String.valueOf(selectedFile).endsWith(".paths") && selectedFile != null){
-                try{
-                    if(controller.checkBrokenGame(new Game(new Player("Test", null, 0, 0, 0),new FileToStory(selectedFile).readFile())) == true){
-                        playerMenu.start(mainScene);
-                    }
-                } catch (Exception ex) {
-                    noFile.setText("Could not load file. Wrong format?");
-                }
-            } else {
-                noFile.setText("You have to select a file first.");
-            }
-
-
+        continueButton.setOnAction(e -> {
+            controller.openFileButton(selectedFile, fileChooser, mainScene, noFile);
         });
 
+        //Start game Button
+        Button startGame = new Button("Start");
+        startGame.setEffect(dropShadow);
+        startGame.setFont(font);
+        startGame.setTextFill(Color.WHITE);
+        //Game Starting point. Checks if imported file is valid, and opens the next menu.
+        startGame.setOnAction(e -> {
+            controller.startGameButton(selectedFile, playerMenu, mainScene, noFile);
+        });
 
 
         //Buttons to open saved stories.
@@ -273,9 +219,10 @@ public class MainMenu {
         customStories.setVgap(4);
         FileToStory handler = new FileToStory(selectedFile);
 
-        //Sets slot titles as story title.
+        //Set the slot titles as story title.
         String[] storyTitles = handler.readSavedStories();
 
+        //Custom story buttons
         Button customStory1 = new Button();
         customStory1.setText(storyTitles[0]);
         customStory1.setStyle("-fx-font-family: Comfortaa");
@@ -321,12 +268,8 @@ public class MainMenu {
         customStories.add(customStory4, 0, 3);
         customStories.setVgap(5);
 
-        noFile.setTextFill(Color.WHITE);
-        noFile.setAlignment(Pos.CENTER);
-        noFile.setId("noFile");
 
         HBox gameControl = new HBox();
-
         gameControl.getChildren().addAll(continueButton, startGame);
         gameControl.setAlignment(Pos.CENTER);
         gameControl.setSpacing(3);
@@ -338,7 +281,7 @@ public class MainMenu {
         defaultStories.setAlignment(Pos.CENTER);
         defaultStories.setVgap(4);
 
-
+        //Default story Buttons
         Button defaultStory1 = new Button("Haunted House");
         ImageView storyImage1 = new ImageView("/gruppe/fire/Media/1 - Copy.png");
         HBox defaultStoryBox1 = new HBox();
@@ -349,12 +292,8 @@ public class MainMenu {
         defaultStory1.setFont(font);
         defaultStory1.setTextFill(Color.WHITE);
         defaultStory1.setOnAction(e ->{
-            try {
-                controller.setDefaultPath("HauntedHouse.paths");
-                playerMenu.start(mainScene);
-            } catch (Exception ex) {
-                noFile.setText("Something went wrong");
-            }
+            controller.setDefaultPath("HauntedHouse.paths");
+            playerMenu.start(mainScene);
         });
 
         Button defaultStory2 = new Button("Murder Mystery");
@@ -367,13 +306,8 @@ public class MainMenu {
         defaultStory2.setFont(font);
         defaultStory2.setTextFill(Color.WHITE);
         defaultStory2.setOnAction(e ->{
-            try {
-                controller.setDefaultPath("MurderMystery.paths");
-                PlayerMenu playerScreen = new PlayerMenu();
-                playerScreen.start(mainScene);
-            } catch (Exception ex) {
-                throw new RuntimeException(ex);
-            }
+            controller.setDefaultPath("MurderMystery.paths");
+            playerMenu.start(mainScene);
         });
 
         Button defaultStory3 = new Button("Ancient Castle");
@@ -386,12 +320,8 @@ public class MainMenu {
         defaultStory3.setFont(font);
         defaultStory3.setTextFill(Color.WHITE);
         defaultStory3.setOnAction(e ->{
-            try {
-                controller.setDefaultPath("Castle.paths");
-                playerMenu.start(mainScene);
-            } catch (Exception ex) {
-                noFile.setText("Something went wrong");
-            }
+            controller.setDefaultPath("Castle.paths");
+            playerMenu.start(mainScene);
         });
 
         Button defaultStory4 = new Button("Space Ship");
@@ -404,38 +334,34 @@ public class MainMenu {
         defaultStory4.setFont(font);
         defaultStory4.setTextFill(Color.WHITE);
         defaultStory4.setOnAction(e ->{
-            try {
-                controller.setDefaultPath("SpaceShip.paths");
-                playerMenu.start(mainScene);
-            } catch (Exception ex) {
-                noFile.setText("Something went wrong");
-            }
+            controller.setDefaultPath("SpaceShip.paths");
+            playerMenu.start(mainScene);
         });
-
-        //defaultStory2.setDisable(true);
-        //defaultStory3.setDisable(true);
-        //defaultStory4.setDisable(true);
 
         defaultStories.add(defaultStory1, 0, 0);
         defaultStories.add(defaultStory2, 0, 1);
         defaultStories.add(defaultStory3, 0, 2);
         defaultStories.add(defaultStory4, 0, 3);
 
+        //Box containing default stories.
         VBox defaultStoriesBox = new VBox();
-        defaultStoriesBox.setStyle("-fx-background-color: rgba(0,0,0,0.7); -fx-background-radius: 40px");
+        defaultStoriesBox.setId("defaultStoryBox");
         defaultStoriesBox.setPrefSize(400, 400);
         defaultStoriesBox.setMaxHeight(400);
         defaultStoriesBox.setAlignment(Pos.CENTER);
         defaultStoriesBox.setEffect(dropShadow);
 
-
+        //Default stories title
         Label ourStories = new Label("Our stories");
         ourStories.setTextFill(Color.WHITE);
         ourStories.setFont(menuFont);
         defaultStoriesBox.getChildren().addAll(ourStories, defaultStories);
 
-        VBox savedBox = new VBox();
+        //Saved game progress
         Label savedTitle = new Label("Previously played");
+        savedTitle.setFont(menuFont);
+        savedTitle.setTextFill(Color.WHITE);
+        savedTitle.setAlignment(Pos.CENTER);
         Button continueGame = new Button("Continue");
         continueGame.setFont(font);
         continueGame.setOnAction(e ->{
@@ -443,6 +369,8 @@ public class MainMenu {
             gameDisplay.start(mainScene, ifSaved);
 
         });
+
+        //Previously played game info.
         FileToGame fileToGame = new FileToGame();
         Game gamePreview = fileToGame.readFile();
 
@@ -456,9 +384,7 @@ public class MainMenu {
         Label savedPlayerHealth = new Label("Health: "+gamePreview.getPlayer().getHealth());
         Label savedPlayerScore = new Label("Score: "+gamePreview.getPlayer().getScore());
 
-        savedTitle.setFont(menuFont);
-        savedTitle.setTextFill(Color.WHITE);
-        savedTitle.setAlignment(Pos.CENTER);
+
         label.setFont(menuFont);
         label.setTextFill(Color.WHITE);
         HBox scoreHBox = new HBox(savedPlayerGold, savedPlayerHealth, savedPlayerScore);
@@ -466,10 +392,11 @@ public class MainMenu {
         scoreHBox.setSpacing(10);
         VBox savedVBox = new VBox(savedStoryTitle, savedStoryPassage, savedStoryPlayer, scoreHBox);
         savedVBox.setAlignment(Pos.CENTER);
-        savedVBox.setStyle("-fx-background-color: rgba(54,54,54,0.5); -fx-background-radius: 30");
+        savedVBox.setId("savedVBox");
         savedVBox.setMaxWidth(380);
+        VBox savedBox = new VBox();
         savedBox.getChildren().addAll(savedTitle, savedVBox, continueGame);
-        savedBox.setStyle("-fx-background-color: rgba(0,0,0,0.7); -fx-background-radius: 40px");
+        savedBox.setId("savedBox");
         savedBox.setPrefWidth(400);
         savedBox.setMaxHeight(400);
         savedBox.setSpacing(20);
@@ -480,17 +407,15 @@ public class MainMenu {
         ImageView backImage = new ImageView("/gruppe/fire/Media/back.png");
         Button backButton = new Button();
         backButton.setGraphic(backImage);
-        backButton.setStyle("-fx-background-color: rgba(0,0,0,0.7); -fx-background-radius: 40px");
+        backButton.setId("backButton");
         backButton.setPrefSize(100, 100);
-        //backButton.setMaxHeight(400);
         backButton.setAlignment(Pos.CENTER);
         backButton.setEffect(dropShadow);
 
-
+        //Menu center area
         HBox menuBox = new HBox();
         menuBox.setAlignment(Pos.CENTER);
         menuBox.setSpacing(10);
-
         root.setCenter(menuBox);
 
         //Tutorial screen
@@ -508,14 +433,13 @@ public class MainMenu {
                 "suscipit. Aenean quis sem ac nibh vehicula ullamcorper.");
         tutorialText.setFill(Color.WHITE);
         VBox tutorialBox = new VBox();
-        tutorialBox.setStyle("-fx-background-color: rgba(0,0,0,0.7); -fx-background-radius: 40px");
+        tutorialBox.setId("tutorialBox");
         tutorialBox.setPrefSize(1000, 800);
         tutorialBox.setAlignment(Pos.CENTER);
         tutorialBox.setEffect(dropShadow);
         tutorialBox.getChildren().addAll(tutorialTitle, tutorialText);
 
         //Settings screen
-
         Label settingsTitle = new Label("Settings");
         settingsTitle.setPadding(new Insets(20));
         settingsTitle.setFont(font);
@@ -527,23 +451,7 @@ public class MainMenu {
         toggleFullscreen.setFont(font);
         toggleFullscreen.setAlignment(Pos.CENTER);
         toggleFullscreen.setOnAction(e ->{
-            if (stage.isFullScreen()){
-                stage.setFullScreen(false);
-                stage.setWidth(1380);
-                stage.setHeight(800);
-                title1.setFont(titleFontSmall);
-                title2.setFont(titleFontSmall);
-                titleBox.setSpacing(-26);
-            } else {
-                stage.setFullScreen(true);
-                stage.setFullScreenExitHint("");
-                stage.setFullScreenExitKeyCombination(null);
-                title1.setFont(titleFont);
-                title2.setFont(titleFont);
-                titleBox.setSpacing(-50);
-
-            }
-
+            controller.fullscreenButton(stage, title1, title2, titleBox, titleFontSmall, titleFont);
         });
 
         //Change Resolution
@@ -551,6 +459,7 @@ public class MainMenu {
         smallScreen.setFont(font);
         smallScreen.setAlignment(Pos.CENTER);
 
+        //Display resolution combobox
         ComboBox<String> resolutionComboBox = new ComboBox<>();
         resolutionComboBox.setId("resolutionComboBox");
         resolutionComboBox.getItems().addAll("1920 x 1080", "800 x 600");
@@ -592,7 +501,7 @@ public class MainMenu {
 
         //Settings containers
         TabPane settingsPane = new TabPane();
-        settingsPane.setStyle("-fx-background-color: rgba(0,0,0,0.7); -fx-background-radius: 40px");
+        settingsPane.setId("settingsPane");
         settingsPane.setPrefSize(1000, 800);
         settingsPane.setEffect(dropShadow);
 
@@ -605,7 +514,6 @@ public class MainMenu {
         settingsPane.getTabs().add(display);
 
         //Volume control
-
         Slider musicVolumeSlider = new Slider(0, 1, musicVolume);
         Label musicVolumeLabel = new Label("Music volume");
         musicVolumeLabel.setFont(font);
@@ -641,7 +549,7 @@ public class MainMenu {
 
         //Start menu
         VBox startMenu = new VBox();
-        startMenu.setStyle("-fx-background-color: rgba(0,0,0,0); -fx-background-radius: 40px");
+        startMenu.setId("startMenu");
 
         startMenu.setAlignment(Pos.CENTER);
         startMenu.setEffect(dropShadow);
@@ -685,15 +593,12 @@ public class MainMenu {
         });
 
 
-        menuBox.getChildren().add(startMenu);
         startMenu.getChildren().addAll(story, settings, howToPlay, exit);
-        //Menu box
-
-
+        menuBox.getChildren().add(startMenu);
 
         //About page for the program. Displays Authors and version etc.
         Button about = new Button();
-        about.setStyle("-fx-background-color: transparent");
+        about.setId("aboutButton");
         ImageView info = new ImageView("/gruppe/fire/Media/info.png");
         info.setFitHeight(20);
         info.setFitWidth(20);
@@ -711,7 +616,7 @@ public class MainMenu {
             VBox aboutBox = new VBox(aboutTitle, team, versionLabel, dismissButton);
             aboutBox.setSpacing(20);
             aboutBox.setPrefSize(600, 400);
-            aboutBox.setStyle("-fx-background-color: rgba(0,0,0,0.9); -fx-background-radius: 30px");
+            aboutBox.setId("aboutBox");
             aboutBox.setAlignment(Pos.CENTER);
             Popup popup = new Popup();
             popup.getContent().add(aboutBox);
@@ -736,39 +641,7 @@ public class MainMenu {
         root.setBottom(bottom);
 
         exit.setOnAction(e -> {
-
-
-            Label quitTitle = new Label("Exit the game");
-            Label confirmationLabel = new Label("Are you sure you want to quit?");
-            confirmationLabel.setFont(font);
-            Button yesButton = new Button("Yes");
-            Button noButton = new Button("No");
-            HBox quitButtons = new HBox(yesButton, noButton);
-            quitButtons.setSpacing(40);
-            quitButtons.setAlignment(Pos.CENTER);
-            yesButton.setFont(font);
-            noButton.setFont(font);
-            quitTitle.setFont(menuFontLarge);
-            quitTitle.setAlignment(Pos.CENTER);
-            VBox quitBox = new VBox(quitTitle, confirmationLabel, quitButtons);
-            quitBox.setSpacing(20);
-            quitBox.setMinSize(600, 300);
-            quitBox.setStyle("-fx-background-color: rgba(0,0,0,0.9)");
-            quitBox.setAlignment(Pos.CENTER);
-            root.setTop(null);
-            root.setBottom(null);
-            root.setCenter(quitBox);
-
-
-            yesButton.setOnAction(exitEvent ->{
-                Platform.exit();
-            });
-            noButton.setOnAction(exitEvent ->{
-                root.setTop(titleBox);
-                root.setBottom(bottom);
-                root.setCenter(menuBox);
-            });
-
+            controller.exitButton(root, font, menuFontLarge, titleBox, bottom, menuBox);
         });
 
 

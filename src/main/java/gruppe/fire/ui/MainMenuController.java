@@ -9,17 +9,22 @@ import javafx.animation.Animation;
 import javafx.animation.Interpolator;
 import javafx.animation.ParallelTransition;
 import javafx.animation.TranslateTransition;
+import javafx.application.Platform;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.scene.text.Font;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import java.io.File;
@@ -177,6 +182,113 @@ public class MainMenuController {
         if(bg){
             root.getChildren().addAll(citySkyline, citySkyline2, citySkyline3, citySkyline4, citySkyline5, citySkyline6);
         }
+    }
+
+    /**
+     * Responsible for handling open file action.
+     * @param selectedFile The selected file.
+     * @param fileChooser File chooser which is used to get file.
+     * @param scene The game scene.
+     * @param noFile Feedback label.
+     */
+    public void openFileButton(File selectedFile, FileChooser fileChooser, Scene scene, Label noFile){
+        selectedFile = fileChooser.showOpenDialog(scene.getWindow());
+
+        //Prevents user from opening non-paths files (typing direct path will bypass filter)
+        if(!String.valueOf(selectedFile).endsWith(".paths") && selectedFile != null){
+            noFile.setText("Incorrect file type!");
+
+            //Stores the file path to a txt file and also sets status as file path.
+        }else if(selectedFile != null) {
+            Path currentFile = Path.of(selectedFile.getPath());
+            try {
+                FileWriter writer;
+                writer = new FileWriter("Data/currentPathsFile.cfg");
+                writer.write(String.valueOf(currentFile));
+                writer.close();
+                noFile.setText(String.valueOf(currentFile));
+
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+
+            //Sets status if user cancels open file.
+        } else {
+            noFile.setText("No file was selected");
+        }
+    }
+
+    /**
+     * TODO: Write here
+     * @param selectedFile
+     * @param playerMenu
+     * @param scene
+     * @param noFile
+     */
+    public void startGameButton(File selectedFile, PlayerMenu playerMenu, Scene scene, Label noFile){
+        if(String.valueOf(selectedFile).endsWith(".paths") && selectedFile != null){
+            try{
+                if(checkBrokenGame(new Game(new Player("Test", null, 0, 0, 0),new FileToStory(selectedFile).readFile())) == true){
+                    playerMenu.start(scene);
+                }
+            } catch (Exception ex) {
+                noFile.setText("Could not load file. Wrong format?");
+            }
+        } else {
+            noFile.setText("You have to select a file first.");
+        }
+    }
+
+    public void fullscreenButton(Stage stage, Label title1, Label title2, HBox titleBox, Font titleFontSmall, Font titleFont){
+        if (stage.isFullScreen()){
+            stage.setFullScreen(false);
+            stage.setWidth(1380);
+            stage.setHeight(800);
+            title1.setFont(titleFontSmall);
+            title2.setFont(titleFontSmall);
+            titleBox.setSpacing(-26);
+        } else {
+            stage.setFullScreen(true);
+            stage.setFullScreenExitHint("");
+            stage.setFullScreenExitKeyCombination(null);
+            title1.setFont(titleFont);
+            title2.setFont(titleFont);
+            titleBox.setSpacing(-50);
+
+        }
+    }
+
+    public void exitButton(BorderPane root, Font font, Font menuFontLarge, HBox titleBox, HBox bottom, HBox menuBox){
+        Label quitTitle = new Label("Exit the game");
+        Label confirmationLabel = new Label("Are you sure you want to quit?");
+        confirmationLabel.setFont(font);
+        Button yesButton = new Button("Yes");
+        Button noButton = new Button("No");
+        HBox quitButtons = new HBox(yesButton, noButton);
+        quitButtons.setSpacing(40);
+        quitButtons.setAlignment(Pos.CENTER);
+        yesButton.setFont(font);
+        noButton.setFont(font);
+        quitTitle.setFont(menuFontLarge);
+        quitTitle.setAlignment(Pos.CENTER);
+        VBox quitBox = new VBox(quitTitle, confirmationLabel, quitButtons);
+        quitBox.setSpacing(20);
+        quitBox.setMinSize(600, 300);
+        quitBox.setId("quitBox");
+        quitBox.setAlignment(Pos.CENTER);
+        root.setTop(null);
+        root.setBottom(null);
+        root.setCenter(quitBox);
+
+
+        yesButton.setOnAction(exitEvent ->{
+            Platform.exit();
+        });
+        noButton.setOnAction(exitEvent ->{
+            root.setTop(titleBox);
+            root.setBottom(bottom);
+            root.setCenter(menuBox);
+        });
     }
 
     /**

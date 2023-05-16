@@ -293,7 +293,7 @@ public class PlayerMenu {
         cancelButton.setTextFill(Color.WHITE);
         cancelButton.setOnAction(e ->{
             try {
-                mainMenu.start(scene);
+                mainMenu.startMain(scene);
             } catch (Exception ex) {
                 throw new RuntimeException(ex);
             }

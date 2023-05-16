@@ -42,7 +42,7 @@ public class PathsGame extends Application {
             Platform.runLater(() -> {
                 try {
                     mediaView.getMediaPlayer().dispose();
-                    mainMenu.start(scene);
+                    mainMenu.startMain(scene);
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
