@@ -4,7 +4,6 @@ import gruppe.fire.fileHandling.DataBase;
 import gruppe.fire.fileHandling.FileToPlayer;
 import gruppe.fire.logic.GameBuilder;
 import gruppe.fire.logic.Player;
-import javafx.animation.ParallelTransition;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -13,6 +12,7 @@ import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
@@ -21,24 +21,22 @@ import java.nio.file.Paths;
 
 public class PlayerMenu {
 
-    private GameDisplay gameScreen;
 
-    private MainMenu mainMenu;
-
-    private ParallelTransition parallelTransition;
-
-    private PlayerMenuController controller;
 
     private Image newProfileImage;
 
 
     public void start(Scene scene) {
 
+        GameDisplay gameDisplay =  new GameDisplay();
+        MainMenu mainMenu = new MainMenu();
+        PlayerMenuController controller = new PlayerMenuController();
+        JukeBox jukeBox = new JukeBox();
 
-        //Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
-        this.gameScreen =  new GameDisplay();
-        this.mainMenu = new MainMenu();
-        this.controller = new PlayerMenuController();
+        MediaPlayer selectMusic = jukeBox.getPlayerMenuMusic();
+        selectMusic.setOnEndOfMedia(() -> selectMusic.seek(javafx.util.Duration.ZERO));
+        selectMusic.play();
+
 
         DataBase dataBase = new DataBase();
         GameBuilder gameBuilder = new GameBuilder(new File(dataBase.getActivePlayerPath()), new File(dataBase.getActiveStoryPath()));
@@ -127,7 +125,8 @@ public class PlayerMenu {
             String activePlayerString = "player"+i+".txt";
             playerButton.setOnAction(event -> {
                 controller.setActivePlayer(activePlayerString);
-                gameScreen.start(scene, false);
+                gameDisplay.start(scene, false);
+                selectMusic.dispose();
             });
             ppImageBox.getChildren().add(playerButton);
         }
@@ -294,6 +293,7 @@ public class PlayerMenu {
         cancelButton.setOnAction(e ->{
             try {
                 mainMenu.startMain(scene);
+                selectMusic.dispose();
             } catch (Exception ex) {
                 throw new RuntimeException(ex);
             }
@@ -312,7 +312,6 @@ public class PlayerMenu {
         menuBox.getChildren().add(playerHBox);
         root.setBottom(buttonBox);
         root.setCenter(menuBox);
-
 
 
     }

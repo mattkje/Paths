@@ -25,6 +25,7 @@ public class PathsGame extends Application {
         this.controller = new MainMenuController();
 
         MediaView mediaView = controller.getLoadingVideo();
+        mediaView.getMediaPlayer().play();
         Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
         double screenWidth = screenBounds.getWidth();
         double screenHeight = screenBounds.getHeight();

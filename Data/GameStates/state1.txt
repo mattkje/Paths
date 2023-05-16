@@ -1,8 +1,8 @@
 src\main\resources\gruppe\fire\Paths\MurderMystery.paths
-Clue 4
-NoPic
-100
-4
-0
+Meeting
+If show Win
+191742
+61
+13041
 []
-[TokenOfDeath, Knife, Clue 2, Clue 3]
+[]

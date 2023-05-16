@@ -258,7 +258,8 @@ public class MainMenuController {
         }
     }
 
-    public void exitButton(BorderPane root, Font font, Font menuFontLarge, HBox titleBox, HBox bottom, HBox menuBox){
+    public void exitButton(BorderPane root, Font font, Font menuFontLarge, HBox titleBox, HBox bottom, HBox menuBox, MediaPlayer player){
+        player.setVolume(player.getVolume()-0.4);
         Label quitTitle = new Label("Exit the game");
         Label confirmationLabel = new Label("Are you sure you want to quit?");
         confirmationLabel.setFont(font);
@@ -288,6 +289,8 @@ public class MainMenuController {
             root.setTop(titleBox);
             root.setBottom(bottom);
             root.setCenter(menuBox);
+            player.setVolume(player.getVolume()+0.4);
+
         });
     }
 
@@ -375,22 +378,11 @@ public class MainMenuController {
         Media media = new Media (Objects.requireNonNull(getClass().getResource("/gruppe/fire/Media/PathsLoad.mp4")).toString());
         MediaPlayer player = new MediaPlayer (media);
         MediaView view = new MediaView (player);
-        player.play();
+        //player.play();
 
         return view;
     }
 
-    /**
-     * Responsible for returning the background music.
-     * @param musicVolume Music volume set in settings.
-     * @return Background music
-     */
-    public MediaPlayer getBackgroundMusic(double musicVolume){
-        Media sound = new Media(Objects.requireNonNull(getClass().getResource("/gruppe/fire/Media/backgroundMusic.mp3")).toString());
-        MediaPlayer mediaPlayer = new MediaPlayer(sound);
-        mediaPlayer.setVolume(musicVolume);
-        return mediaPlayer;
-    }
 
     /**
      * Responsible for returning the button noise.

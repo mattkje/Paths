@@ -6,6 +6,7 @@ import gruppe.fire.fileHandling.FileToGame;
 import gruppe.fire.fileHandling.FileToStory;
 import gruppe.fire.logic.Game;
 import javafx.animation.*;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -70,6 +71,7 @@ public class MainMenu {
         this.controller = new MainMenuController();
         this.playerMenu = new PlayerMenu();
         this.gameDisplay = new GameDisplay();
+        JukeBox jukeBox = new JukeBox();
 
 
         //Get the root from the scene created in PathsGame and clears it.
@@ -80,8 +82,11 @@ public class MainMenu {
         controller.changeSettings((Boolean) map.get("fs"), (Boolean) map.get("bg"), musicVolume, musicVolume);
 
         //Initializing sounds and music.
-        this.player = controller.getBackgroundMusic(musicVolume);
+
+        this.player = jukeBox.getMainMenuMusic();
+        player.setOnEndOfMedia(() -> player.seek(javafx.util.Duration.ZERO));
         player.play();
+
 
         this.fxPlayer = controller.getButtonClick(fxVolume);
         mainScene.addEventFilter(ActionEvent.ACTION, event -> {
@@ -209,6 +214,7 @@ public class MainMenu {
         //Game Starting point. Checks if imported file is valid, and opens the next menu.
         startGame.setOnAction(e -> {
             controller.startGameButton(selectedFile, playerMenu, mainScene, noFile);
+            player.dispose();
         });
 
 
@@ -230,6 +236,7 @@ public class MainMenu {
         customStory1.setPrefWidth(300);
         customStory1.setOnAction(e ->{
             controller.openSavedPath("paths1.paths", playerMenu, mainScene, noFile);
+            player.dispose();
         });
         customStories.add(customStory1, 0, 0);
 
@@ -241,6 +248,7 @@ public class MainMenu {
         customStory2.setOnAction(e ->{
 
             controller.openSavedPath("paths2.paths", playerMenu, mainScene, noFile);
+            player.dispose();
         });
         customStories.add(customStory2, 0, 1);
 
@@ -252,6 +260,8 @@ public class MainMenu {
         customStory3.setOnAction(e ->{
 
             controller.openSavedPath("paths3.paths", playerMenu, mainScene, noFile);
+            player.dispose();
+
         });
         customStories.add(customStory3, 0, 2);
 
@@ -263,6 +273,7 @@ public class MainMenu {
         customStory4.setOnAction(e ->{
 
             controller.openSavedPath("paths4.paths", playerMenu, mainScene, noFile);
+            player.dispose();
 
         });
         customStories.add(customStory4, 0, 3);
@@ -294,6 +305,7 @@ public class MainMenu {
         defaultStory1.setOnAction(e ->{
             controller.setDefaultPath("HauntedHouse.paths");
             playerMenu.start(mainScene);
+            player.dispose();
         });
 
         Button defaultStory2 = new Button("Murder Mystery");
@@ -308,6 +320,7 @@ public class MainMenu {
         defaultStory2.setOnAction(e ->{
             controller.setDefaultPath("MurderMystery.paths");
             playerMenu.start(mainScene);
+            player.dispose();
         });
 
         Button defaultStory3 = new Button("Ancient Castle");
@@ -322,6 +335,7 @@ public class MainMenu {
         defaultStory3.setOnAction(e ->{
             controller.setDefaultPath("Castle.paths");
             playerMenu.start(mainScene);
+            player.dispose();
         });
 
         Button defaultStory4 = new Button("Space Ship");
@@ -336,6 +350,7 @@ public class MainMenu {
         defaultStory4.setOnAction(e ->{
             controller.setDefaultPath("SpaceShip.paths");
             playerMenu.start(mainScene);
+            player.dispose();
         });
 
         defaultStories.add(defaultStory1, 0, 0);
@@ -367,6 +382,7 @@ public class MainMenu {
         continueGame.setOnAction(e ->{
             this.ifSaved = true;
             gameDisplay.start(mainScene, ifSaved);
+            player.dispose();
 
         });
 
@@ -641,7 +657,7 @@ public class MainMenu {
         root.setBottom(bottom);
 
         exit.setOnAction(e -> {
-            controller.exitButton(root, font, menuFontLarge, titleBox, bottom, menuBox);
+            controller.exitButton(root, font, menuFontLarge, titleBox, bottom, menuBox, player);
         });
 
 

@@ -7,12 +7,15 @@ import javafx.animation.TranslateTransition;
 import javafx.fxml.Initializable;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
 
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Path;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class PlayerMenuController {

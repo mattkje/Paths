@@ -16,6 +16,7 @@ import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -31,15 +32,8 @@ import java.io.IOException;
  */
 public class GameDisplay {
 
-    private MainMenu mainMenu;
-
-    private PlayerMenu playerMenu;
-
     private FileToGame fileToGame;
 
-    private GameDisplayController controller;
-
-    private Link link;
     private Label gameTitle;
     private Label roomTitle;
     private Text roomContent;
@@ -48,13 +42,7 @@ public class GameDisplay {
 
     private Label scoreAmount;
 
-    private ListView inventoryList;
-
     private HBox actionBar;
-
-    private Font font;
-
-    private DropShadow dropShadow;
 
     /**
      * Starting point for the game.
@@ -62,7 +50,9 @@ public class GameDisplay {
      */
     public void start(Scene scene, Boolean ifSaved) {
 
-        this.controller = new GameDisplayController();
+
+        GameDisplayController controller = new GameDisplayController();
+        JukeBox jukeBox = new JukeBox();
         DataBase dataBase = new DataBase();
         File gameFile = new File(dataBase.getActiveStoryPath());
         File playerFile = new File(dataBase.getActivePlayerPath());
@@ -70,11 +60,14 @@ public class GameDisplay {
         Game game = handler.createGame();
         Player player = game.getPlayer();
 
+        MediaPlayer mediaPlayer = jukeBox.getGameplayMusic();
+        mediaPlayer.setOnEndOfMedia(() -> mediaPlayer.seek(javafx.util.Duration.ZERO));
+        mediaPlayer.play();
+
                 //Background
         BorderPane root = (BorderPane) scene.getRoot();
         root.getChildren().clear();
-        this.mainMenu = new MainMenu();
-        this.playerMenu = new PlayerMenu();
+        MainMenu mainMenu = new MainMenu();
         root.setStyle("-fx-background-color: linear-gradient(#6746a9, #3829cd)");
         MainMenuController mainMenuController = new MainMenuController();
         mainMenuController.getBackground(root);
@@ -90,7 +83,7 @@ public class GameDisplay {
 
 
         //Shadows and fonts
-        this.dropShadow = new DropShadow();
+        DropShadow dropShadow = new DropShadow();
         dropShadow.setOffsetY(5.0);
         dropShadow.setColor(Color.color(0, 0, 0, 0.5));
         DropShadow hopShadow = new DropShadow();
@@ -100,8 +93,7 @@ public class GameDisplay {
         glow.setColor(Color.WHITE);
         glow.setSpread(1);
         glow.setRadius(2);
-        this.font = Font.font("Arial Rounded MT Bold", FontWeight.BOLD, 24);
-        //Font menuFont = Font.font("Pacifico",FontWeight.BOLD, 44);
+
 
         //logo
         Label title = new Label("Paths");
@@ -121,6 +113,7 @@ public class GameDisplay {
         mainMenuButton.setOnAction(e ->{
             try {
                 mainMenu.startMain(scene);
+                mediaPlayer.dispose();
             } catch (Exception ex) {
                 throw new RuntimeException(ex);
             }
@@ -165,10 +158,12 @@ public class GameDisplay {
         });
         restart.setOnAction(e ->{
             start(scene, ifSaved);
+            mediaPlayer.dispose();
         });
         back.setOnAction(e ->{
             try {
                 mainMenu.startMain(scene);
+                mediaPlayer.dispose();
             } catch (Exception ex) {
                 throw new RuntimeException(ex);
             }
