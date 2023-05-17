@@ -4,6 +4,8 @@ import gruppe.fire.fileHandling.DataBase;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 
+import java.io.File;
+import java.nio.file.Path;
 import java.util.Objects;
 
 /**
@@ -12,6 +14,7 @@ import java.util.Objects;
 public class JukeBox {
 
     private MediaPlayer mediaPlayer;
+
 
     public MediaPlayer getMainMenuMusic(){
         DataBase dataBase = new DataBase();
@@ -49,7 +52,15 @@ public class JukeBox {
         }
         if (dataBase.getActiveStoryPath().contains("SpaceShip")){
             this.mediaPlayer = new MediaPlayer(spaceSound);
-        }if (mediaPlayer == null){
+        }
+        if (dataBase.getActiveStoryPath().contains("currentGpaths")){
+
+            File mediaFile = new File("Data/currentGpaths/music.mp3");
+            String absolutePath = mediaFile.toURI().toString();
+            Media gpathsMusic = new Media(absolutePath);
+            this.mediaPlayer = new MediaPlayer(gpathsMusic);
+        }
+        if (mediaPlayer == null){
             this.mediaPlayer = new MediaPlayer(defaultSound);
         }
         mediaPlayer.setVolume((double) dataBase.readSettingsFromFile().get("vlm"));

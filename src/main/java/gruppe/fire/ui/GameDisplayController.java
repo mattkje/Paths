@@ -29,6 +29,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 import java.io.*;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -159,6 +160,15 @@ public class GameDisplayController {
 
     }
 
+    public boolean checkIfGPaths(){
+        DataBase dataBase = new DataBase();
+        if (dataBase.getActiveStoryPath().contains("currentGpaths")){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 
     /**
      * Displays the opening passage to user
@@ -178,7 +188,7 @@ public class GameDisplayController {
     public void writeOpeningPassage(Game game, HBox actionBar, FlowPane inventoryPane,
                                     Label gameTitle, Label roomTitle, Text roomContent,
                                     Label healthAmount, Label goldAmount, Label scoreAmount,
-                                    Font font, DropShadow dropShadow) {
+                                    Font font, DropShadow dropShadow, ImageView passageImage) {
         ArrayList links = game.getStory().getOpeningPassage().getLinks();
         int linkCount = links.size();
 
@@ -189,9 +199,10 @@ public class GameDisplayController {
             game.setCurrentPassage(passage);
             nextPath.setTextFill(Color.WHITE);
             nextPath.setText(link.getText());
+            ImageView finalPassageImage = passageImage;
             nextPath.setOnAction(e -> {
                 writePassage(game, link, actionBar, inventoryPane, passage, roomTitle,
-                        roomContent, healthAmount, goldAmount, scoreAmount, font, dropShadow);
+                        roomContent, healthAmount, goldAmount, scoreAmount, font, dropShadow, finalPassageImage);
             });
             nextPath.setFont(font);
             nextPath.setEffect(dropShadow);
@@ -201,6 +212,7 @@ public class GameDisplayController {
         gameTitle.setText(game.getStory().getTitle());
         roomTitle.setText(game.getStory().getOpeningPassage().getTitle());
         roomContent.setText(game.getStory().getOpeningPassage().getContent());
+        passageImage.setImage(getPassageImage(game.getCurrentPassage()));
 
         healthAmount.setText(String.valueOf(game.getPlayer().getHealth()));
         goldAmount.setText(String.valueOf(game.getPlayer().getGold()));
@@ -226,7 +238,7 @@ public class GameDisplayController {
     public void writePassage(Game game, Link link, HBox actionBar, FlowPane inventoryPane,
                              Passage passage, Label roomTitle, Text roomContent,
                              Label healthAmount, Label goldAmount, Label scoreAmount,
-                             Font font, DropShadow dropShadow) {
+                             Font font, DropShadow dropShadow, ImageView passageImage) {
 
         //Refresh text
         roomTitle.setText(passage.getTitle());
@@ -245,6 +257,7 @@ public class GameDisplayController {
             healthAmount.setText(String.valueOf(game.getPlayer().getHealth()));
             goldAmount.setText(String.valueOf(game.getPlayer().getGold()));
             scoreAmount.setText(String.valueOf(game.getPlayer().getScore()));
+            passageImage.setImage(getPassageImage(game.getStory().getPassage(link)));
             for (String item : game.getPlayer().getInventory()) {
                 if (flowPaneContainsItem(inventoryPane, item) == false){
                     inventoryPane = handleInventory(item, inventoryPane, font);
@@ -264,9 +277,10 @@ public class GameDisplayController {
                 nextPath.setText(link.getText());
                 Link finalLink = link;
                 FlowPane finalInventoryPane = inventoryPane;
+                ImageView finalPassageImage = passageImage;
                 nextPath.setOnAction(e -> {
                     writePassage(game, finalLink, actionBar, finalInventoryPane, nextPassage, roomTitle,
-                            roomContent, healthAmount, goldAmount, scoreAmount, font, dropShadow);
+                            roomContent, healthAmount, goldAmount, scoreAmount, font, dropShadow, finalPassageImage);
                 });
                 nextPath.setFont(font);
                 nextPath.setEffect(dropShadow);
@@ -320,6 +334,14 @@ public class GameDisplayController {
             }
         }
         return false;
+    }
+
+    public Image getPassageImage(Passage passage){
+        String passageImageString = ("Data/currentGpaths/Images/" + passage.getTitle() + ".png");
+        File file = new File(passageImageString);
+        String absolutePath = file.toURI().toString();
+        System.out.println(absolutePath);
+        return new Image(absolutePath);
     }
 
 }

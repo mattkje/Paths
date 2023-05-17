@@ -36,7 +36,7 @@ import java.util.Objects;
 
 public class MainMenuController {
 
-
+    private File selectedFile;
     private ImageView citySkyline;
     private ImageView citySkyline2;
     private ImageView citySkyline3;
@@ -52,6 +52,19 @@ public class MainMenuController {
      */
     public void setActiveFile(String filename){
         Path savedPaths = Path.of(PATH + filename);
+        try {
+            FileWriter writer;
+            writer = new FileWriter("Data/currentPathsFile.cfg");
+            writer.write(String.valueOf(savedPaths));
+            writer.close();
+
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    public void setActiveGpaths(String filename){
+        Path savedPaths = Path.of(filename);
         try {
             FileWriter writer;
             writer = new FileWriter("Data/currentPathsFile.cfg");
@@ -186,20 +199,18 @@ public class MainMenuController {
 
     /**
      * Responsible for handling open file action.
-     * @param selectedFile The selected file.
      * @param fileChooser File chooser which is used to get file.
      * @param scene The game scene.
      * @param noFile Feedback label.
      */
-    public void openFileButton(File selectedFile, FileChooser fileChooser, Scene scene, Label noFile){
-        selectedFile = fileChooser.showOpenDialog(scene.getWindow());
+    public void openFileButton(FileChooser fileChooser, Scene scene, Label noFile){
+        this.selectedFile = fileChooser.showOpenDialog(scene.getWindow());
 
         //Prevents user from opening non-paths files (typing direct path will bypass filter)
-        if(!String.valueOf(selectedFile).endsWith(".paths") && selectedFile != null){
+        if(!String.valueOf(selectedFile).endsWith(".paths") && !String.valueOf(selectedFile).endsWith(".Gpaths") && selectedFile != null){
             noFile.setText("Incorrect file type!");
 
-            //Stores the file path to a txt file and also sets status as file path.
-        }else if(selectedFile != null) {
+        } else if(selectedFile != null) {
             Path currentFile = Path.of(selectedFile.getPath());
             try {
                 FileWriter writer;
@@ -207,7 +218,10 @@ public class MainMenuController {
                 writer.write(String.valueOf(currentFile));
                 writer.close();
                 noFile.setText(String.valueOf(currentFile));
-
+                if (String.valueOf(selectedFile).endsWith(".Gpaths")) {
+                    DataBase dataBase = new DataBase();
+                    dataBase.gpathHandler();
+                }
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
@@ -220,12 +234,15 @@ public class MainMenuController {
 
     /**
      * TODO: Write here
-     * @param selectedFile
      * @param playerMenu
      * @param scene
      * @param noFile
      */
-    public void startGameButton(File selectedFile, PlayerMenu playerMenu, Scene scene, Label noFile){
+    public void startGameButton(PlayerMenu playerMenu, Scene scene, Label noFile){
+        if (String.valueOf(selectedFile).endsWith(".Gpaths") && selectedFile != null) {
+            setActiveGpaths("Data/currentGpaths/story.paths");
+            playerMenu.start(scene);
+        }
         if(String.valueOf(selectedFile).endsWith(".paths") && selectedFile != null){
             try{
                 if(checkBrokenGame(new Game(new Player("Test", null, 0, 0, 0),new FileToStory(selectedFile).readFile())) == true){

@@ -17,10 +17,10 @@ The door opens to a hall way. You see a knife covered in blood. You also see som
 [Go back (-10 score)](Beginning 2);ScoreAction;-10;
 ::Clue
 You proceed to walk down the hallway. You notice that someone is following you.
-[Start running](Bathroom);ScoreAction;0;
+[Start running](Game over);ScoreAction;0;
 [Turn around and confront the person](Meeting);ScoreAction;0;
-::Bathroom
-You end up hiding in a bathroom. You are too afraid to leave.
+::Game over
+You run down the hall, a person with a black mask grabs you and stabs you to death.
 [Restart game](Beginning);ScoreAction;0;
 ::Meeting
 You confront the person, and it turned out to be a butler who is just as confused as you are. What do you tell him?

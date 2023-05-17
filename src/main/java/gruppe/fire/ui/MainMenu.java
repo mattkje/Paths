@@ -187,7 +187,8 @@ public class MainMenu {
         importMenu.setEffect(dropShadow);
         FileChooser fileChooser = new FileChooser();
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Paths files (*.paths)", "*.paths");
-        fileChooser.getExtensionFilters().add(extFilter);
+        FileChooser.ExtensionFilter extFilter2 = new FileChooser.ExtensionFilter("GPaths files (*.Gpaths)", "*.gpaths");
+        fileChooser.getExtensionFilters().addAll(extFilter, extFilter2);
 
 
         //Feedback label
@@ -197,13 +198,13 @@ public class MainMenu {
         noFile.setAlignment(Pos.CENTER);
         noFile.setId("noFile");
 
-        //Open file button.
-        Button continueButton = new Button("Open paths file");
-        continueButton.setEffect(dropShadow);
-        continueButton.setFont(font);
-        continueButton.setTextFill(Color.WHITE);
-        continueButton.setOnAction(e -> {
-            controller.openFileButton(selectedFile, fileChooser, mainScene, noFile);
+        //Open paths button.
+        Button openPathsFile = new Button("Open paths file");
+        openPathsFile.setEffect(dropShadow);
+        openPathsFile.setFont(font);
+        openPathsFile.setTextFill(Color.WHITE);
+        openPathsFile.setOnAction(e -> {
+            controller.openFileButton(fileChooser, mainScene, noFile);
         });
 
         //Start game Button
@@ -213,7 +214,7 @@ public class MainMenu {
         startGame.setTextFill(Color.WHITE);
         //Game Starting point. Checks if imported file is valid, and opens the next menu.
         startGame.setOnAction(e -> {
-            controller.startGameButton(selectedFile, playerMenu, mainScene, noFile);
+            controller.startGameButton(playerMenu, mainScene, noFile);
             player.dispose();
         });
 
@@ -281,7 +282,7 @@ public class MainMenu {
 
 
         HBox gameControl = new HBox();
-        gameControl.getChildren().addAll(continueButton, startGame);
+        gameControl.getChildren().addAll(openPathsFile, startGame);
         gameControl.setAlignment(Pos.CENTER);
         gameControl.setSpacing(3);
         importMenu.getChildren().addAll(gameControl, noFile, label, customStories);

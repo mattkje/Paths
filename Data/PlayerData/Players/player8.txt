@@ -1,0 +1,5 @@
+man
+Data\PlayerData\Images\pp8.png
+1
+0
+100

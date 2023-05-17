@@ -9,6 +9,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Scanner;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 
 public class DataBase {
@@ -79,6 +81,53 @@ public class DataBase {
             fileWriter.write(player.getGold()+"\n");
         } catch (IOException e) {
             System.out.println("Something went wrong");
+        }
+    }
+
+    public void gpathHandler() {
+        String fileZip = getActiveStoryPath();
+        Path destDir = Paths.get("Data/currentGpaths");
+
+        try {
+            Files.walk(destDir)
+                    .filter(Files::isRegularFile)
+                    .map(Path::toFile)
+                    .forEach(File::delete);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to delete files in destination directory", e);
+        }
+
+
+        try (ZipInputStream zis = new ZipInputStream(new FileInputStream(fileZip))) {
+            ZipEntry zipEntry = zis.getNextEntry();
+            while (zipEntry != null) {
+                Path newFilePath = destDir.resolve(zipEntry.getName());
+
+                if (!newFilePath.normalize().startsWith(destDir)) {
+                    throw new IOException("Entry is outside of the target directory: " + zipEntry.getName());
+                }
+
+                if (zipEntry.isDirectory()) {
+                    Files.createDirectories(newFilePath);
+                } else {
+                    Path parentDir = newFilePath.getParent();
+                    if (parentDir != null) {
+                        Files.createDirectories(parentDir);
+                    }
+
+                    try (OutputStream fos = Files.newOutputStream(newFilePath)) {
+                        byte[] buffer = new byte[1024];
+                        int len;
+                        while ((len = zis.read(buffer)) > 0) {
+                            fos.write(buffer, 0, len);
+                        }
+                    }
+                }
+
+                zipEntry = zis.getNextEntry();
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 

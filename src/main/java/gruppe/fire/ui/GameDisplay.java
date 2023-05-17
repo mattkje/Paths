@@ -11,7 +11,6 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -37,6 +36,7 @@ public class GameDisplay {
     private Label gameTitle;
     private Label roomTitle;
     private Text roomContent;
+    private ImageView passageImage;
     private Label healthAmount;
     private Label goldAmount;
 
@@ -304,6 +304,7 @@ public class GameDisplay {
         Text gameRoom = new Text();
         HBox titleBox = new HBox();
         VBox gameBox = new VBox();
+        this.passageImage = new ImageView();
 
         Button cancelButton = new Button("Cancel");
         cancelButton.setOnAction(event1 -> {
@@ -351,14 +352,14 @@ public class GameDisplay {
             game.gameToFile(game, currentPassage);
         });
 
+        this.fileToGame = new FileToGame();
+        Game game1 = fileToGame.readFile();
         if(ifSaved == true){
-            this.fileToGame = new FileToGame();
-            Game game1 = fileToGame.readFile();
             controller.writeOpeningPassage(game1, actionBar, inventoryPane, gameTitle, roomTitle,
-                    roomContent, healthAmount, goldAmount, scoreAmount, font, dropShadow);
+                    roomContent, healthAmount, goldAmount, scoreAmount, font, dropShadow, passageImage);
         } else {
             controller.writeOpeningPassage(game, actionBar, inventoryPane, gameTitle, roomTitle,
-                    roomContent, healthAmount, goldAmount, scoreAmount, font, dropShadow);
+                    roomContent, healthAmount, goldAmount, scoreAmount, font, dropShadow, passageImage);
         }
 
 
@@ -374,7 +375,7 @@ public class GameDisplay {
         gameWindow.setTop(titleBox);
         gameBox.setSpacing(50);
         gameBox.setAlignment(Pos.CENTER);
-        gameBox.getChildren().addAll(roomTitle, gameRoom, roomContent);
+        gameBox.getChildren().addAll(roomTitle, gameRoom, passageImage, roomContent);
         gameBox.setPadding(new Insets(20));
         gameWindow.setCenter(gameBox);
         root.setBottom(actionBar);
