@@ -19,87 +19,93 @@ public class FileToStory {
   /**
    * Creates an instance of storyfile.
    * Required File object path from user
+   *
    * @param storyFile
    */
-  public FileToStory(File storyFile){
+  public FileToStory(File storyFile) {
     this.storyFile = storyFile;
   }
 
-  public File getStoryFile(){
+  public File getStoryFile() {
     return this.storyFile;
   }
 
-  public Story readFile(){
-    Passage openingPassage = new Passage("Null","Null");
-    Story story = new Story("Null",openingPassage);
+  public Story readFile() {
+    Passage openingPassage = new Passage("Null", "Null");
+    Story story = new Story("Null", openingPassage);
     boolean openingPassageState = false;
 
-    try (Scanner scanner = new Scanner(this.storyFile)){
+    try (Scanner scanner = new Scanner(this.storyFile)) {
 
       // Sets the first line as the title of the story
       story.setTitle(scanner.nextLine());
       String line = scanner.nextLine();
-      while (scanner.hasNext()){
-        if (line.contains("::")){
+      while (scanner.hasNext()) {
+        if (line.contains("::")) {
           String passageTitle = line.split("::")[1];
           String passageContent = scanner.nextLine();
 
-          if(!openingPassageState){
+          if (!openingPassageState) {
             openingPassage.setTitle(passageTitle);
             openingPassage.setContent(passageContent);
             story.setOpeningPassage(openingPassage);
             openingPassageState = true;
             line = scanner.nextLine();
-            while (line.startsWith("[")){
+            while (line.startsWith("[")) {
 
               openingPassage.addLink(createLink(line));
-              if(scanner.hasNext()){
+              if (scanner.hasNext()) {
                 line = scanner.nextLine();
               } else {
-                line="";
+                line = "";
               }
             }
           } else {
-            Passage passage = new Passage(passageTitle,passageContent);
-            line = scanner.nextLine();
-            while (line.startsWith("[")){
-              passage.addLink(createLink(line));
-              if(scanner.hasNext()){
-                line = scanner.nextLine();
-              } else {
-                line="";
+            Passage passage = new Passage(passageTitle, passageContent);
+            if (scanner.hasNextLine()) {
+              line = scanner.nextLine();
+              if (line.startsWith("[")) {
+                while (line.startsWith("[")) {
+                  passage.addLink(createLink(line));
+                  if (scanner.hasNext()) {
+                    line = scanner.nextLine();
+                  } else {
+                    line = "";
+                  }
+                }
               }
+              story.addPassage(passage);
             }
-            story.addPassage(passage);
           }
         } else {
           throw new IllegalArgumentException("Something went wrong");
         }
       }
-    } catch (FileNotFoundException e){
+    } catch (FileNotFoundException e) {
       e.printStackTrace();
     }
 
     return story;
   }
 
-  public Link createLink(String linkString){
+  public Link createLink(String linkString) {
     int i = 1;
     int tIA = linkString.indexOf("[") + 1;
     int tIB = linkString.indexOf("]");
     int rIA = linkString.indexOf("(") + 1;
     int rIB = linkString.indexOf(")");
 
-    String title = linkString.substring(tIA,tIB);
-    String reference = linkString.substring(rIA,rIB);
-    Link link = new Link(title,reference);
+    String title = linkString.substring(tIA, tIB);
+    String reference = linkString.substring(rIA, rIB);
+    Link link = new Link(title, reference);
     String[] splitString = linkString.split(";");
 
-    while (i < splitString.length){
-      link.addAction(this.createAction(splitString[i],splitString[i + 1]));
+    while (i < splitString.length) {
+      link.addAction(this.createAction(splitString[i], splitString[i + 1]));
 
       i = i + 2;
     }
+
     return link;
   }
 
@@ -114,6 +120,7 @@ public class FileToStory {
 
     return action;
   }
+
   /**
    * Reads first lines in saved files in saved folder and returns all story titles as an array of Strings.
    */
@@ -142,7 +149,7 @@ public class FileToStory {
       story4 = "No File";
     }
 
-    String[] storyArray = { story1, story2, story3, story4 };
+    String[] storyArray = {story1, story2, story3, story4};
     return storyArray;
 
   }

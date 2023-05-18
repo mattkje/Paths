@@ -8,121 +8,132 @@ import java.util.Objects;
  * one passage to another through a link.
  */
 public class Passage {
-    private String title;
-    private String content;
-    private ArrayList<Link> links;
+  private String title;
+  private String content;
+  private ArrayList<Link> links;
 
-    /**
-     * Constructs a new Passage object with the specified title, content, and links.
-     *
-     * @param title   an overall description that also serves as an identifier.
-     * @param content A textual content that typically represents a paragraph or part of one
-     *                dialogue.
-     */
-    public Passage(String title, String content){
+  /**
+   * Constructs a new Passage object with the specified title, content, and links.
+   *
+   * @param title   an overall description that also serves as an identifier.
+   * @param content A textual content that typically represents a paragraph or part of one
+   *                dialogue.
+   */
+  public Passage(String title, String content) {
 
-        this.title = title;
-        this.content = content;
-        this.links = new ArrayList<>();
-    }
+    this.title = title;
+    this.content = content;
+    this.links = new ArrayList<>();
+  }
 
-    /**
-     * This method returns the title.
-     * @return the title.
-     */
-    public String getTitle(){
-        return title;
-    }
+  /**
+   * This method returns the title.
+   *
+   * @return the title.
+   */
+  public String getTitle() {
+    return title;
+  }
 
-    public void setTitle(String title){
-        this.title = title;
-    }
-    /**
-     * This method returns the content.
-     * @return returns the content.
-     */
-    public String getContent(){
-        return content;
-    }
+  public void setTitle(String title) {
+    this.title = title;
+  }
 
-    public void setContent(String content){
-        this.content = content;
-    }
-    /**
-     * This method checks if the link is available and adds it to the links list if it is.
-     * @param link The Link object to be added.
-     * @return true if the link is added successfully, false otherwise.
-     */
-    public boolean addLink(Link link){
-        if (link == null || links.contains(link)){
-            return false;
-        } else {
-            links.add(link);
-            return true;
-        }
-    }
+  /**
+   * This method returns the content.
+   *
+   * @return returns the content.
+   */
+  public String getContent() {
+    return content;
+  }
 
-    /**
-     * This method returns all available links in a new list: activeLink.
-     * @return an ArrayList containing active links.
-     */
-    public ArrayList<Link> getLinks(){
-        ArrayList<Link> activeLinks = new ArrayList<Link>();
-        for (Link link : links) {
-            if (link != null) {
-                activeLinks.add(link);
-            }
-        }
-        return activeLinks;
-    }
+  public void setContent(String content) {
+    this.content = content;
+  }
 
-    /**
-     * Determines whether the Passage object has any links.
-     * @return true if there are any links associated with the passage, false otherwise.
-     */
-    public boolean hasLinks(Link links){
-        return links != null;
+  /**
+   * This method checks if the link is available and adds it to the links list if it is.
+   *
+   * @param link The Link object to be added.
+   * @return true if the link is added successfully, false otherwise.
+   */
+  public boolean addLink(Link link) {
+    if (link == null || links.contains(link)) {
+      return false;
+    } else {
+      links.add(link);
+      return true;
     }
+  }
 
-    /**
-     * Returns a String representation of the Passage object, which consists of the title
-     * and content fields concatenated together, separated by a space.
-     * @return a String representation of the Passage object.
-     */
-    public String toString(){
-        return title + " " + content;
+  /**
+   * This method returns all available links in a new list: activeLink.
+   *
+   * @return an ArrayList containing active links.
+   */
+  public ArrayList<Link> getLinks() {
+    ArrayList<Link> activeLinks = new ArrayList<Link>();
+    for (Link link : links) {
+      if (link != null) {
+        activeLinks.add(link);
+      }
     }
+    return activeLinks;
+  }
 
-    /**
-     * Checks if the two objects are the same reference, in which case they are equal.
-     * It then checks if the other object is an instance of the Passage class.
-     * Finally, it compares the title, content, and links fields of the two
-     * Passage objects using the Objects.equals() method.
-     * @param obj The object to compare to.
-     * @return True if both fields are null, or if both fields are equal according to their equals() method
-     */
-    public boolean equals(Object obj) {
-        if (obj == this) {
-            return true;
-        }
-        if (!(obj instanceof Passage)) {
-            return false;
-        }
-        Passage other = (Passage) obj;
-        return Objects.equals(title, other.title)
-                && Objects.equals(content, other.content)
-                && Objects.equals(links, other.links);
+  /**
+   * Determines whether the Passage object has any links.
+   *
+   * @return true if there are any links associated with the passage, false otherwise.
+   */
+  public boolean hasLinks() {
+    return !this.links.isEmpty();
+  }
+
+  /**
+   * Returns a String representation of the Passage object, which consists of the title
+   * and content fields concatenated together, separated by a space.
+   *
+   * @return a String representation of the Passage object.
+   */
+  public String toString() {
+    return title + " " + content;
+  }
+
+  /**
+   * Checks if the two objects are the same reference, in which case they are equal.
+   * It then checks if the other object is an instance of the Passage class.
+   * Finally, it compares the title, content, and links fields of the two
+   * Passage objects using the Objects.equals() method.
+   *
+   * @param obj The object to compare to.
+   * @return True if both fields are null, or if both fields are equal according to their equals() method
+   */
+  public boolean equals(Object obj) {
+    if (obj == this) {
+      return true;
     }
-    /**
-     * Computes the hash code for this object based on the values of its fields.
-     * @return the hash code value for this object.
-     */
-    public int hashCode() {
-        int hash = 7;
-        hash = 31 * hash + title.hashCode();
-        hash = 31 * hash + content.hashCode();
-        hash = 31 * hash + links.hashCode();
-        return hash;
+    if (!(obj instanceof Passage)) {
+      return false;
     }
+    Passage other = (Passage) obj;
+    return Objects.equals(title, other.title)
+        && Objects.equals(content, other.content)
+        && Objects.equals(links, other.links);
+  }
+
+  /**
+   * Computes the hash code for this object based on the values of its fields.
+   *
+   * @return the hash code value for this object.
+   */
+  public int hashCode() {
+    int hash = 7;
+    hash = 31 * hash + title.hashCode();
+    hash = 31 * hash + content.hashCode();
+    hash = 31 * hash + links.hashCode();
+    return hash;
+  }
 }
 

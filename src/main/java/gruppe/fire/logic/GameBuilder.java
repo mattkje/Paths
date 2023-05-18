@@ -3,25 +3,27 @@ package gruppe.fire.logic;
 import gruppe.fire.fileHandling.FileToPlayer;
 import gruppe.fire.fileHandling.FileToStory;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 public class GameBuilder {
 
-    private File playerFile;
-    private File storyFile;
-    public GameBuilder(File playerFile, File storyFile){
-        this.playerFile = playerFile;
-        this.storyFile = storyFile;
-    }
+  private File playerFile;
+  private File storyFile;
 
-    public Game createGame(){
-        FileToPlayer fileToPlayer = new FileToPlayer(playerFile);
-        Player player = fileToPlayer.readFile();
+  public GameBuilder(File playerFile, File storyFile) {
+    this.playerFile = playerFile;
+    this.storyFile = storyFile;
+  }
 
-        FileToStory fileToStory = new FileToStory(storyFile);
-        Story story = fileToStory.readFile();
+  public Game createGame() {
+    FileToPlayer fileToPlayer = new FileToPlayer(playerFile);
+    Player player = fileToPlayer.readFile();
 
-        return new Game(player, story);
-    }
+    FileToStory fileToStory = new FileToStory(storyFile);
+    Story story = fileToStory.readFile();
+
+
+    return new Game(player, story);
+  }
+
+
 }

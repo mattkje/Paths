@@ -1,7 +1,8 @@
 #mainRoot {
     -fx-background-color: linear-gradient(#6746a9, #3829cd)
 }
-.button{
+
+.button {
     -fx-background-color: #4f1fb9;
     -fx-text-fill: #ffffff;
     -fx-background-radius: 50px;
@@ -9,60 +10,92 @@
     -fx-effect: dropshadow(gaussian, rgb(29, 3, 89), 0, 6.8025, 0, 3);
 }
 
-.button:hover{
-    -fx-background-color: rgba(46,4,143,0.62);
+.button:hover {
+    -fx-background-color: rgba(46, 4, 143, 0.62);
     -fx-background-radius: 50px;
     -fx-cursor: HAND;
 }
+
 .button:pressed {
-    -fx-background-color: rgba(46,4,143,0.41);
+    -fx-background-color: rgba(46, 4, 143, 0.41);
     -fx-background-radius: 50px;
     -fx-cursor: HAND;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 0, 2, 0, 1);
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 0, 2, 0, 1);
     -fx-translate-y: 2px;
 }
 
 #importMenu {
-    -fx-background-color: rgba(0,0,0,0.7); -fx-background-radius: 40px
+    -fx-background-color: rgba(0, 0, 0, 0.7);
+    -fx-background-radius: 40px
 }
 
 #defaultStoryBox {
-    -fx-background-color: rgba(0,0,0,0.7);
+    -fx-background-color: rgba(0, 0, 0, 0.7);
     -fx-background-radius: 40px;
 }
 
 #savedBox {
-    -fx-background-color: rgba(0,0,0,0.7);
+    -fx-background-color: rgba(0, 0, 0, 0.7);
     -fx-background-radius: 40px;
 }
 
 #savedVBox {
-    -fx-background-color: rgba(54,54,54,0.5);
+    -fx-background-color: rgba(54, 54, 54, 0.5);
     -fx-background-radius: 30;
 }
 
 #backButton {
-    -fx-background-color: rgba(0,0,0,0.7);
+    -fx-background-color: rgba(0, 0, 0, 0.7);
     -fx-background-radius: 40px;
 }
 
 #tutorialBox {
-    -fx-background-color: rgba(0,0,0,0.7);
+    -fx-background-color: rgba(0, 0, 0, 0.7);
     -fx-background-radius: 40px;
 }
 
+#tutorialArea {
+    -fx-text-fill: black;
+    -fx-background-radius: 30;
+    -fx-background-color: white;
+    -fx-control-inner-background: white;
+}
+
+.text-area {
+    -fx-text-fill: white;
+    -fx-background-color: #000000;
+    -fx-control-inner-background: #000000;
+}
+
+#fileEditArea {
+    -fx-text-fill: black;
+    -fx-background-color: #ffffff;
+    -fx-border-color: #000000;
+    -fx-border-width: 5;
+    -fx-control-inner-background: #ffffff;
+}
+
+#editContainer {
+    -fx-background-color: white;
+    -fx-background-radius: 30px;
+}
+
+#fileEditMenuBar {
+    -fx-background-color: rgba(0, 0, 0, 0.58);
+}
+
 #settingsPane {
-    -fx-background-color: rgba(0,0,0,0.7);
+    -fx-background-color: rgba(0, 0, 0, 0.7);
     -fx-background-radius: 40px;
 }
 
 #startMenu {
-    -fx-background-color: rgba(0,0,0,0);
+    -fx-background-color: rgba(0, 0, 0, 0);
     -fx-background-radius: 40px;
 }
 
 #aboutBox {
-    -fx-background-color: rgba(0,0,0,0.9);
+    -fx-background-color: rgba(0, 0, 0, 0.9);
     -fx-background-radius: 30px;
 }
 
@@ -71,15 +104,19 @@
 }
 
 #quitBox {
-    -fx-background-color: rgba(0,0,0,0.9);
+    -fx-background-color: rgba(0, 0, 0, 0.9);
 }
 
 #noFile {
     -fx-background-color: #363636;
-    -fx-opacity: 0.5 ;
+    -fx-opacity: 0.5;
     -fx-background-radius: 20px;
     -fx-padding: 5px;
     -fx-max-width: 300
+}
+
+#goalStatus {
+    -fx-text-fill: #ff0080;
 }
 
 #storyButtons {
@@ -91,16 +128,16 @@
 }
 
 #storyButtons:hover {
-    -fx-background-color: rgba(46,4,143,0.62);
+    -fx-background-color: rgba(46, 4, 143, 0.62);
     -fx-background-radius: 10px;
     -fx-pref-width: 300
 }
 
 #storyButtons:pressed {
-    -fx-background-color: rgba(46,4,143,0.41);
+    -fx-background-color: rgba(46, 4, 143, 0.41);
     -fx-background-radius: 10px;
     -fx-pref-width: 300;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 0, 2, 0, 1);
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 0, 2, 0, 1);
     -fx-translate-y: 2px;
 }
 
@@ -109,24 +146,54 @@
     -fx-background-radius: 30px;
     -fx-cursor: HAND;
     -fx-effect: dropshadow(gaussian, rgb(128, 80, 234), 0, 6.8025, 0, 3);
-    -fx-pref-width: 600;
+    -fx-pref-width: 610;
     -fx-pref-height: 140;
 }
-#startButton:hover{
-    -fx-background-color: rgba(46,4,143,0.62);
+
+#startButton:hover {
+    -fx-background-color: rgba(46, 4, 143, 0.62);
     -fx-background-radius: 30px;
     -fx-cursor: HAND;
-    -fx-pref-width: 600;
+    -fx-pref-width: 610;
     -fx-pref-height: 140;
 }
+
 #startButton:pressed {
-    -fx-background-color: rgba(46,4,143,0.41);
+    -fx-background-color: rgba(46, 4, 143, 0.41);
     -fx-background-radius: 30px;
     -fx-cursor: HAND;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 0, 2, 0, 1);
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 0, 2, 0, 1);
     -fx-translate-y: 2px;
-    -fx-pref-width: 600;
+    -fx-pref-width: 610;
     -fx-pref-height: 140;
+
+}
+
+#fileEditorButton {
+    -fx-background-color: rgba(0, 0, 0, 0.7);
+    -fx-background-radius: 20px;
+    -fx-cursor: HAND;
+    -fx-effect: dropshadow(gaussian, rgb(128, 80, 234), 0, 6.8025, 0, 3);
+    -fx-pref-width: 300;
+    -fx-pref-height: 70;
+}
+
+#fileEditorButton:hover {
+    -fx-background-color: rgba(46, 4, 143, 0.62);
+    -fx-background-radius: 20px;
+    -fx-cursor: HAND;
+    -fx-pref-width: 300;
+    -fx-pref-height: 70;
+}
+
+#fileEditorButton:pressed {
+    -fx-background-color: rgba(46, 4, 143, 0.41);
+    -fx-background-radius: 20px;
+    -fx-cursor: HAND;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 0, 2, 0, 1);
+    -fx-translate-y: 2px;
+    -fx-pref-width: 300;
+    -fx-pref-height: 70;
 
 }
 
@@ -138,18 +205,20 @@
     -fx-pref-width: 300;
     -fx-pref-height: 70;
 }
-#settingsButton:hover{
-    -fx-background-color: rgba(46,4,143,0.62);
+
+#settingsButton:hover {
+    -fx-background-color: rgba(46, 4, 143, 0.62);
     -fx-background-radius: 20px;
     -fx-cursor: HAND;
     -fx-pref-width: 300;
     -fx-pref-height: 70;
 }
+
 #settingsButton:pressed {
-    -fx-background-color: rgba(46,4,143,0.41);
+    -fx-background-color: rgba(46, 4, 143, 0.41);
     -fx-background-radius: 20px;
     -fx-cursor: HAND;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 0, 2, 0, 1);
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 0, 2, 0, 1);
     -fx-translate-y: 2px;
     -fx-pref-width: 300;
     -fx-pref-height: 70;
@@ -164,18 +233,20 @@
     -fx-pref-width: 300;
     -fx-pref-height: 70;
 }
-#howToPlayButton:hover{
-    -fx-background-color: rgba(46,4,143,0.62);
+
+#howToPlayButton:hover {
+    -fx-background-color: rgba(46, 4, 143, 0.62);
     -fx-background-radius: 20px;
     -fx-cursor: HAND;
     -fx-pref-width: 300;
     -fx-pref-height: 70;
 }
+
 #howToPlayButton:pressed {
-    -fx-background-color: rgba(46,4,143,0.41);
+    -fx-background-color: rgba(46, 4, 143, 0.41);
     -fx-background-radius: 20px;
     -fx-cursor: HAND;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 0, 2, 0, 1);
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 0, 2, 0, 1);
     -fx-translate-y: 2px;
     -fx-pref-width: 300;
     -fx-pref-height: 70;
@@ -190,25 +261,27 @@
     -fx-pref-width: 300;
     -fx-pref-height: 70;
 }
-#exitButton:hover{
-    -fx-background-color: rgba(46,4,143,0.62);
+
+#exitButton:hover {
+    -fx-background-color: rgba(46, 4, 143, 0.62);
     -fx-background-radius: 20px;
     -fx-cursor: HAND;
     -fx-pref-width: 300;
     -fx-pref-height: 70;
 }
+
 #exitButton:pressed {
-    -fx-background-color: rgba(46,4,143,0.41);
+    -fx-background-color: rgba(46, 4, 143, 0.41);
     -fx-background-radius: 20px;
     -fx-cursor: HAND;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 0, 2, 0, 1);
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 0, 2, 0, 1);
     -fx-translate-y: 2px;
     -fx-pref-width: 300;
     -fx-pref-height: 70;
 
 }
 
-.tool-bar{
+.tool-bar {
     -fx-background-color: rgba(12, 2, 37, 0.8);
 }
 
@@ -236,67 +309,75 @@
     -fx-font-weight: BOLD;
 }
 
-#ppButton1{
+#ppButton1 {
     -fx-background-color: transparent;
     -fx-cursor: HAND;
     -fx-effect: dropshadow(gaussian, rgb(29, 3, 89), 0, 6.8025, 0, 3);
 }
-#ppButton1:hover{
+
+#ppButton1:hover {
     -fx-background-color: transparent;
     -fx-cursor: HAND;
 }
+
 #ppButton1:pressed {
     -fx-background-color: transparent;
     -fx-cursor: HAND;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 0, 2, 0, 1);
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 0, 2, 0, 1);
     -fx-translate-y: 2px;
 }
 
-#ppButton2{
+#ppButton2 {
     -fx-background-color: transparent;
     -fx-cursor: HAND;
     -fx-effect: dropshadow(gaussian, rgb(29, 3, 89), 0, 6.8025, 0, 3);
 }
-#ppButton2:hover{
+
+#ppButton2:hover {
     -fx-background-color: transparent;
     -fx-cursor: HAND;
 }
+
 #ppButton2:pressed {
     -fx-background-color: transparent;
     -fx-cursor: HAND;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 0, 2, 0, 1);
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 0, 2, 0, 1);
     -fx-translate-y: 2px;
 }
 
-#ppButton3{
+#ppButton3 {
     -fx-background-color: transparent;
     -fx-cursor: HAND;
     -fx-effect: dropshadow(gaussian, rgb(29, 3, 89), 0, 6.8025, 0, 3);
 }
-#ppButton3:hover{
+
+#ppButton3:hover {
     -fx-background-color: transparent;
     -fx-cursor: HAND;
 }
+
 #ppButton3:pressed {
     -fx-background-color: transparent;
     -fx-cursor: HAND;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 0, 2, 0, 1);
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 0, 2, 0, 1);
     -fx-translate-y: 2px;
 }
 
-#ppButton{
+#ppButton {
     -fx-background-color: transparent;
     -fx-cursor: HAND;
     -fx-effect: dropshadow(gaussian, rgb(29, 3, 89), 0, 6.8025, 0, 3);
 }
-#ppButton:hover{
+
+#ppButton:hover {
     -fx-background-color: transparent;
     -fx-cursor: HAND;
 }
+
 #ppButton:pressed {
     -fx-background-color: transparent;
     -fx-cursor: HAND;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 0, 2, 0, 1);
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 0, 2, 0, 1);
     -fx-translate-y: 2px;
 }
 
@@ -319,16 +400,19 @@
     -fx-background-color: #693db9;
     -fx-background-radius: 0;
 }
+
 .spinner .increment-arrow-button:hover,
 .spinner .decrement-arrow-button:hover {
     -fx-background-color: #431b8f;
 }
+
 .spinner .increment-arrow-button:hover:pressed,
 .spinner .decrement-arrow-button:hover:pressed,
 .spinner .increment-arrow-button:pressed,
 .spinner .decrement-arrow-button:pressed {
     -fx-background-color: #431b8f;
 }
+
 .spinner .increment-arrow-button .increment-arrow,
 .spinner .decrement-arrow-button .decrement-arrow {
     -fx-background-color: white;
@@ -388,11 +472,13 @@
     -fx-background-color: #1f0e41;
     -fx-background-radius: 30px;
 }
+
 .tab-pane .tab:selected {
     -fx-background-color: #4f1fb9;
     -fx-background-insets: 0 0 0 0;
     -fx-background-radius: 30px;
 }
+
 .tab .tab-label {
     -fx-alignment: CENTER;
     -fx-text-fill: white;
@@ -401,21 +487,25 @@
     -fx-padding: 0 10 0 10;
     -fx-font-family: Comfortaa;
 }
+
 .tab-pane:top *.tab-header-area {
     -fx-padding: 0 0 0 30;
 
     /* NO SPACE LEFT OF FIRST TAB */
     /* -fx-padding: 0 0 0 30; */
 }
+
 .tab-pane {
     -fx-background-color: transparent;
     -fx-tab-min-width: 100px;
     -fx-tab-min-height: 53px;
     -fx-tab-max-height: 53px;
 }
+
 .tab-pane .tab {
     -fx-background-color: transparent;
 }
+
 .tab-pane:focused .tab-header-area .headers-region .tab:selected .focus-indicator {
     -fx-border-width: 0;
     -fx-border-insets: 0 0 0 0;

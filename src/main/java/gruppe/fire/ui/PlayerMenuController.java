@@ -1,35 +1,29 @@
 package gruppe.fire.ui;
 
-import javafx.animation.Animation;
-import javafx.animation.Interpolator;
-import javafx.animation.ParallelTransition;
-import javafx.animation.TranslateTransition;
-import javafx.fxml.Initializable;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
-import javafx.util.Duration;
-
 import java.io.FileWriter;
 import java.io.IOException;
-import java.net.URL;
 import java.nio.file.Path;
-import java.util.Objects;
-import java.util.ResourceBundle;
 
+/**
+ * Represents a controller for the player menu class.
+ * This class should handle events triggered by the PlayerMenu.
+ * @author Matti Kjellstadli
+ * @version 2023-05-18
+ */
 public class PlayerMenuController {
 
-    public void setActivePlayer(String filename){
-        Path savedPlayers = Path.of("Data/PlayerData/Players/" + filename);
-        try {
-            FileWriter writer;
-            writer = new FileWriter("Data/currentPlayerFile.cfg");
-            writer.write(String.valueOf(savedPlayers));
-            writer.close();
+  /**
+   * This method should write the active player to a temporary file.
+   * @param filename Player file name.
+   */
+  public void setActivePlayer(String filename) {
+    Path savedPlayers = Path.of("Data/PlayerData/Players/" + filename);
+    try (FileWriter fileWriter = new FileWriter("Data/currentPlayerFile.cfg")){
+      fileWriter.write(String.valueOf(savedPlayers));
 
-        } catch (IOException ex) {
-            throw new RuntimeException(ex);
-        }
+    } catch (IOException ex) {
+      String exceptionString = "Could not write to file "+ex;
+      System.getLogger(exceptionString);
     }
+  }
 }

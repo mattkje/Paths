@@ -14,7 +14,7 @@ You turn around, there is a man in a black coat, he stabs you to death
 The door opens to a hall way. You see a knife covered in blood. You also see some gold coins on the floor.
 [Take the knife](Clue);InventoryAction;Knife;
 [Take the gold](Clue);GoldAction;1000;
-[Go back (-10 score)](Beginning 2);ScoreAction;-10;
+[Go back](Beginning 2);ScoreAction;-10;
 ::Clue
 You proceed to walk down the hallway. You notice that someone is following you.
 [Start running](Game over);ScoreAction;0;
@@ -89,4 +89,3 @@ You find the footage from the hidden camera and watch it carefully. You see a fi
 [Show the footage to the butler](Butler 2);GoldAction;0;
 ::Suspects 2
 You go back to each of the suspects and look for a distinctive ring on their finger. You finally find the ring on Dr. Brown's finger. You confront him and he confesses to the murder. He tells you that he was jealous of the businessman's success and wanted to take over his company. You turn him over to the police and the case is solved.
-[Congratulations, you have solved the murder mystery!](Exit)

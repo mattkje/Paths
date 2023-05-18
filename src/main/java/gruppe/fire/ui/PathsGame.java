@@ -13,55 +13,62 @@ import javafx.scene.media.MediaView;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
+/**
+ * Represents the game startup phase.
+ * The class should play an intro video
+ * before changing the scene root to the main menu.
+ *
+ * @author Matti Kjellstadli
+ * @version 2023-05-18
+ */
 public class PathsGame extends Application {
 
-    private MainMenu mainMenu;
+  /**
+   * This method should start the game after playing an intro video.
+   * @param stage The Game stage.
+   */
+  @Override
+  public void start(Stage stage) {
 
-    private MainMenuController controller;
-    @Override
-    public void start(Stage stage)  {
+    MainMenu mainMenu = new MainMenu();
+    MainMenuController controller = new MainMenuController();
 
-        this.mainMenu = new MainMenu();
-        this.controller = new MainMenuController();
+    MediaView mediaView = controller.getLoadingVideo();
+    mediaView.getMediaPlayer().play();
+    Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+    double screenWidth = screenBounds.getWidth();
+    double screenHeight = screenBounds.getHeight();
 
-        MediaView mediaView = controller.getLoadingVideo();
-        mediaView.getMediaPlayer().play();
-        Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
-        double screenWidth = screenBounds.getWidth();
-        double screenHeight = screenBounds.getHeight();
-
-        BorderPane root = new BorderPane();
-        HBox group = new HBox();
-        mediaView.fitWidthProperty().bind(group.widthProperty());
-        mediaView.fitHeightProperty().bind(group.heightProperty());
-        group.setPrefSize(screenWidth, screenHeight);
-        group.setAlignment(Pos.CENTER);
-        group.getChildren().add(mediaView);
-        root.setCenter(group);
-        Scene scene = new Scene(root);
-        mediaView.getMediaPlayer().setOnEndOfMedia(() -> {
-            Platform.runLater(() -> {
-                try {
-                    mediaView.getMediaPlayer().dispose();
-                    mainMenu.startMain(scene);
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-            });
-        });
-
-        stage.setFullScreen(true);
-        stage.setScene(scene);
-        stage.setTitle("Paths");
-        stage.getIcons().add(new Image("/gruppe/fire/Media/icon.png"));
-        stage.setFullScreenExitHint("");
-        stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
-        stage.show();
+    BorderPane root = new BorderPane();
+    HBox group = new HBox();
+    mediaView.fitWidthProperty().bind(group.widthProperty());
+    mediaView.fitHeightProperty().bind(group.heightProperty());
+    group.setPrefSize(screenWidth, screenHeight);
+    group.setAlignment(Pos.CENTER);
+    group.getChildren().add(mediaView);
+    root.setCenter(group);
+    Scene scene = new Scene(root);
+    mediaView.getMediaPlayer().setOnEndOfMedia(() -> Platform.runLater(() -> {
+      mediaView.getMediaPlayer().dispose();
+      mainMenu.startMain(scene);
+    }));
+    stage.setFullScreen(true);
+    stage.setScene(scene);
+    stage.setTitle("Paths");
+    stage.getIcons().add(new Image("/gruppe/fire/Media/icon.png"));
+    stage.setFullScreenExitHint("");
+    stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
+    stage.show();
 
 
-    }
-    public static void appMain(String[] args) {
-        launch(args);
-    }
+  }
+
+  /**
+   * Responsible for launching the game.
+   * @param args Launch args.
+   */
+  public static void appMain(String[] args) {
+    launch(args);
+  }
 
 }

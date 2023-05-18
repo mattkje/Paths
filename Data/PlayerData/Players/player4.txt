@@ -1,5 +1,0 @@
-Player 2
-Data\PlayerData\Images\pp4.png
-3
-0
-300

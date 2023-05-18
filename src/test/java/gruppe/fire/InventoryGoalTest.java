@@ -5,14 +5,15 @@ import gruppe.fire.logic.Player;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
+import java.util.List;
 
 
 class InventoryGoalTest {
 
     @Test
     void testIsFulfilled() {
-        Player player = new Player("Matti", null, 50, 50, 50);
-        ArrayList<String> mandatoryItems = new ArrayList<>();
+        Player player = new Player("Mathias", null, 50, 50, 50);
+        String[] mandatoryItems = new ArrayList<>();
         mandatoryItems.add("knife");
         mandatoryItems.add("shotgun");
 
@@ -25,8 +26,8 @@ class InventoryGoalTest {
 
     @Test
     void testIsFulfilledWithSomeItemsMissing() {
-        Player player = new Player("Matti", null, 50, 50, 50);
-        ArrayList<String> mandatoryItems = new ArrayList<>();
+        Player player = new Player("Mathias", null, 50, 50, 50);
+        String[] mandatoryItems = new List<>();
         mandatoryItems.add("shotgun");
         mandatoryItems.add("shotgun pellets");
         mandatoryItems.add("shells");
@@ -40,11 +41,15 @@ class InventoryGoalTest {
 
     @Test
     void testIsFulfilledWithNoItems() {
-        Player player = new Player("Matti", null, 50, 50, 50);
-        ArrayList<String> mandatoryItems = new ArrayList<>();
+        Player player = new Player("Mathias", null, 50, 50, 50);
+        List<String> mandatoryItems = new ArrayList<>();
         mandatoryItems.add("torch");
-        mandatoryItems.add("pickaxe");
+        mandatoryItems.add("torch");
         mandatoryItems.add("sword");
+
+        for (String item : mandatoryItems) {
+            System.out.println(item);
+        }
 
         InventoryGoal goal = new InventoryGoal(mandatoryItems);
 

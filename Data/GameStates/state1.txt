@@ -1,8 +1,8 @@
-Data\SavedPaths\paths2.paths
-Bedroom
-Adrian
-300
-3
-0
-[]
-[]
+src\main\resources\gruppe\fire\Paths\MurderMystery.paths
+Meeting
+Calm Matt
+100
+6
+10
+[gruppe.fire.goals.GoldGoal@172b0f95, gruppe.fire.goals.HealthGoal@1885992d, gruppe.fire.goals.ScoreGoal@4c1e2566, gruppe.fire.goals.InventoryGoal@7ea5ee1a]
+[Knife]

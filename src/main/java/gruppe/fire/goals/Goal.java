@@ -8,5 +8,8 @@ import gruppe.fire.logic.Player;
  * whether the player has achieved the expected result.
  */
 public interface Goal {
-    public boolean isFulfilled(Player player);
+  public boolean isFulfilled(Player player);
+
+
+  String getGoal();
 }

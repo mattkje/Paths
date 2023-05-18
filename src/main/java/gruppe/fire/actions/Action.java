@@ -8,5 +8,5 @@ import gruppe.fire.logic.Player;
  * health, gold inventory or inventory.
  */
 public interface Action {
-    public void execute(Player player);
+  public void execute(Player player);
 }

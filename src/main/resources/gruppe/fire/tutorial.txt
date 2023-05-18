@@ -1,0 +1,71 @@
+
+How to create your own story file:
+
+Paths file:
+To create your own Paths file, you only need a basic text editor.
+
+The file follows a simple pattern:
+
+Game title               |  Haunted House
+Passage title            |  ::Beginnings
+Passage content          |  You are in a small, dimly lit room. There is a door in front of you.
+Link title and reference |  [Try to open the door](Another room)
+Passage title            |  ::Another room
+Passage content          |  The door opens to another room. You see a desk with a large, dusty book.
+link (Action)            |  [Open the book](The book of spells);InventoryAction;SpellBook;
+Link title and reference |  [Go back](Beginnings)
+
+
+Game title is the title of your story and should be written once in the very first line.
+This can not be empty.
+
+The following must be written in the order they are written in:
+
+Passage title is the title of the room in which the player is currently in. It should
+always start with "::". A passage title can not be empty.
+
+Passage content should tell the player something that is happening in the current room.
+The passage content should not be empty.
+
+Link title is one of the choices the player gets in a passage. It should be written in
+clam brackets "[Link title]"
+Link reference should be the name of an existing room within the story. When a link is selected, it should redirect
+the player to a new passage. The reference should be written in parentheses "(Passage title)"
+Links can be empty, and you can add as many as you like. Link titles can not be empty if you have a reference
+and vice versa. If you decide to have no links, delete the rows. Do not leave empty clams.
+
+Lastly actions. Actions consists of an action type, and value.
+All action types:
+GoldAction       (Number value)
+HealthAction     (Number value)
+ScoreAction      (Number value)
+InventoryAction  ( Text value )
+
+The actions should be written after the link reference because they will happen when link is pressed.
+Actions are separated by semicolons like this:
+;GoldAction;100; (Will give the player 100 gold)
+;HealthAction;-2; (Will take two lives from the player)
+;InventoryAction;Sword; (Will give the player a sword)
+Actions can be empty.
+
+Gpaths file:
+The Gpaths format is quite a bit different from normal paths files.
+Gpaths are archives containing a normal paths file, music pack and images.
+
+This format is quite sensitive and requires precision. The file should be structured like this:
+
+\-> (file)    story.paths
+    (file)    music.mp3
+    (folder)  Images
+        \-> Passage1.png
+            Passage2.png
+            Passage3.png
+            ...
+
+Your path file must be named "story.paths", and music file "music.mp3" and image folder "Images"
+The images themselves should be named to the passage title corresponding to the room in which
+the player is in. So if a room title is "Hall way", the file should be named: "Hall way.png".
+Images are not required, and you do not need an image for every room.
+
+When all files are ready, pack the files to the root of a zip file and rename the extension to ".Gpaths"
+Your game should now be able to run.

@@ -1,7 +1,6 @@
 package gruppe.fire;
 
 import gruppe.fire.logic.Player;
-import gruppe.fire.logic.PlayerBuilder;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
