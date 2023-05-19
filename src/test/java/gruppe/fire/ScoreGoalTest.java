@@ -8,21 +8,36 @@ import org.junit.jupiter.api.Test;
 class ScoreGoalTest {
     @Test
     void testIsFulfilled() {
-        Player player = new Player("Mathias", null,5,50,5);
+        Player player = new Player.PlayerBuilder()
+            .name("Mathias")
+            .health(5)
+            .gold(50)
+            .score(5)
+            .build();
         ScoreGoal goal = new ScoreGoal(0);
         Assertions.assertTrue(goal.isFulfilled(player));
     }
 
     @Test
     void testRemainingPoints() {
-        Player player = new Player("Mathias", null, 5, 55, 15);
+        Player player = new Player.PlayerBuilder()
+            .name("Mathias")
+            .health(5)
+            .gold(15)
+            .score(55)
+            .build();
         ScoreGoal goal = new ScoreGoal(0);
         Assertions.assertEquals(50, goal.remainingPoints(player));
     }
 
     @Test
     void testIsNotFulFilled() {
-        Player player = new Player("Mathias", null, 10, 100, 15);
+        Player player = new Player.PlayerBuilder()
+            .name("Mathias")
+            .health(10)
+            .gold(15)
+            .score(100)
+            .build();
         ScoreGoal goal = new ScoreGoal(0);
         Assertions.assertFalse(goal.isFulfilled(player));
     }

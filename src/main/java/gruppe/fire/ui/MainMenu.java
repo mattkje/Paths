@@ -105,6 +105,7 @@ public class MainMenu {
     //Styling.
     mainScene.getStylesheets().add("https://fonts.googleapis.com/css2?family=Pacifico");
     mainScene.getStylesheets().add("https://fonts.googleapis.com/css2?family=Comfortaa");
+    mainScene.getStylesheets().add("https://fonts.googleapis.com/css2?family=JetBrains+Mono");
     mainScene.getStylesheets().add(
         Objects.requireNonNull(this.getClass().getResource("/gruppe/fire/css/main.css"))
             .toExternalForm());
@@ -336,6 +337,11 @@ public class MainMenu {
       playerMenu.start(mainScene);
       player.dispose();
     });
+
+    defaultStory1.setId("defaultStory");
+    defaultStory2.setId("defaultStory");
+    defaultStory3.setId("defaultStory");
+    defaultStory4.setId("defaultStory");
 
     defaultStories.add(defaultStory1, 0, 0);
     defaultStories.add(defaultStory2, 0, 1);

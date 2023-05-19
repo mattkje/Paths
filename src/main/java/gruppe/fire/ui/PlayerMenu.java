@@ -1,5 +1,6 @@
 package gruppe.fire.ui;
 
+import com.sun.javafx.scene.control.DatePickerContent;
 import gruppe.fire.fileHandling.DataBase;
 import gruppe.fire.fileHandling.FileToPlayer;
 import gruppe.fire.logic.JukeBox;
@@ -255,6 +256,8 @@ public class PlayerMenu {
     goalSetMenu.setAlignment(Pos.CENTER);
     goalSetMenu.setVgap(20);
     goalSetMenu.setHgap(20);
+    goalSetMenu.setPadding(new Insets(70));
+    goalSetMenu.setStyle("-fx-background-color: rgba(0,0,0,0.7); -fx-background-radius: 40px");
     Label goldGoal = new Label("Gold goal:");
     goldGoal.setFont(font);
     Label healthGoal = new Label("Health goal:");
@@ -309,6 +312,7 @@ public class PlayerMenu {
     }
     goalsTitle.setFont(font);
     Button addGoalsButton = new Button("Add goal");
+    addGoalsButton.setFont(font);
 
 
     goalMenu.getChildren().addAll(goalsTitle, goalStatus, goalsList, addGoalsButton);
@@ -319,29 +323,66 @@ public class PlayerMenu {
     playerHBox.setAlignment(Pos.CENTER);
     playerHBox.setSpacing(50);
 
+    Button cancelButton = new Button("Cancel");
+    cancelButton.setPrefSize(400, 100);
+    cancelButton.setFont(buttonFont);
+    cancelButton.setTextFill(Color.WHITE);
+    cancelButton.setOnAction(e -> {
+      try {
+        mainMenu.startMain(scene);
+        selectMusic.dispose();
+      } catch (Exception ex) {
+        throw new RuntimeException(ex);
+      }
+    });
+    Button startButton = new Button("Start Game");
+    startButton.setPrefSize(1000, 100);
+    startButton.setFont(buttonFont);
+    startButton.setTextFill(Color.WHITE);
+    startButton.setOnAction(e -> {
+      if (dataBase.checkGoalsEmpty()){
+        controller.noGoalsPopUp(gameDisplay, font, menuFontLarge, scene, selectMusic);
+      } else {
+        gameDisplay.start(scene, false);
+      }
+
+    });
+
+
+    HBox buttonBox = new HBox();
+    buttonBox.setAlignment(Pos.CENTER);
+    buttonBox.setSpacing(50);
+    buttonBox.setMaxWidth(1440);
+    buttonBox.getChildren().addAll(cancelButton, startButton);
+    buttonBox.setId("playerButtonBox");
+
+
     VBox playerVBox = new VBox();
     playerVBox.setMinWidth(400);
-    playerHBox.getChildren().addAll(playerVBox, goalMenu);
+    VBox playerContainer = new VBox(playerVBox, buttonBox);
+    playerContainer.setAlignment(Pos.CENTER);
+    playerContainer.setSpacing(20);
+    playerHBox.getChildren().addAll(playerContainer, goalMenu);
     playerVBox.getChildren().addAll(playerTitle, selectedPlayer, ppImageBox);
     newPlayerButton.setOnAction(e -> {
       playerHBox.getChildren().removeAll(goalMenu);
-      playerVBox.getChildren().clear();
-      playerVBox.getChildren().add(newUserHBox);
+      playerContainer.getChildren().clear();
+      playerContainer.getChildren().add(newUserHBox);
     });
     backButton.setOnAction(e -> {
-      playerVBox.getChildren().clear();
-      playerVBox.getChildren().addAll(playerTitle, selectedPlayer, ppImageBox);
+      playerContainer.getChildren().clear();
+      playerContainer.getChildren().addAll(playerVBox, buttonBox);
       playerHBox.getChildren().add(goalMenu);
     });
     addGoalsButton.setOnAction(event -> {
       playerHBox.getChildren().removeAll(goalMenu);
-      playerVBox.getChildren().clear();
-      playerVBox.getChildren().addAll(goalSetBox);
+      playerContainer.getChildren().clear();
+      playerContainer.getChildren().addAll(goalSetBox);
     });
     cancelGoals.setOnAction(e -> {
-      playerVBox.getChildren().clear();
-      playerVBox.getChildren().addAll(playerTitle, selectedPlayer, ppImageBox);
-      playerHBox.getChildren().add(goalMenu);
+      playerContainer.getChildren().clear();
+      playerContainer.getChildren().addAll(playerVBox, buttonBox);
+      playerHBox.getChildren().addAll(goalMenu);
     });
     setGoals.setOnAction(e -> {
       int goldInt = (int) setGoldSpinner.getValue();
@@ -360,39 +401,15 @@ public class PlayerMenu {
     playerVBox.setEffect(dropShadow);
     playerVBox.setSpacing(30);
 
-    Button cancelButton = new Button("Cancel");
-    cancelButton.setPrefSize(200, 100);
-    cancelButton.setFont(buttonFont);
-    cancelButton.setTextFill(Color.WHITE);
-    cancelButton.setOnAction(e -> {
-      try {
-        mainMenu.startMain(scene);
-        selectMusic.dispose();
-      } catch (Exception ex) {
-        throw new RuntimeException(ex);
-      }
-    });
-    Button startButton = new Button("Start Game");
-    startButton.setPrefSize(600, 100);
-    startButton.setFont(buttonFont);
-    startButton.setTextFill(Color.WHITE);
-    startButton.setOnAction(e -> {
-      if (dataBase.checkGoalsEmpty()){
-        controller.noGoalsPopUp(gameDisplay, font, menuFontLarge, scene, selectMusic);
-      } else {
-        gameDisplay.start(scene, false);
-      }
 
-    });
-    HBox buttonBox = new HBox();
-    buttonBox.setAlignment(Pos.CENTER);
-    buttonBox.setSpacing(50);
-    buttonBox.getChildren().addAll(cancelButton, startButton);
 
     VBox menuBox = new VBox();
     menuBox.setAlignment(Pos.CENTER);
-    menuBox.getChildren().add(playerHBox);
-    root.setBottom(buttonBox);
+    menuBox.setSpacing(20);
+
+    menuBox.getChildren().addAll(playerHBox);
+
+
     root.setCenter(menuBox);
 
 

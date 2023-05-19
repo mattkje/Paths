@@ -40,6 +40,7 @@ public class PathsGame extends Application {
     double screenHeight = screenBounds.getHeight();
 
     BorderPane root = new BorderPane();
+    root.setPrefSize(1920, 1080);
     HBox group = new HBox();
     mediaView.fitWidthProperty().bind(group.widthProperty());
     mediaView.fitHeightProperty().bind(group.heightProperty());
@@ -47,17 +48,22 @@ public class PathsGame extends Application {
     group.setAlignment(Pos.CENTER);
     group.getChildren().add(mediaView);
     root.setCenter(group);
-    Scene scene = new Scene(root);
+    Scene scene = new Scene(root, 1920, 1080);
+
+    /*
     mediaView.getMediaPlayer().setOnEndOfMedia(() -> Platform.runLater(() -> {
       mediaView.getMediaPlayer().dispose();
-      mainMenu.startMain(scene);
+
     }));
+     */
+
     stage.setFullScreen(true);
     stage.setScene(scene);
     stage.setTitle("Paths");
     stage.getIcons().add(new Image("/gruppe/fire/Media/icon.png"));
     stage.setFullScreenExitHint("");
     stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
+    mainMenu.startMain(scene);
     stage.show();
 
 

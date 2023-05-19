@@ -12,8 +12,13 @@ class InventoryGoalTest {
 
     @Test
     void testIsFulfilled() {
-        Player player = new Player("Mathias", null, 50, 50, 50);
-        String[] mandatoryItems = new ArrayList<>();
+        Player player = new Player.PlayerBuilder()
+            .name("Mathias")
+            .health(50)
+            .gold(50)
+            .score(50)
+            .build();
+        List<String> mandatoryItems = new ArrayList<>();
         mandatoryItems.add("knife");
         mandatoryItems.add("shotgun");
 
@@ -26,8 +31,13 @@ class InventoryGoalTest {
 
     @Test
     void testIsFulfilledWithSomeItemsMissing() {
-        Player player = new Player("Mathias", null, 50, 50, 50);
-        String[] mandatoryItems = new List<>();
+        Player player = new Player.PlayerBuilder()
+            .name("Mathias")
+            .health(50)
+            .gold(50)
+            .score(50)
+            .build();
+        List<String> mandatoryItems = new ArrayList<>();
         mandatoryItems.add("shotgun");
         mandatoryItems.add("shotgun pellets");
         mandatoryItems.add("shells");
@@ -41,7 +51,12 @@ class InventoryGoalTest {
 
     @Test
     void testIsFulfilledWithNoItems() {
-        Player player = new Player("Mathias", null, 50, 50, 50);
+        Player player = new Player.PlayerBuilder()
+            .name("Mathias")
+            .health(50)
+            .gold(50)
+            .score(50)
+            .build();
         List<String> mandatoryItems = new ArrayList<>();
         mandatoryItems.add("torch");
         mandatoryItems.add("torch");

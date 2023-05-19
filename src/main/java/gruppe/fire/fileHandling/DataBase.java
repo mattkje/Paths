@@ -6,6 +6,8 @@ import gruppe.fire.logic.Link;
 import gruppe.fire.logic.Passage;
 import gruppe.fire.logic.Player;
 import gruppe.fire.logic.Story;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import javafx.scene.image.Image;
 import java.io.*;
@@ -189,7 +191,6 @@ public class DataBase {
   public void writeStateToFile(String gameState) {
     try (FileWriter fileWriter = new FileWriter("Data/GameStates/state1.txt");) {
       fileWriter.write(gameState);
-      fileWriter.close();
     } catch (IOException e) {
       String exceptionString = "Something went wrong" + e;
       System.getLogger(exceptionString);
@@ -260,7 +261,7 @@ public class DataBase {
       GoldGoal gGoal = new GoldGoal(gold);
       HealthGoal hGoal = new HealthGoal(health);
       ScoreGoal sGoal = new ScoreGoal(score);
-      String[] inventoryStringList = (inventory.split(","));
+      List<String> inventoryStringList = Arrays.asList(inventory.split(","));
       InventoryGoal iGoal = new InventoryGoal(inventoryStringList);
 
       goalArray.add(gGoal);

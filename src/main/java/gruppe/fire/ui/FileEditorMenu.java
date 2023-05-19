@@ -18,7 +18,6 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
-import java.util.Objects;
 
 /**
  * Represents the File editor menu. This menu should let the user write
@@ -50,16 +49,6 @@ public class FileEditorMenu {
     root.getChildren().clear();
     root.setStyle("-fx-background-color: linear-gradient(#6746a9, #3829cd)");
 
-    //Styling.
-    scene.getStylesheets().add("https://fonts.googleapis.com/css2?family=Pacifico");
-    scene.getStylesheets().add("https://fonts.googleapis.com/css2?family=Comfortaa");
-    scene.getStylesheets().add("https://fonts.googleapis.com/css2?family=JetBrains+Mono");
-    scene.getStylesheets().add(
-        Objects.requireNonNull(this.getClass().getResource("/gruppe/fire/css/main.css"))
-            .toExternalForm());
-    root.setId("mainRoot");
-    mainController.getBackground(root);
-
 
     //Shadows and fonts
     DropShadow dropShadow = new DropShadow();
@@ -85,30 +74,24 @@ public class FileEditorMenu {
     double width = screenSize.getWidth();
     Font font = Font.font("Comfortaa", width/100);
     Font titleFontSmall = Font.font("Pacifico", width/27);
-    Font textFont = Font.font("JetBrains Mono", 24);
-    Font textFontSmall = Font.font("JetBrains Mono", 14);
+    Font textFont = Font.font("JetBrains Mono", width/120);
+    Font textFontSmall = Font.font("JetBrains Mono", width/200);
 
     TextArea editArea = new TextArea();
-    editArea.setMaxSize(1400, 1000);
+    editArea.setPrefSize(root.getWidth()*0.7, 2000);
     editArea.setFont(textFont);
     editArea.setId("fileEditArea");
     editArea.setPromptText("Start with title");
-    VBox editContainer = new VBox(editArea);
-    editContainer.setMaxSize(1400, 1000);
-    editContainer.setPrefSize(1400, 1000);
-    editContainer.setPadding(new Insets(50));
-    editContainer.setId("editContainer");
-    editContainer.setEffect(dropShadow);
+    VBox editContainer = new VBox();
     editContainer.setAlignment(Pos.CENTER);
-
-
+    editContainer.setPadding(new Insets(0,30,0,30));
     Label fileTitle = new Label("File Editor");
     fileTitle.setEffect(solidShadow);
     fileTitle.setFont(titleFontSmall);
     fileTitle.setAlignment(Pos.CENTER);
     HBox topBar = new HBox(fileTitle);
     topBar.setAlignment(Pos.CENTER);
-    root.setTop(topBar);
+
 
     Button saveButton = new Button("Save file");
     saveButton.setFont(font);
@@ -122,8 +105,7 @@ public class FileEditorMenu {
     HBox menuBar = new HBox(noFile, uploadButton, saveButton, backButton);
     menuBar.setAlignment(Pos.CENTER_RIGHT);
     menuBar.setSpacing(20);
-    menuBar.setPrefHeight(100);
-    menuBar.setId("fileEditMenuBar");
+    menuBar.setMinHeight(80);
     FileChooser.ExtensionFilter extFilter =
         new FileChooser.ExtensionFilter("Paths files (*.paths)", "*.paths");
     FileChooser fileChooser = new FileChooser();
@@ -144,21 +126,20 @@ public class FileEditorMenu {
         throw new RuntimeException(ex);
       }
     });
-    root.setBottom(menuBar);
     DataBase dataBase = new DataBase();
     TextArea tutorialArea = new TextArea(dataBase.readTutorial());
     tutorialArea.setEditable(false);
     tutorialArea.setOpacity(1);
+    tutorialArea.setId("tutorialArea");
     tutorialArea.setFont(textFontSmall);
     tutorialArea.setPadding(new Insets(30));
-    tutorialArea.setId("tutorialArea");
-    tutorialArea.setPrefWidth(root.getWidth() * 0.3);
+    tutorialArea.setPrefWidth(root.getWidth() * 0.4);
     HBox centerBox = new HBox(editContainer, tutorialArea);
     centerBox.setAlignment(Pos.CENTER);
     centerBox.setSpacing(70);
-    root.setCenter(centerBox);
-    editArea.setMinSize(editContainer.getWidth(), root.getHeight() * 0.7);
-
+    root.setRight(tutorialArea);
+    root.setCenter(editContainer);
+    editContainer.getChildren().setAll(topBar, editArea, menuBar);
     if (!string.isEmpty()){
       editArea.setText(string);
     }

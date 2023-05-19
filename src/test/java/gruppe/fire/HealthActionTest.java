@@ -11,7 +11,12 @@ class HealthActionTest {
     @Test
     void testExecutePositiveGold() {
         HealthAction action = new HealthAction(260);
-        Player player = new Player("Mathias", null,500, 400, 340);
+        Player player = new Player.PlayerBuilder()
+            .name("Mathias")
+            .health(500)
+            .gold(340)
+            .score(400)
+            .build();
         action.execute(player);
         assertEquals(760, player.getHealth());
     }

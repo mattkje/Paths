@@ -19,4 +19,4 @@ innsats vil gi et godt grunnlag for konstruktive tilbakemeldinger. Vi gjør oppm
 på at dere også skal levere det som er gjort i Blackboard.
 Det kan være lurt å lese gjennom hele dokumentet før dere begynner på oppgavene.
 
-![This is an image](https://drive.google.com/uc?id=1znm0UrSfk-Jd0GL_bULLKmaowk6g1EHh)
+![This is an image](https://github.com/NTNU-IE-IIR/mappe-prosjekt-paths-mappe-4/blob/main/src/main/resources/gruppe/fire/Media/engineLogo.png?raw=true)

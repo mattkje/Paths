@@ -1,6 +1,7 @@
 package gruppe.fire.goals;
 
 import gruppe.fire.logic.Player;
+import java.util.List;
 
 /**
  * This class represents an expected inventory with items.
@@ -9,13 +10,13 @@ import gruppe.fire.logic.Player;
  * @version 2023-05-19
  */
 public class InventoryGoal implements Goal {
-  private String[] mandatoryItems;
+  private List<String> mandatoryItems;
 
   /**
    * Creates an instance of InventoryGoal.
    * @param mandatoryItems The mandatory items that the player needs to have in their inventory.
    */
-  public InventoryGoal(String[] mandatoryItems) {
+  public InventoryGoal(List<String> mandatoryItems) {
     this.mandatoryItems = mandatoryItems;
 
   }
@@ -26,10 +27,14 @@ public class InventoryGoal implements Goal {
    * @return True if the mandatory items are present in the player's inventory, false otherwise.
    */
   public boolean isFulfilled(Player player) {
-    return mandatoryItems != null;
+    return player.getInventory().containsAll(this.mandatoryItems);
   }
 
   public String getGoal() {
-    return this.mandatoryItems + " Items";
+    StringBuilder stringBuilder = new StringBuilder();
+    for (String s : mandatoryItems) {
+      stringBuilder.append(s).append(",");
+    }
+    return stringBuilder + " Items!";
   }
 }

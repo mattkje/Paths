@@ -31,6 +31,8 @@ public class GameDisplayController {
 
   private Player player;
 
+  private String winLabel;
+
 
   /**
    * This method determines if a paths file is new.
@@ -89,7 +91,6 @@ public class GameDisplayController {
       Button nextPath = new Button("");
       Passage passage = game.go(link);
       game.setCurrentPassage(passage);
-      nextPath.setTextFill(Color.WHITE);
       nextPath.setText(link.getText());
       ImageView finalPassageImage = passageImage;
       nextPath.setOnAction(e -> {
@@ -134,6 +135,8 @@ public class GameDisplayController {
                            Font font, DropShadow dropShadow, ImageView passageImage) {
 
     //Refresh text
+    checkGoals(game);
+    System.out.println(this.winLabel);
     roomTitle.setText(passage.getTitle());
     roomContent.setText(passage.getContent());
 
@@ -158,31 +161,34 @@ public class GameDisplayController {
         }
       }
 
+    }
+    ArrayList links2 = passage.getLinks();
+    int linkCount = links2.size();
 
-      ArrayList links2 = passage.getLinks();
-      int linkCount = links2.size();
-
-      for (int i = 0; i < linkCount; i++) {
-        link = (Link) links2.get(i);
-        Button nextPath = new Button("");
-        Passage nextPassage = game.go(link);
-        game.setCurrentPassage(passage);
-        nextPath.setTextFill(Color.WHITE);
-        nextPath.setText(link.getText());
-        Link finalLink = link;
-        FlowPane finalInventoryPane = inventoryPane;
-        ImageView finalPassageImage = passageImage;
-        nextPath.setOnAction(e -> {
-          checkGoals(game);
+    for (int i = 0; i < linkCount; i++) {
+      link = (Link) links2.get(i);
+      Button nextPath = new Button("");
+      Passage nextPassage = game.go(link);
+      game.setCurrentPassage(passage);
+      nextPath.setText(link.getText());
+      Link finalLink = link;
+      FlowPane finalInventoryPane = inventoryPane;
+      ImageView finalPassageImage = passageImage;
+      nextPath.setOnAction(e -> {
+        if (this.winLabel == null){
           writePassage(game, finalLink, actionBar, finalInventoryPane, nextPassage, roomTitle,
               roomContent, healthAmount, goldAmount, scoreAmount, font, dropShadow,
               finalPassageImage);
-        });
-        nextPath.setFont(font);
-        nextPath.setEffect(dropShadow);
-        actionBar.getChildren().add(nextPath);
+        } else {
+          roomTitle.setText("Goal accomplished!");
+          roomContent.setText("You reached a goal: "+winLabel);
+          passageImage.setImage(null);
+        }
 
-      }
+      });
+      nextPath.setFont(font);
+      nextPath.setEffect(dropShadow);
+      actionBar.getChildren().add(nextPath);
 
     }
 
@@ -295,7 +301,11 @@ public class GameDisplayController {
   public void checkGoals(Game game) {
     game.getGoals().stream()
         .filter(g -> g.isFulfilled(game.getPlayer()))
-        .forEach(g -> System.out.println(g.getGoal()));
+        .forEach(g -> this.winLabel = g.getGoal());
+  }
+
+  public String getWinLabel(){
+    return this.winLabel;
   }
 
 }
