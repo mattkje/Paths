@@ -93,6 +93,12 @@ public class GameDisplayController {
       game.setCurrentPassage(passage);
       nextPath.setText(link.getText());
       ImageView finalPassageImage = passageImage;
+      finalPassageImage.setFitWidth(300);
+      finalPassageImage.setFitHeight(300);
+      if (finalPassageImage.getImage() == null){
+        finalPassageImage.setFitWidth(1);
+        finalPassageImage.setFitHeight(1);
+      }
       nextPath.setOnAction(e -> {
         writePassage(game, link, actionBar, inventoryPane, passage, roomTitle,
             roomContent, healthAmount, goldAmount, scoreAmount, font, dropShadow,
@@ -147,8 +153,10 @@ public class GameDisplayController {
     ArrayList<Action> actionArrayList = link.getActions();
     for (int j = 0; j < actionArrayList.size(); j++) {
 
-      Action action = actionArrayList.get(j);
-      action.execute(game.getPlayer());
+      if (actionArrayList.get(j) != null){
+        Action action = actionArrayList.get(j);
+        action.execute(game.getPlayer());
+      }
 
       healthAmount.setText(String.valueOf(game.getPlayer().getHealth()));
       goldAmount.setText(String.valueOf(game.getPlayer().getGold()));
@@ -174,15 +182,24 @@ public class GameDisplayController {
       Link finalLink = link;
       FlowPane finalInventoryPane = inventoryPane;
       ImageView finalPassageImage = passageImage;
+      finalPassageImage.setFitWidth(300);
+      finalPassageImage.setFitHeight(300);
+      if (finalPassageImage.getImage() == null){
+        finalPassageImage.setFitWidth(1);
+        finalPassageImage.setFitHeight(1);
+      }
       nextPath.setOnAction(e -> {
         if (this.winLabel == null){
           writePassage(game, finalLink, actionBar, finalInventoryPane, nextPassage, roomTitle,
               roomContent, healthAmount, goldAmount, scoreAmount, font, dropShadow,
               finalPassageImage);
         } else {
+          writePassage(game, finalLink, actionBar, finalInventoryPane, nextPassage, roomTitle,
+              roomContent, healthAmount, goldAmount, scoreAmount, font, dropShadow,
+              finalPassageImage);
           roomTitle.setText("Goal accomplished!");
           roomContent.setText("You reached a goal: "+winLabel);
-          passageImage.setImage(null);
+          passageImage.setImage(new Image("/gruppe/fire/Media/scoreGoal.png"));
         }
 
       });

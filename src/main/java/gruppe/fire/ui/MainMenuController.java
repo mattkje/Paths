@@ -56,26 +56,7 @@ public class MainMenuController {
   private ImageView citySkyline4;
   private ImageView citySkyline5;
   private ImageView citySkyline6;
-  private static final String PATH = "Data/SavedPaths/";
 
-
-  /**
-   * Responsible for writing the active ".paths" filepath to a file.
-   *
-   * @param filename Name of the file which is being written.
-   */
-  public void setActiveFile(String filename) {
-    Path savedPaths = Path.of(PATH + filename);
-    try {
-      FileWriter writer;
-      writer = new FileWriter("Data/currentPathsFile.cfg");
-      writer.write(String.valueOf(savedPaths));
-      writer.close();
-
-    } catch (IOException ex) {
-      throw new RuntimeException(ex);
-    }
-  }
 
   /**
    * Responsible for writing the active ".Gpaths" filepath to a file.
@@ -95,25 +76,6 @@ public class MainMenuController {
     }
   }
 
-  /**
-   * Responsible for opening saved paths slots, and checking if the slots are empty.
-   *
-   * @param fileName   File name of the slot.
-   * @param playerMenu The player menu.
-   * @param scene      Game scene.
-   * @param noFile     Feedback label.
-   */
-  public void openSavedPath(String fileName, PlayerMenu playerMenu, Scene scene, Label noFile) {
-    setActiveFile(fileName);
-    try {
-      if (checkBrokenGame(new Game(new Player.PlayerBuilder()
-          .build(), new FileToStory(new File(PATH + fileName)).readFile()))) {
-        playerMenu.start(scene);
-      }
-    } catch (Exception ex) {
-      noFile.setText("This slot is empty");
-    }
-  }
 
   /**
    * Sets one of the default paths as the active path.

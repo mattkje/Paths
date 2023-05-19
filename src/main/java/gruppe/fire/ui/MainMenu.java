@@ -5,6 +5,9 @@ import gruppe.fire.fileHandling.DataBase;
 import gruppe.fire.fileHandling.FileToStory;
 import gruppe.fire.logic.Game;
 import gruppe.fire.logic.JukeBox;
+import gruppe.fire.logic.Passage;
+import gruppe.fire.logic.Player;
+import gruppe.fire.logic.Story;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.io.IOException;
@@ -378,6 +381,7 @@ public class MainMenu {
 
     //Previously played game info.
     Game gamePreview = dataBase.readFile();
+    //Game gamePreview = new Game(new Player.PlayerBuilder().build(), new Story("Test", new Passage("Gay", "Cringe")));
 
     Label savedStoryTitle = new Label("Game: " + gamePreview.getStory().getTitle());
     savedStoryTitle.setFont(font);

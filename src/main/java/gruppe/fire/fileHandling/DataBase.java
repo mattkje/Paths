@@ -6,6 +6,7 @@ import gruppe.fire.logic.Link;
 import gruppe.fire.logic.Passage;
 import gruppe.fire.logic.Player;
 import gruppe.fire.logic.Story;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -44,28 +45,39 @@ public class DataBase {
   public String getActiveStoryName() {
     String storyTitle = null;
     File currentStoryFile = new File((getActiveStoryPath()));
-    try (Scanner scanner = new Scanner(currentStoryFile)) {
-      storyTitle = scanner.nextLine();
+    if (!String.valueOf(currentStoryFile).endsWith(".Gpaths") && currentStoryFile != null){
+      try (Scanner scanner = new Scanner(currentStoryFile)) {
+        storyTitle = scanner.nextLine();
 
-    } catch (IOException e) {
-      String exceptionString = "Something went wrong while reading active story file" + e;
-      System.getLogger(exceptionString);
+      } catch (IOException e) {
+        String exceptionString = "Something went wrong while reading active story file" + e;
+        System.getLogger(exceptionString);
+      }
     }
+
     return storyTitle;
   }
 
   public String getActiveStoryPassages() {
     File currentStoryFile = new File((getActiveStoryPath()));
-    FileToStory fileToStory = new FileToStory(currentStoryFile);
-    Story story = fileToStory.readFile();
-    return String.valueOf(story.getPassages().size());
+    String returnString = "0";
+    if (!String.valueOf(currentStoryFile).endsWith(".Gpaths") && currentStoryFile != null){
+      FileToStory fileToStory = new FileToStory(currentStoryFile);
+      Story story = fileToStory.readFile();
+      returnString = String.valueOf(story.getPassages().size());
+    }
+    return returnString;
   }
 
   public String getBrokenStoryLinks() {
     File currentStoryFile = new File((getActiveStoryPath()));
-    FileToStory fileToStory = new FileToStory(currentStoryFile);
-    Story story = fileToStory.readFile();
-    return String.valueOf(story.getBrokenLinks().size());
+    String returnString = "0";
+    if (!String.valueOf(currentStoryFile).endsWith(".Gpaths") && currentStoryFile != null){
+      FileToStory fileToStory = new FileToStory(currentStoryFile);
+      Story story = fileToStory.readFile();
+      returnString =String.valueOf(story.getBrokenLinks().size());
+    }
+    return returnString;
   }
 
   public String getBrokenStoryPassages() {
@@ -152,7 +164,6 @@ public class DataBase {
       System.getLogger(exceptionString);
     }
 
-
     try (ZipInputStream zis = new ZipInputStream(new FileInputStream(fileZip))) {
       ZipEntry zipEntry = zis.getNextEntry();
       while (zipEntry != null) {
@@ -178,7 +189,6 @@ public class DataBase {
             }
           }
         }
-
         zipEntry = zis.getNextEntry();
       }
     } catch (IOException e) {
