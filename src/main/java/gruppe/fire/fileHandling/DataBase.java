@@ -1,8 +1,12 @@
 package gruppe.fire.fileHandling;
 
 import gruppe.fire.goals.*;
-import gruppe.fire.logic.GameBuilder;
+import gruppe.fire.logic.Game;
+import gruppe.fire.logic.Link;
+import gruppe.fire.logic.Passage;
 import gruppe.fire.logic.Player;
+import gruppe.fire.logic.Story;
+import java.util.Map;
 import javafx.scene.image.Image;
 import java.io.*;
 import java.nio.file.Files;
@@ -10,54 +14,93 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Scanner;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 
+/**
+ * Represents reading from and writing to the database.
+ *
+ * @author Matti Kjellstadli
+ * @version 2023-05-19
+ */
 public class DataBase {
   private Path targetPath;
 
   public String getActivePlayerPath() {
-    BufferedReader reader;
-    try {
-      reader = new BufferedReader(new FileReader("Data/currentPlayerFile.cfg"));
-    } catch (FileNotFoundException e) {
-      throw new RuntimeException(e);
-    }
-    String activePlayer;
-    try {
+    String activePlayer = null;
+    try (BufferedReader reader = new BufferedReader(new FileReader("Data/currentPlayerFile.cfg"))) {
       activePlayer = reader.readLine();
     } catch (IOException e) {
-      throw new RuntimeException(e);
+      String exceptionString = "Something went wrong while reading active player file" + e;
+      System.getLogger(exceptionString);
     }
     return activePlayer;
   }
 
+  public String getActiveStoryName() {
+    String storyTitle = null;
+    File currentStoryFile = new File((getActiveStoryPath()));
+    try (Scanner scanner = new Scanner(currentStoryFile)) {
+      storyTitle = scanner.nextLine();
+
+    } catch (IOException e) {
+      String exceptionString = "Something went wrong while reading active story file" + e;
+      System.getLogger(exceptionString);
+    }
+    return storyTitle;
+  }
+
+  public String getActiveStoryPassages() {
+    File currentStoryFile = new File((getActiveStoryPath()));
+    FileToStory fileToStory = new FileToStory(currentStoryFile);
+    Story story = fileToStory.readFile();
+    return String.valueOf(story.getPassages().size());
+  }
+
+  public String getBrokenStoryLinks() {
+    File currentStoryFile = new File((getActiveStoryPath()));
+    FileToStory fileToStory = new FileToStory(currentStoryFile);
+    Story story = fileToStory.readFile();
+    return String.valueOf(story.getBrokenLinks().size());
+  }
+
+  public String getBrokenStoryPassages() {
+    File currentStoryFile = new File((getActiveStoryPath()));
+    FileToStory fileToStory = new FileToStory(currentStoryFile);
+    Story story = fileToStory.readFile();
+    return String.valueOf(story.getBrokenPassage().size());
+  }
+
 
   public String getActiveStoryPath() {
-    BufferedReader reader;
-    try {
-      reader = new BufferedReader(new FileReader("Data/currentPathsFile.cfg"));
-    } catch (FileNotFoundException e) {
-      throw new RuntimeException(e);
-    }
-    String activeStory;
-    try {
+    String activeStory = null;
+    try (BufferedReader reader = new BufferedReader(new FileReader("Data/currentPathsFile.cfg"))) {
       activeStory = reader.readLine();
     } catch (IOException e) {
-      throw new RuntimeException(e);
+      String exceptionString = "Something went wrong while reading active story path from file" + e;
+      System.getLogger(exceptionString);
     }
     return activeStory;
 
   }
 
+  public Game createGame(File playerFile, File storyFile) {
+    FileToPlayer fileToPlayer = new FileToPlayer(playerFile);
+    Player player = fileToPlayer.readFile();
+
+    FileToStory fileToStory = new FileToStory(storyFile);
+    Story story = fileToStory.readFile();
+
+
+    return new Game(player, story);
+  }
+
   public void writeFile(Player player) {
     DataBase dataBase = new DataBase();
-    GameBuilder gameBuilder = new GameBuilder(new File(dataBase.getActivePlayerPath()),
-        new File(dataBase.getActiveStoryPath()));
-    String[] players = gameBuilder.createGame().readPlayers();
+    String[] players = createGame(new File(dataBase.getActivePlayerPath()),
+        new File(dataBase.getActiveStoryPath())).readPlayers();
     int i = players.length + 1;
 
     // Get the player's image
@@ -70,7 +113,8 @@ public class DataBase {
       try {
         Files.copy(sourcePath, targetPath);
       } catch (IOException e) {
-        throw new RuntimeException(e);
+        String exceptionString = "Something went wrong while copying player image to file" + e;
+        System.getLogger(exceptionString);
       }
     } else {
       this.targetPath = Paths.get("Data/PlayerData/Images/noSelect.png");
@@ -84,7 +128,8 @@ public class DataBase {
       fileWriter.write(player.getScore() + "\n");
       fileWriter.write(player.getGold() + "\n");
     } catch (IOException e) {
-      System.out.println("Something went wrong");
+      String exceptionString = "Something went wrong while writing player info to file" + e;
+      System.getLogger(exceptionString);
     }
   }
 
@@ -101,7 +146,8 @@ public class DataBase {
           .map(Path::toFile)
           .forEach(File::delete);
     } catch (IOException e) {
-      throw new RuntimeException("Failed to delete files in destination directory", e);
+      String exceptionString = "Failed to delete previous gpaths files" + e;
+      System.getLogger(exceptionString);
     }
 
 
@@ -134,20 +180,60 @@ public class DataBase {
         zipEntry = zis.getNextEntry();
       }
     } catch (IOException e) {
-      throw new RuntimeException(e);
+      String exceptionString = "Something went wrong" + e;
+      System.getLogger(exceptionString);
     }
   }
 
 
   public void writeStateToFile(String gameState) {
-    FileWriter fileWriter = null;
-    try {
-      fileWriter = new FileWriter("Data/GameStates/state1.txt");
+    try (FileWriter fileWriter = new FileWriter("Data/GameStates/state1.txt");) {
       fileWriter.write(gameState);
       fileWriter.close();
     } catch (IOException e) {
-      throw new RuntimeException(e);
+      String exceptionString = "Something went wrong" + e;
+      System.getLogger(exceptionString);
     }
+  }
+
+  /**
+   * This method is responsible for reading a saved game state and returning a game object.
+   *
+   * @return Game object from file.
+   */
+  public Game readFile() {
+    Player player = new Player.PlayerBuilder()
+        .build();
+
+    Game game = null;
+    try (Scanner scanner = new Scanner(new File("Data/GameStates/state1.txt"))) {
+
+      // Sets the first line as the title of the story
+      Path path = Path.of(scanner.nextLine());
+      FileToStory fileToStory = new FileToStory(path.toFile());
+      Story story = fileToStory.readFile();
+
+      String passageTitle = scanner.nextLine();
+      player.setName(scanner.nextLine());
+      player.setGold(scanner.nextInt());
+      player.setHealth(scanner.nextInt());
+      player.setScore(scanner.nextInt());
+      String goals = scanner.nextLine();
+      String inventory = scanner.nextLine();
+
+      Link link = new Link(passageTitle, passageTitle);
+
+      Passage passage = story.getPassageByLink(link);
+      story.setOpeningPassage(passage);
+      player.addToInventory(inventory.strip());
+      game = new Game(player, story);
+
+    } catch (FileNotFoundException e) {
+      String exceptionString = "Something went wrong while reading state file" + e;
+      System.getLogger(exceptionString);
+    }
+    return game;
+
   }
 
   public void writeGoalsToFile(int gold, int health, int score, String inventory) {
@@ -157,11 +243,12 @@ public class DataBase {
       fileWriter.write(score + "\n");
       fileWriter.write(inventory + "\n");
     } catch (IOException e) {
-      System.out.println("Something went wrong");
+      String exceptionString = "Something went wrong while writing goals" + e;
+      System.getLogger(exceptionString);
     }
   }
 
-  public ArrayList readGoalsFromFile() {
+  public ArrayList<Goal> readGoalsFromFile() {
     ArrayList<Goal> goalArray = new ArrayList<>();
     File goalsFile = new File("Data/activeGoals.txt");
     try (Scanner scanner = new Scanner(goalsFile)) {
@@ -182,13 +269,14 @@ public class DataBase {
       goalArray.add(iGoal);
 
     } catch (FileNotFoundException e) {
-      throw new RuntimeException(e);
+      String exceptionString = "Something went wrong while reading goals" + e;
+      System.getLogger(exceptionString);
     }
     return goalArray;
   }
 
   public String readGoalsFromFileList() {
-    String goalsString;
+    String goalsString = null;
     File goalsFile = new File("Data/activeGoals.txt");
     try (Scanner scanner = new Scanner(goalsFile)) {
       String gold = scanner.nextLine();
@@ -200,26 +288,26 @@ public class DataBase {
           + "Score Goal:     " + score + "\n"
           + "Inventory Goal: " + inventory;
     } catch (FileNotFoundException e) {
-      throw new RuntimeException(e);
+      String exceptionString = "Something went wrong while reading goals from list" + e;
+      System.getLogger(exceptionString);
     }
     return goalsString;
   }
 
   public boolean checkGoalsEmpty() {
     File goalsFile = new File("Data/activeGoals.txt");
+    boolean goalsEmpty = false;
     try (Scanner scanner = new Scanner(goalsFile)) {
       String gold = scanner.nextLine();
       String health = scanner.nextLine();
       String score = scanner.nextLine();
       String inventory = scanner.nextLine();
-      if (gold.equals("0") && health.equals("0") && score.equals("0") && inventory.equals("")) {
-        return false;
-      } else {
-        return true;
-      }
+      goalsEmpty = (gold.equals("0") && health.equals("0") && score.equals("0") && inventory.equals(""));
     } catch (FileNotFoundException e) {
-      throw new RuntimeException(e);
+      String exceptionString = "Something went wrong while checking if goals are empty" + e;
+      System.getLogger(exceptionString);
     }
+    return goalsEmpty;
   }
 
   public void writeSettingsToFile(Boolean fs, Boolean bg, double vlm, double vlm2) {
@@ -229,12 +317,13 @@ public class DataBase {
       fileWriter.write("music=" + vlm + "\n");
       fileWriter.write("fx=" + vlm2 + "\n");
     } catch (IOException e) {
-      System.out.println("Something went wrong");
+      String exceptionString = "Something went wrong while writing settings to file" + e;
+      System.getLogger(exceptionString);
     }
   }
 
-  public HashMap readSettingsFromFile() {
-    HashMap map = new HashMap<>();
+  public Map readSettingsFromFile() {
+    Map map = new HashMap<>();
     File settingsFile = new File("Data/settings.cfg");
     try (Scanner scanner = new Scanner(settingsFile)) {
       String fs = scanner.nextLine();
@@ -253,7 +342,8 @@ public class DataBase {
       map.put("vlm2", volume2);
 
     } catch (FileNotFoundException e) {
-      throw new RuntimeException(e);
+      String exceptionString = "Something went wrong while reading settings from file" + e;
+      System.getLogger(exceptionString);
     }
     return map;
   }
@@ -268,7 +358,8 @@ public class DataBase {
         }
       }
     } catch (IOException e) {
-      e.printStackTrace();
+      String exceptionString = "Something went wrong while reading tutorial from file" + e;
+      System.getLogger(exceptionString);
     }
     return tutorial;
   }

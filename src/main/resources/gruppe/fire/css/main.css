@@ -103,6 +103,11 @@
     -fx-background-color: transparent;
 }
 
+#warningBox {
+    -fx-background-color: rgba(0, 0, 0, 0.9);
+    -fx-background-radius: 30px;
+}
+
 #quitBox {
     -fx-background-color: rgba(0, 0, 0, 0.9);
 }
@@ -285,29 +290,16 @@
     -fx-background-color: rgba(12, 2, 37, 0.8);
 }
 
-.alert .button-bar .button {
-    -fx-background-color: #3a11a6;
-    -fx-text-fill: #ffffff; /* Dark blue text */
-    -fx-font-size: 14px;
-    -fx-font-weight: bold;
+#aboutStoryPane {
+    -fx-background-color: rgba(54, 54, 54, 0.5);
+    -fx-background-radius: 30;
+    -fx-padding: 10;
 }
 
-.alert .button-bar {
-    -fx-background-color: rgb(19, 19, 19);
+#aboutStoryPane .label{
+    -fx-font-family: Comfortaa;
 }
 
-.alert {
-    -fx-background-color: rgb(19, 19, 19);
-}
-
-.alert .header-panel {
-    -fx-background-color: rgb(19, 19, 19);
-}
-
-.alert .header-panel .label {
-    -fx-text-fill: #ffffff;
-    -fx-font-weight: BOLD;
-}
 
 #ppButton1 {
     -fx-background-color: transparent;

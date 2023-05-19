@@ -2,7 +2,6 @@ package gruppe.fire.ui;
 
 import gruppe.fire.fileHandling.DataBase;
 import gruppe.fire.fileHandling.FileToPlayer;
-import gruppe.fire.logic.GameBuilder;
 import gruppe.fire.logic.JukeBox;
 import gruppe.fire.logic.Player;
 import javafx.geometry.Insets;
@@ -39,8 +38,6 @@ public class PlayerMenu {
 
 
     DataBase dataBase = new DataBase();
-    GameBuilder gameBuilder = new GameBuilder(new File(dataBase.getActivePlayerPath()),
-        new File(dataBase.getActiveStoryPath()));
 
     //Background
 
@@ -70,6 +67,7 @@ public class PlayerMenu {
     Font font = Font.font("Comfortaa", 24);
     Font buttonFont = Font.font("Comfortaa", 34);
     Font menuFont = Font.font("Pacifico", 44);
+    Font menuFontLarge = Font.font("Pacifico", 64);
 
 
     //logo
@@ -94,7 +92,8 @@ public class PlayerMenu {
     selectedPlayer.setAlignment(Pos.CENTER);
 
 
-    String[] players = gameBuilder.createGame().readPlayers();
+    String[] players = dataBase.createGame(new File(dataBase.getActivePlayerPath()),
+        new File(dataBase.getActiveStoryPath())).readPlayers();
 
 
     ImageView[] ppImages = new ImageView[players.length];
@@ -305,7 +304,7 @@ public class PlayerMenu {
     Label goalStatus = new Label();
     goalStatus.setFont(font);
     goalStatus.setId(("goalStatus"));
-    if (!dataBase.checkGoalsEmpty()) {
+    if (dataBase.checkGoalsEmpty()) {
       goalStatus.setText("No goals set!");
     }
     goalsTitle.setFont(font);
@@ -378,7 +377,12 @@ public class PlayerMenu {
     startButton.setFont(buttonFont);
     startButton.setTextFill(Color.WHITE);
     startButton.setOnAction(e -> {
-      gameDisplay.start(scene, false);
+      if (dataBase.checkGoalsEmpty()){
+        controller.noGoalsPopUp(gameDisplay, font, menuFontLarge, scene, selectMusic);
+      } else {
+        gameDisplay.start(scene, false);
+      }
+
     });
     HBox buttonBox = new HBox();
     buttonBox.setAlignment(Pos.CENTER);

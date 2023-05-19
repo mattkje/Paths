@@ -2,10 +2,11 @@ package gruppe.fire.ui;
 
 
 import gruppe.fire.fileHandling.DataBase;
-import gruppe.fire.fileHandling.FileToGame;
 import gruppe.fire.fileHandling.FileToStory;
 import gruppe.fire.logic.Game;
 import gruppe.fire.logic.JukeBox;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.io.IOException;
 import javafx.animation.*;
 import javafx.event.ActionEvent;
@@ -131,9 +132,10 @@ public class MainMenu {
     glow.setSpread(1);
     glow.setRadius(2);
 
-
-    Font font = Font.font("Comfortaa", 24);
-    Font titleFont = Font.font("Pacifico", 300);
+    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+    double width = screenSize.getWidth();
+    Font font = Font.font("Comfortaa", width /100);
+    Font titleFont = Font.font("Pacifico", width/9);
     Font titleFontSmall = Font.font("Pacifico", 100);
     Font menuFont = Font.font("Pacifico", 34);
     Font menuFontLarge = Font.font("Pacifico", 64);
@@ -179,7 +181,7 @@ public class MainMenu {
 
     //Import file menu.
     VBox importMenu = new VBox();
-    Label label = new Label("Saved stories:");
+    Label label = new Label("About story:");
     Label selectGame = new Label("Upload story");
     selectGame.setFont(menuFont);
     selectGame.setTextFill(Color.WHITE);
@@ -207,6 +209,28 @@ public class MainMenu {
     noFile.setAlignment(Pos.CENTER);
     noFile.setId("noFile");
 
+    //About story
+    Label storyNameLabel = new Label("Story name: ");
+    Label storyPassagesLabel = new Label("Passages: ");
+    Label deadLinksLabel = new Label("Dead links: ");
+    Label storyName = new Label();
+    Label storyPassages = new Label();
+    Label deadLinks = new Label();
+    GridPane aboutStoryPane = new GridPane();
+    aboutStoryPane.setHgap(10);
+    aboutStoryPane.setVgap(10);
+    aboutStoryPane.setId("aboutStoryPane");
+    aboutStoryPane.setMaxWidth(360);
+    aboutStoryPane.setAlignment(Pos.CENTER);
+    aboutStoryPane.add(storyNameLabel,0,0);
+    aboutStoryPane.add(storyPassagesLabel, 0,1);
+    aboutStoryPane.add(deadLinksLabel,0,2);
+    aboutStoryPane.add(storyName,1,0);
+    aboutStoryPane.add(storyPassages,1,1);
+    aboutStoryPane.add(deadLinks,1,2);
+
+    //Dead links warning
+
     //Open paths button.
     Button openPathsFile = new Button("Open paths file");
     openPathsFile.setEffect(dropShadow);
@@ -214,6 +238,13 @@ public class MainMenu {
     openPathsFile.setTextFill(Color.WHITE);
     openPathsFile.setOnAction(e -> {
       controller.openFileButton(fileChooser, mainScene, noFile);
+      storyName.setText(dataBase.getActiveStoryName());
+      storyPassages.setText(dataBase.getActiveStoryPassages());
+      deadLinks.setText(dataBase.getBrokenStoryLinks());
+      //Checks if story has any dead links
+      if (Integer.parseInt(dataBase.getBrokenStoryLinks()) > 0){
+        controller.deadLinkPopUp(font, menuFontLarge, mainScene, player);
+      }
     });
 
     //Start game Button
@@ -223,83 +254,21 @@ public class MainMenu {
     startGame.setTextFill(Color.WHITE);
     //Game Starting point. Checks if imported file is valid, and opens the next menu.
     startGame.setOnAction(e -> {
+      //Prevents user from starting game if the story has dead links.
+      if (Integer.parseInt(dataBase.getBrokenStoryLinks()) > 0){
+        controller.deadLinkPopUp(font, menuFontLarge, mainScene, player);
+        return;
+      }
       controller.startGameButton(playerMenu, mainScene, noFile);
       player.dispose();
     });
-
-
-    //Buttons to open saved stories.
-    //TODO rewrite when file writing is developed.
-    GridPane customStories = new GridPane();
-    customStories.setAlignment(Pos.CENTER);
-    customStories.setVgap(4);
-    FileToStory handler = new FileToStory(selectedFile);
-
-    //Set the slot titles as story title.
-    String[] storyTitles = new String[0];
-    try {
-      storyTitles = handler.readSavedStories();
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
-
-    //Custom story buttons
-    Button customStory1 = new Button();
-    customStory1.setText(storyTitles[0]);
-    customStory1.setStyle("-fx-font-family: Comfortaa");
-    customStory1.setTextFill(Color.WHITE);
-    customStory1.setPrefWidth(300);
-    customStory1.setOnAction(e -> {
-      controller.openSavedPath("paths1.paths", playerMenu, mainScene, noFile);
-      player.dispose();
-    });
-    customStories.add(customStory1, 0, 0);
-
-    Button customStory2 = new Button();
-    customStory2.setStyle("-fx-font-family: Comfortaa");
-    customStory2.setText(storyTitles[1]);
-    customStory2.setTextFill(Color.WHITE);
-    customStory2.setPrefWidth(300);
-    customStory2.setOnAction(e -> {
-
-      controller.openSavedPath("paths2.paths", playerMenu, mainScene, noFile);
-      player.dispose();
-    });
-    customStories.add(customStory2, 0, 1);
-
-    Button customStory3 = new Button();
-    customStory3.setStyle("-fx-font-family: Comfortaa");
-    customStory3.setText(storyTitles[2]);
-    customStory3.setTextFill(Color.WHITE);
-    customStory3.setPrefWidth(300);
-    customStory3.setOnAction(e -> {
-
-      controller.openSavedPath("paths3.paths", playerMenu, mainScene, noFile);
-      player.dispose();
-
-    });
-    customStories.add(customStory3, 0, 2);
-
-    Button customStory4 = new Button();
-    customStory4.setStyle("-fx-font-family: Comfortaa");
-    customStory4.setText(storyTitles[3]);
-    customStory4.setTextFill(Color.WHITE);
-    customStory4.setPrefWidth(300);
-    customStory4.setOnAction(e -> {
-
-      controller.openSavedPath("paths4.paths", playerMenu, mainScene, noFile);
-      player.dispose();
-
-    });
-    customStories.add(customStory4, 0, 3);
-    customStories.setVgap(5);
 
 
     HBox gameControl = new HBox();
     gameControl.getChildren().addAll(openPathsFile, startGame);
     gameControl.setAlignment(Pos.CENTER);
     gameControl.setSpacing(3);
-    importMenu.getChildren().addAll(gameControl, noFile, label, customStories);
+    importMenu.getChildren().addAll(gameControl, noFile, label, aboutStoryPane);
 
 
     //Creates graphics for default story buttons.
@@ -402,8 +371,7 @@ public class MainMenu {
     });
 
     //Previously played game info.
-    FileToGame fileToGame = new FileToGame();
-    Game gamePreview = fileToGame.readFile();
+    Game gamePreview = dataBase.readFile();
 
     Label savedStoryTitle = new Label("Game: " + gamePreview.getStory().getTitle());
     savedStoryTitle.setFont(font);
@@ -613,7 +581,7 @@ public class MainMenu {
     fileEditor.setOnAction(e -> {
       player.dispose();
       FileEditorMenu fileEditorMenu = new FileEditorMenu();
-      fileEditorMenu.start(mainScene);
+      fileEditorMenu.start(mainScene, "");
     });
     settings.setOnAction(e -> {
       menuBox.getChildren().remove(startMenu);

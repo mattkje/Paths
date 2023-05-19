@@ -1,19 +1,24 @@
 package gruppe.fire.ui;
 
-
 import gruppe.fire.fileHandling.DataBase;
 import gruppe.fire.fileHandling.FileToStory;
 import gruppe.fire.logic.Game;
 import gruppe.fire.logic.Player;
+import gruppe.fire.logic.Story;
+import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.List;
 import javafx.animation.Animation;
 import javafx.animation.Interpolator;
 import javafx.animation.ParallelTransition;
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -25,6 +30,7 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
+import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import java.io.File;
@@ -285,6 +291,61 @@ public class MainMenuController {
     } else {
       noFile.setText("You have to select a file first.");
     }
+  }
+
+  /**
+   * This method is responsible for giving the user feedback if the current
+   * file has dead links.
+   *
+   * @param font          Main font
+   * @param menuFontLarge Larger font
+   * @param scene         Game scene.
+   */
+  public void deadLinkPopUp(Font font, Font menuFontLarge, Scene scene, MediaPlayer player) {
+    FileToStory fileToStory = new FileToStory(selectedFile);
+    Story story = fileToStory.readFile();
+    List list = story.getBrokenLinks();
+    Label warning = new Label("Warning");
+    Label warningInfo = new Label("This story has dead links:");
+    warningInfo.setFont(font);
+    ListView deadLinks = new ListView();
+    deadLinks.getItems().setAll(list);
+    Button dismissButton = new Button("Dismiss");
+    dismissButton.setFont(font);
+    Button editorButton = new Button("Open file in editor");
+    editorButton.setFont(font);
+    HBox buttonBox = new HBox(editorButton, dismissButton);
+    buttonBox.setAlignment(Pos.CENTER);
+    buttonBox.setSpacing(30);
+    warning.setFont(menuFontLarge);
+    warning.setAlignment(Pos.CENTER);
+    VBox warningBox = new VBox(warning, warningInfo, deadLinks, buttonBox);
+    warningBox.setSpacing(20);
+    warningBox.setPrefWidth(600);
+    warningBox.setPadding(new Insets(20));
+    warningBox.setId("warningBox");
+    warningBox.setAlignment(Pos.CENTER);
+    Popup popup = new Popup();
+    popup.getContent().add(warningBox);
+    popup.show(scene.getWindow());
+    dismissButton.setOnAction(e -> {
+      popup.hide();
+    });
+    editorButton.setOnAction(e ->{
+      popup.hide();
+      player.dispose();
+      String fileContent = null;
+      byte[] fileBytes = new byte[0];
+      try {
+        fileBytes = Files.readAllBytes(selectedFile.toPath());
+        fileContent = new String(fileBytes);
+      } catch (IOException ex) {
+        throw new RuntimeException(ex);
+      }
+
+      FileEditorMenu fileEditorMenu = new FileEditorMenu();
+      fileEditorMenu.start(scene, fileContent);
+    });
   }
 
   /**

@@ -1,8 +1,9 @@
 package gruppe.fire.ui;
 
-
 import gruppe.fire.fileHandling.DataBase;
 import gruppe.fire.logic.JukeBox;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -31,7 +32,7 @@ public class FileEditorMenu {
    * This method is responsible for building and displaying the file editor menu.
    * @param scene The game scene.
    */
-  public void start(Scene scene) {
+  public void start(Scene scene, String string) {
 
 
     MainMenu mainMenu = new MainMenu();
@@ -80,13 +81,12 @@ public class FileEditorMenu {
     glow.setSpread(1);
     glow.setRadius(2);
 
-
-    Font font = Font.font("Comfortaa", 24);
-    Font titleFont = Font.font("Pacifico", 300);
-    Font titleFontSmall = Font.font("Pacifico", 100);
+    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+    double width = screenSize.getWidth();
+    Font font = Font.font("Comfortaa", width/100);
+    Font titleFontSmall = Font.font("Pacifico", width/27);
     Font textFont = Font.font("JetBrains Mono", 24);
     Font textFontSmall = Font.font("JetBrains Mono", 14);
-    Font menuFontLarge = Font.font("Pacifico", 64);
 
     TextArea editArea = new TextArea();
     editArea.setMaxSize(1400, 1000);
@@ -158,5 +158,9 @@ public class FileEditorMenu {
     centerBox.setSpacing(70);
     root.setCenter(centerBox);
     editArea.setMinSize(editContainer.getWidth(), root.getHeight() * 0.7);
+
+    if (!string.isEmpty()){
+      editArea.setText(string);
+    }
   }
 }

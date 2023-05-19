@@ -2,8 +2,10 @@ package gruppe.fire.ui;
 
 
 import gruppe.fire.fileHandling.DataBase;
-import gruppe.fire.fileHandling.FileToGame;
 import gruppe.fire.logic.*;
+import java.awt.Dimension;
+import java.awt.Toolkit;
+import java.util.List;
 import javafx.animation.Animation;
 import javafx.animation.TranslateTransition;
 import javafx.geometry.Insets;
@@ -18,7 +20,6 @@ import javafx.scene.layout.*;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
@@ -32,8 +33,6 @@ import java.util.ArrayList;
  * @version 2023-05-18
  */
 public class GameDisplay {
-
-  private FileToGame fileToGame;
 
   private FlowPane inventoryPane;
 
@@ -62,10 +61,9 @@ public class GameDisplay {
     DataBase dataBase = new DataBase();
     File gameFile = new File(dataBase.getActiveStoryPath());
     File playerFile = new File(dataBase.getActivePlayerPath());
-    GameBuilder handler = new GameBuilder(playerFile, gameFile);
 
     //Add goals.
-    Game game = handler.createGame();
+    Game game = dataBase.createGame(playerFile, gameFile);
     ArrayList goalList = dataBase.readGoalsFromFile();
     game.setGoalsList(goalList);
     Player player = game.getPlayer();
@@ -87,10 +85,13 @@ public class GameDisplay {
     //Font pauseFont = Font.loadFont(GameDisplay.class.getResource("/gruppe/fire/fonts/Comfortaa.ttf").toExternalForm(), 34);
     //Font menuFont = Font.loadFont(GameDisplay.class.getResource("/gruppe/fire/fonts/Pacifico-Regular.ttf").toExternalForm(), 44);
 
-    Font font = Font.font("Comfortaa", 24);
+    Font font2 = Font.font("Comfortaa", 24);
     Font pauseFont = Font.font("Comfortaa", 34);
     Font menuFont = Font.font("Pacifico", 44);
 
+    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+    double width = screenSize.getWidth();
+    Font font = Font.font("Comfortaa", (int)width/100);
 
     //Shadows and fonts
     DropShadow dropShadow = new DropShadow();
@@ -220,7 +221,7 @@ public class GameDisplay {
     //inventory.setPrefHeight(500);
     //inventory.setPrefWidth(300);
     inventory.setVgap(40);
-    inventory.setHgap(100);
+    inventory.setHgap(50);
 
 
     Image profileImage = player.getImage();
@@ -229,14 +230,15 @@ public class GameDisplay {
     playerPicture.setFitHeight(50);
     String playerString = player.getName();
     Label playerName = new Label(playerString);
-    //HBox playerBox = new HBox();
-    //playerBox.getChildren().addAll(playerPicture, playerName);
 
     Label info = new Label("Stats");
     Label health = new Label("Health:");
     Label gold = new Label("Gold:");
     Label score = new Label("Score:");
     Label inventoryTitle = new Label("Inventory");
+    Label healthGoalLabel = new Label("Goal: ");
+    Label goldGoalLabel = new Label("Goal: ");
+    Label scoreGoalLabel = new Label("Goal: ");
     //this.inventoryList = new ListView();
     this.inventoryPane = new FlowPane();
     inventoryPane.setMaxHeight(600);
@@ -245,16 +247,14 @@ public class GameDisplay {
 
     playerName.setTextFill(Color.WHITE);
 
-    info.setTextFill(Color.WHITE);
-    health.setTextFill(Color.WHITE);
-    gold.setTextFill(Color.WHITE);
-    score.setTextFill(Color.WHITE);
-    inventoryTitle.setTextFill(Color.WHITE);
     playerName.setFont(font);
     info.setFont(menuFont);
     health.setFont(font);
     gold.setFont(font);
     score.setFont(font);
+    healthGoalLabel.setFont(font);
+    goldGoalLabel.setFont(font);
+    scoreGoalLabel.setFont(font);
     inventoryTitle.setFont(menuFont);
     inventory.add(playerPicture, 1, 0);
     inventory.add(playerName, 0, 0);
@@ -330,10 +330,21 @@ public class GameDisplay {
     this.healthAmount = new Label();
     this.goldAmount = new Label();
     this.scoreAmount = new Label();
-    inventory.add(healthAmount, 2, 2);
-    inventory.add(lives, 1, 2);
-    inventory.add(goldAmount, 2, 3);
-    inventory.add(scoreAmount, 2, 4);
+    inventory.add(healthAmount, 1, 2);
+    inventory.add(goldAmount, 1, 3);
+    inventory.add(scoreAmount, 1, 4);
+    inventory.add(healthGoalLabel, 2, 2);
+    inventory.add(goldGoalLabel, 2, 3);
+    inventory.add(scoreGoalLabel, 2, 4);
+    Label healthGoal = new Label(game.getGoals().get(1).getGoal());
+    Label goldGoal = new Label(game.getGoals().get(0).getGoal());
+    Label scoreGoal = new Label(game.getGoals().get(2).getGoal());
+    healthGoal.setFont(font);
+    goldGoal.setFont(font);
+    scoreGoal.setFont(font);
+    inventory.add(healthGoal, 3, 2);
+    inventory.add(goldGoal, 3, 3);
+    inventory.add(scoreGoal, 3, 4);
 
     this.actionBar = new HBox();
     actionBar.setEffect(hopShadow);
@@ -348,8 +359,7 @@ public class GameDisplay {
       game.gameToFile(game, currentPassage);
     });
 
-    this.fileToGame = new FileToGame();
-    Game game1 = fileToGame.readFile();
+    Game game1 = dataBase.readFile();
     if (ifSaved == true) {
       controller.writeOpeningPassage(game1, actionBar, inventoryPane, gameTitle, roomTitle,
           roomContent, healthAmount, goldAmount, scoreAmount, font, dropShadow, passageImage);

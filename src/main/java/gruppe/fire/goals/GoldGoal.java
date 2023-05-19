@@ -4,6 +4,9 @@ import gruppe.fire.logic.Player;
 
 /**
  * This class represents a gold goal that specifies a minimum amount of gold that the player needs to have.
+ *
+ * @author Matti Kjellstadli
+ * @version 2023-05-19
  */
 public class GoldGoal implements Goal {
   private int minimumGold;
@@ -38,6 +41,6 @@ public class GoldGoal implements Goal {
   }
 
   public String getGoal() {
-    return this.minimumGold + "Gold";
+    return this.minimumGold + " Gold";
   }
 }

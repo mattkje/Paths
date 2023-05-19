@@ -2,15 +2,16 @@ package gruppe.fire.fileHandling;
 
 import java.io.*;
 import java.util.Scanner;
-
 import gruppe.fire.logic.Passage;
 import gruppe.fire.logic.Story;
 import gruppe.fire.actions.*;
 import gruppe.fire.logic.Link;
 
 /**
- * Class responsible for handling all file imports and exports
- * An object represents one file and contains methods for handling it
+ * Represents paths file imports and converting them to a story object.
+ *
+ * @author Matti Kjellstadli
+ * @version 2023-05-19
  */
 public class FileToStory {
 
@@ -24,10 +25,6 @@ public class FileToStory {
    */
   public FileToStory(File storyFile) {
     this.storyFile = storyFile;
-  }
-
-  public File getStoryFile() {
-    return this.storyFile;
   }
 
   public Story readFile() {
@@ -102,7 +99,6 @@ public class FileToStory {
 
     while (i < splitString.length) {
       link.addAction(this.createAction(splitString[i], splitString[i + 1]));
-
       i = i + 2;
     }
 
@@ -121,36 +117,4 @@ public class FileToStory {
     return action;
   }
 
-  /**
-   * Reads first lines in saved files in saved folder and returns all story titles as an array of Strings.
-   */
-  public String[] readSavedStories() throws IOException {
-    BufferedReader reader1 = new BufferedReader(new FileReader("Data/SavedPaths/paths1.paths"));
-    BufferedReader reader2 = new BufferedReader(new FileReader("Data/SavedPaths/paths2.paths"));
-    BufferedReader reader3 = new BufferedReader(new FileReader("Data/SavedPaths/paths3.paths"));
-    BufferedReader reader4 = new BufferedReader(new FileReader("Data/SavedPaths/paths4.paths"));
-    String story1 = reader1.readLine();
-    if (story1 == null || story1.isEmpty()) {
-      story1 = "No File";
-    }
-
-    String story2 = reader2.readLine();
-    if (story2 == null || story2.isEmpty()) {
-      story2 = "No File";
-    }
-
-    String story3 = reader3.readLine();
-    if (story3 == null || story3.isEmpty()) {
-      story3 = "No File";
-    }
-
-    String story4 = reader4.readLine();
-    if (story4 == null || story4.isEmpty()) {
-      story4 = "No File";
-    }
-
-    String[] storyArray = {story1, story2, story3, story4};
-    return storyArray;
-
-  }
 }

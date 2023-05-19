@@ -1,13 +1,13 @@
 package gruppe.fire.goals;
 
-/**
- * This class represents an expected inventory with items.
- */
-
 import gruppe.fire.logic.Player;
 
-import java.util.ArrayList;
-
+/**
+ * This class represents an expected inventory with items.
+ *
+ * @author Matti Kjellstadli
+ * @version 2023-05-19
+ */
 public class InventoryGoal implements Goal {
   private String[] mandatoryItems;
 
@@ -30,6 +30,6 @@ public class InventoryGoal implements Goal {
   }
 
   public String getGoal() {
-    return this.mandatoryItems + "Items";
+    return this.mandatoryItems + " Items";
   }
 }

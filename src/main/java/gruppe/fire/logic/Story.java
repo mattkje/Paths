@@ -65,7 +65,7 @@ public class Story {
    * @param link The link of the passage to retrieve.
    * @return The passage with the specified link, or null if it does not exist.
    */
-  public Passage getPassage(Link link) {
+  public Passage getPassageByLink(Link link) {
     link = new Link(link.getReference(), link.getReference());
     return passages.get(link);
   }
@@ -107,16 +107,24 @@ public class Story {
    * @return A list of dead links.
    */
   public List<Link> getBrokenLinks() {
-    //TODO: REWRITE with streams. (do research ahha :D).
-    List<Link> brokenLinks = new ArrayList<Link>();
-    for (Passage passage : passages.values()) {
-      for (Link link : passage.getLinks()) {
-        if (!passages.containsKey(link)) {
-          brokenLinks.add(link);
-        }
-      }
-    }
-    return brokenLinks;
+    return passages.values()
+        .stream()
+        .flatMap(passage -> passage.getLinks()
+            .stream())
+        .filter(link -> this.getPassageByLink(link) == null)
+        .toList();
+  }
+
+  /**
+   * Finds and returns a list of dead passages. A passage is dead if it has no links.
+   *
+   * @return A list of dead passages.
+   */
+  public List<Passage> getBrokenPassage() {
+    return passages.values()
+        .stream()
+        .filter(passage -> !passage.hasLinks())
+        .toList();
   }
 
 }

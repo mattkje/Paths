@@ -1,8 +1,24 @@
 package gruppe.fire.ui;
 
+import gruppe.fire.fileHandling.FileToStory;
+import gruppe.fire.logic.Game;
+import gruppe.fire.logic.Story;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.text.Font;
+import javafx.stage.Popup;
 
 /**
  * Represents a controller for the player menu class.
@@ -25,5 +41,40 @@ public class PlayerMenuController {
       String exceptionString = "Could not write to file "+ex;
       System.getLogger(exceptionString);
     }
+  }
+
+  /**
+   * Re
+   */
+  public void noGoalsPopUp(GameDisplay gameDisplay, Font font, Font menuFontLarge, Scene scene, MediaPlayer player) {
+    Label warning = new Label("Warning");
+    Label warningInfo = new Label("No goals are set");
+    warningInfo.setFont(font);
+    Button cancelButton = new Button("Cancel");
+    cancelButton.setFont(font);
+    Button proceedButton = new Button("Proceed without goals");
+    proceedButton.setFont(font);
+    HBox buttonBox = new HBox(proceedButton, cancelButton);
+    buttonBox.setAlignment(Pos.CENTER);
+    buttonBox.setSpacing(30);
+    warning.setFont(menuFontLarge);
+    warning.setAlignment(Pos.CENTER);
+    VBox warningBox = new VBox(warning, warningInfo, buttonBox);
+    warningBox.setSpacing(20);
+    warningBox.setPrefWidth(600);
+    warningBox.setPadding(new Insets(20));
+    warningBox.setId("warningBox");
+    warningBox.setAlignment(Pos.CENTER);
+    Popup popup = new Popup();
+    popup.getContent().add(warningBox);
+    popup.show(scene.getWindow());
+    cancelButton.setOnAction(e -> {
+      popup.hide();
+    });
+    proceedButton.setOnAction(e ->{
+      popup.hide();
+      player.dispose();
+      gameDisplay.start(scene, false);
+    });
   }
 }

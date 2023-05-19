@@ -2,26 +2,20 @@ package gruppe.fire.ui;
 
 import gruppe.fire.actions.Action;
 import gruppe.fire.fileHandling.DataBase;
-import gruppe.fire.fileHandling.FileToStory;
-import gruppe.fire.goals.*;
 import gruppe.fire.logic.*;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
 import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
@@ -29,6 +23,7 @@ import java.util.ArrayList;
 /**
  * Represents a controller for the game menu class.
  * This class should handle events triggered by the GameDisplay.
+ *
  * @author Matti Kjellstadli
  * @version 2023-05-18
  */
@@ -139,9 +134,6 @@ public class GameDisplayController {
                            Font font, DropShadow dropShadow, ImageView passageImage) {
 
     //Refresh text
-    if (passage == null) {
-      passage = new Passage("Game finished", "You did well, i guess");
-    }
     roomTitle.setText(passage.getTitle());
     roomContent.setText(passage.getContent());
 
@@ -158,14 +150,14 @@ public class GameDisplayController {
       healthAmount.setText(String.valueOf(game.getPlayer().getHealth()));
       goldAmount.setText(String.valueOf(game.getPlayer().getGold()));
       scoreAmount.setText(String.valueOf(game.getPlayer().getScore()));
-      passageImage.setImage(getPassageImage(game.getStory().getPassage(link)));
+      passageImage.setImage(getPassageImage(game.getStory().getPassageByLink(link)));
 
       for (String item : game.getPlayer().getInventory()) {
         if (!flowPaneContainsItem(inventoryPane, item)) {
           inventoryPane = handleInventory(item, inventoryPane, font);
         }
-
       }
+
 
       ArrayList links2 = passage.getLinks();
       int linkCount = links2.size();
@@ -199,9 +191,10 @@ public class GameDisplayController {
   /**
    * This method is responsible for displaying inventory items in the form of an image
    * with a text.
-   * @param item Item name
+   *
+   * @param item     Item name
    * @param flowPane FlowPane for items in inventory.
-   * @param font Font used for inventory items.
+   * @param font     Font used for inventory items.
    * @return FlowPane containing all items in inventory.
    */
   public FlowPane handleInventory(String item, FlowPane flowPane, Font font) {
@@ -232,33 +225,28 @@ public class GameDisplayController {
   }
 
   /**
-   * Responsible for handling duplicate inventory items.
+   * Responsible for handling duplicate inventory items by searching if
+   * the flowPane contains a label with the same name as the item.
    * Duplicate items should be ignored.
    *
    * @param flowPane FlowPane for items in inventory.
-   * @param item Item name.
+   * @param item     Item name.
    * @return True if flowPane contains item, false otherwise;
    */
   public static boolean flowPaneContainsItem(FlowPane flowPane, String item) {
-    //TODO: Replace with streams.
-    for (Node child : flowPane.getChildren()) {
-      if (child instanceof VBox) {
-        VBox itemBox = (VBox) child;
-        for (Node itemNode : itemBox.getChildren()) {
-          if (itemNode instanceof Label) {
-            Label itemName = (Label) itemNode;
-            if (itemName.getText().equals(item)) {
-              return true;
-            }
-          }
-        }
-      }
-    }
-    return false;
+    return flowPane.getChildren().stream()
+        .filter(VBox.class::isInstance)
+        .map(VBox.class::cast)
+        .flatMap(itemBox -> itemBox.getChildren().stream())
+        .filter(Label.class::isInstance)
+        .map(Label.class::cast)
+        .anyMatch(label -> label.getText().equals(item));
   }
+
 
   /**
    * This method is responsible for get the image which corresponds to the passage.
+   *
    * @param passage Current passage.
    * @return The image which corresponds to the passage, null if passage does not have
    * a corresponding image.
@@ -285,6 +273,7 @@ public class GameDisplayController {
 
   /**
    * This method is responsible for checking if a file exists.
+   *
    * @param filePath Filepath to check.
    * @return True if the file exists, false otherwise;
    */
@@ -300,16 +289,13 @@ public class GameDisplayController {
 
   /**
    * Responsible for checking if goals are fulfilled.
+   *
    * @param game Current game.
    */
   public void checkGoals(Game game) {
-    //TODO: Finish this method.
-    for (Goal g : game.getGoals()) {
-      if (g.isFulfilled(game.getPlayer())) {
-        System.out.println(g.getGoal());
-      }
-
-    }
+    game.getGoals().stream()
+        .filter(g -> g.isFulfilled(game.getPlayer()))
+        .forEach(g -> System.out.println(g.getGoal()));
   }
 
 }

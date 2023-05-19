@@ -2,11 +2,16 @@ package gruppe.fire.fileHandling;
 
 import gruppe.fire.logic.Player;
 import javafx.scene.image.Image;
-
 import java.io.*;
 import java.nio.file.Path;
 import java.util.Scanner;
 
+/**
+ * Represents reading saved players and converting them to player objects.
+ *
+ * @author Matti Kjellstadli
+ * @version 2023-05-19
+ */
 public class FileToPlayer {
 
   private File playerFile;

@@ -1,8 +1,8 @@
 src\main\resources\gruppe\fire\Paths\MurderMystery.paths
-Meeting
+Butler
 Calm Matt
-100
+200
 6
 10
-[gruppe.fire.goals.GoldGoal@172b0f95, gruppe.fire.goals.HealthGoal@1885992d, gruppe.fire.goals.ScoreGoal@4c1e2566, gruppe.fire.goals.InventoryGoal@7ea5ee1a]
+[gruppe.fire.goals.GoldGoal@2ec178db, gruppe.fire.goals.HealthGoal@118e632, gruppe.fire.goals.ScoreGoal@60eebb26, gruppe.fire.goals.InventoryGoal@c14e55f]
 [Knife]

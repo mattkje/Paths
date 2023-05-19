@@ -4,6 +4,9 @@ import gruppe.fire.logic.Player;
 
 /**
  * This class represents a health goal that specifies a minimum amount of health that the player needs to have.
+ *
+ * @author Matti Kjellstadli
+ * @version 2023-05-19
  */
 public class HealthGoal implements Goal {
   private int minimumHealth;
@@ -42,6 +45,6 @@ public class HealthGoal implements Goal {
   }
 
   public String getGoal() {
-    return this.minimumHealth + "Health";
+    return this.minimumHealth + " Health";
   }
 }

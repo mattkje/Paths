@@ -93,7 +93,7 @@ public class Game {
    * @return The passage which matches the provided Link.
    */
   public Passage go(Link link) {
-    Passage currentPassage = story.getPassage(link);
+    Passage currentPassage = story.getPassageByLink(link);
     return currentPassage;
   }
 
