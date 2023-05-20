@@ -35,6 +35,6 @@ public class InventoryGoal implements Goal {
     for (String s : mandatoryItems) {
       stringBuilder.append(s).append(",");
     }
-    return stringBuilder + " Items!";
+    return stringBuilder.toString();
   }
 }

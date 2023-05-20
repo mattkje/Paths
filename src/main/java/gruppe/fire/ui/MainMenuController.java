@@ -14,10 +14,8 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import javafx.animation.Animation;
-import javafx.animation.Interpolator;
-import javafx.animation.ParallelTransition;
-import javafx.animation.TranslateTransition;
+
+import javafx.animation.*;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -111,6 +109,8 @@ public class MainMenuController {
     this.citySkyline4 = new ImageView(cityImage2);
     this.citySkyline5 = new ImageView(cityImage2);
     this.citySkyline6 = new ImageView(cityImage2);
+    Image sunImage = new Image("/gruppe/fire/Media/sun.png");
+    ImageView sunImageView = new ImageView(sunImage);
 
     TranslateTransition translateTransition =
         new TranslateTransition(Duration.millis(20000), citySkyline);
@@ -148,6 +148,16 @@ public class MainMenuController {
     translateTransition6.setToX(1300);
     translateTransition6.setInterpolator(Interpolator.LINEAR);
 
+    RotateTransition rotateTransition = new RotateTransition(Duration.seconds(30), sunImageView);
+    rotateTransition.setNode(sunImageView);
+    rotateTransition.setFromAngle(0);
+    rotateTransition.setToAngle(360);
+    rotateTransition.setInterpolator(Interpolator.LINEAR);
+    rotateTransition.setCycleCount(Animation.INDEFINITE);
+    rotateTransition.play();
+
+
+
     //Need two parallelTransitions as it stops if all are in one.
     ParallelTransition parallelTransition =
         new ParallelTransition(translateTransition, translateTransition2, translateTransition3);
@@ -165,11 +175,15 @@ public class MainMenuController {
     citySkyline4.fitHeightProperty().bind(root.heightProperty());
     citySkyline5.fitHeightProperty().bind(root.heightProperty());
     citySkyline6.fitHeightProperty().bind(root.heightProperty());
+    sunImageView.fitHeightProperty().bind(root.widthProperty());
+    sunImageView.fitWidthProperty().bind(root.widthProperty());
 
+    sunImageView.setLayoutY(-1000);
     citySkyline4.setLayoutY(200);
     citySkyline5.setLayoutY(200);
     citySkyline6.setLayoutY(200);
 
+    sunImageView.setOpacity(0.05);
     citySkyline.setOpacity(0.1);
     citySkyline2.setOpacity(0.1);
     citySkyline3.setOpacity(0.1);
@@ -180,7 +194,7 @@ public class MainMenuController {
     Map<String, String> map = dataBase.readSettingsFromFile();
     boolean bg = Boolean.parseBoolean(map.get("bg"));
     if (bg) {
-      root.getChildren().addAll(citySkyline, citySkyline2, citySkyline3, citySkyline4, citySkyline5,
+      root.getChildren().addAll(sunImageView, citySkyline, citySkyline2, citySkyline3, citySkyline4, citySkyline5,
           citySkyline6);
     }
   }

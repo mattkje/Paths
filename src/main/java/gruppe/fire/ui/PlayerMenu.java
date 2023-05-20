@@ -9,13 +9,8 @@ import java.nio.file.Paths;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.Spinner;
-import javafx.scene.control.SpinnerValueFactory;
+import javafx.scene.control.*;
 import javafx.scene.control.SpinnerValueFactory.IntegerSpinnerValueFactory;
-import javafx.scene.control.TextField;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -115,10 +110,18 @@ public class PlayerMenu {
 
     //Reads playerfolder, and display all saved users.
     for (int i = 1; i <= players.length; i++) {
+
       File file = new File(players[i - 1]);
+      String playerNumber = file.toPath().toString().replaceAll("[^0-9]", "");
       FileToPlayer fileToPlayer = new FileToPlayer(file);
       Player currentPlayer = fileToPlayer.readFile();
-
+      Button deletePlayer = new Button("Delete");
+      deletePlayer.setOnAction(event -> {
+        controller.setActivePlayer("player1.txt");
+        dataBase.deletePlayer(Integer.parseInt(playerNumber));
+        selectMusic.dispose();
+        start(scene);
+      });
       ppImages[i - 1] = new ImageView(currentPlayer.getImage());
       ppImages[i - 1].setFitHeight(100);
       ppImages[i - 1].setFitWidth(100);
@@ -128,22 +131,29 @@ public class PlayerMenu {
       ppLabels[i - 1].setFont(font);
       VBox playerSelectBox = new VBox();
       playerSelectBox.setAlignment(Pos.CENTER);
-      playerSelectBox.getChildren().addAll(ppImages[i - 1], ppLabels[i - 1]);
       String playerName = ppLabels[i - 1].getText();
       Button playerButton = new Button();
       playerButton.setId("ppButton");
-      playerButton.setGraphic(playerSelectBox);
+      playerButton.setGraphic(ppImages[i - 1]);
       playerButton.setPadding(new Insets(30));
       playerButton.setStyle("-fx-background-radius: 10");
+      playerSelectBox.getChildren().addAll(playerButton, ppLabels[i - 1]);
+      if (!playerNumber.equals("1")){
+        playerSelectBox.getChildren().add(deletePlayer);
+      } else {
+        Button invisButton = new Button();
+        invisButton.setOpacity(0);
+        playerSelectBox.getChildren().add(invisButton); //To make icons line up
+      }
 
       //Sets active player
-      String activePlayerString = "player" + i + ".txt";
+      String activePlayerString = "player" + playerNumber + ".txt";
       playerButton.setOnAction(event -> {
         controller.setActivePlayer(activePlayerString);
         selectedPlayer.setText("Selected Player: " + playerName);
         selectMusic.dispose();
       });
-      ppImageBox.getChildren().add(playerButton);
+      ppImageBox.getChildren().add(playerSelectBox);
     }
 
     //Create new user button
@@ -251,6 +261,8 @@ public class PlayerMenu {
           .gold(playerGold)
           .build();
       dataBase.writeFile(addedPlayer);
+      selectMusic.dispose();
+      start(scene);
     });
 
     imageSelectBox.getChildren().addAll(imageDisplay, uploadImage);
@@ -352,6 +364,7 @@ public class PlayerMenu {
       if (dataBase.checkGoalsEmpty()) {
         controller.noGoalsPopUp(gameDisplay, font, menuFontLarge, scene, selectMusic);
       } else {
+        selectMusic.dispose();
         gameDisplay.start(scene, false);
       }
 
@@ -374,9 +387,11 @@ public class PlayerMenu {
     playerHbox.getChildren().addAll(playerContainer, goalMenu);
     playerVbox.getChildren().addAll(playerTitle, selectedPlayer, ppImageBox);
     newPlayerButton.setOnAction(e -> {
-      playerHbox.getChildren().removeAll(goalMenu);
-      playerContainer.getChildren().clear();
-      playerContainer.getChildren().add(newUserHbox);
+      if (players.length < 10){
+        playerHbox.getChildren().removeAll(goalMenu);
+        playerContainer.getChildren().clear();
+        playerContainer.getChildren().add(newUserHbox);
+      }
     });
     backButton.setOnAction(e -> {
       playerContainer.getChildren().clear();
@@ -397,7 +412,9 @@ public class PlayerMenu {
       int goldInt = setGoldSpinner.getValue();
       int healthInt = setHealthSpinner.getValue();
       int scoreInt = setScoreSpinner.getValue();
-      dataBase.writeGoalsToFile(goldInt, healthInt, scoreInt, inventoryField.getText());
+      String inventoryString = inventoryField.getText();
+      dataBase.writeGoalsToFile(goldInt, healthInt, scoreInt, inventoryString);
+      selectMusic.dispose();
       start(scene);
 
     });

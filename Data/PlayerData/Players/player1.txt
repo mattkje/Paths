@@ -1,8 +1,5 @@
-Calm Matt
-Data/PlayerData/Images/pp1.png
-6
-10
-100
-0
+Default
+Data\PlayerData\Images\noSelect.png
+1
 0
 0

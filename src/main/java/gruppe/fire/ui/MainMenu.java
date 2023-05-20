@@ -371,37 +371,40 @@ public class MainMenu {
     });
 
     //Previously played game info.
-    Game gamePreview = dataBase.readFile();
-
-    Label savedStoryTitle = new Label("Game: " + gamePreview.getStory().getTitle());
-    savedStoryTitle.setFont(font);
-    Label savedStoryPassage =
-        new Label("Room: " + gamePreview.getStory().getOpeningPassage().getTitle());
-    savedStoryPassage.setFont(font);
-    Label savedStoryPlayer = new Label("Player: " + gamePreview.getPlayer().getName());
-    savedStoryPlayer.setFont(font);
-    Label savedPlayerGold = new Label("Gold: " + gamePreview.getPlayer().getGold());
-    Label savedPlayerHealth = new Label("Health: " + gamePreview.getPlayer().getHealth());
-    Label savedPlayerScore = new Label("Score: " + gamePreview.getPlayer().getScore());
-
-
-    label.setFont(menuFont);
-    label.setTextFill(Color.WHITE);
-    HBox scoreHbox = new HBox(savedPlayerGold, savedPlayerHealth, savedPlayerScore);
-    scoreHbox.setAlignment(Pos.CENTER);
-    scoreHbox.setSpacing(10);
-    VBox savedVbox = new VBox(savedStoryTitle, savedStoryPassage, savedStoryPlayer, scoreHbox);
-    savedVbox.setAlignment(Pos.CENTER);
-    savedVbox.setId("savedVBox");
-    savedVbox.setMaxWidth(380);
     VBox savedBox = new VBox();
-    savedBox.getChildren().addAll(savedTitle, savedVbox, continueGame);
-    savedBox.setId("savedBox");
-    savedBox.setPrefWidth(400);
-    savedBox.setMaxHeight(400);
-    savedBox.setSpacing(20);
-    savedBox.setAlignment(Pos.TOP_CENTER);
-    savedBox.setEffect(dropShadow);
+    Game gamePreview = dataBase.readFile();
+    if (dataBase.getGameState()){
+
+      Label savedStoryTitle = new Label("Game: " + gamePreview.getStory().getTitle());
+      savedStoryTitle.setFont(font);
+      Label savedStoryPassage =
+              new Label("Room: " + gamePreview.getStory().getOpeningPassage().getTitle());
+      savedStoryPassage.setFont(font);
+      Label savedStoryPlayer = new Label("Player: " + gamePreview.getPlayer().getName());
+      savedStoryPlayer.setFont(font);
+      Label savedPlayerGold = new Label("Gold: " + gamePreview.getPlayer().getGold());
+      Label savedPlayerHealth = new Label("Health: " + gamePreview.getPlayer().getHealth());
+      Label savedPlayerScore = new Label("Score: " + gamePreview.getPlayer().getScore());
+
+
+      label.setFont(menuFont);
+      label.setTextFill(Color.WHITE);
+      HBox scoreHbox = new HBox(savedPlayerGold, savedPlayerHealth, savedPlayerScore);
+      scoreHbox.setAlignment(Pos.CENTER);
+      scoreHbox.setSpacing(10);
+      VBox savedVbox = new VBox(savedStoryTitle, savedStoryPassage, savedStoryPlayer, scoreHbox);
+      savedVbox.setAlignment(Pos.CENTER);
+      savedVbox.setId("savedVBox");
+      savedVbox.setMaxWidth(380);
+      savedBox.getChildren().addAll(savedTitle, savedVbox, continueGame);
+      savedBox.setId("savedBox");
+      savedBox.setPrefWidth(400);
+      savedBox.setMaxHeight(400);
+      savedBox.setSpacing(20);
+      savedBox.setAlignment(Pos.TOP_CENTER);
+      savedBox.setEffect(dropShadow);
+    }
+
 
     //Back Button
     ImageView backImage = new ImageView("/gruppe/fire/Media/back.png");
@@ -558,19 +561,19 @@ public class MainMenu {
     story.setTextFill(Color.WHITE);
     story.setId("startButton");
     Button fileEditor = new Button("File Editor");
-    fileEditor.setFont(menuFont);
+    fileEditor.setFont(font);
     fileEditor.setTextFill(Color.WHITE);
     fileEditor.setId("fileEditorButton");
     Button settings = new Button("Settings");
-    settings.setFont(menuFont);
+    settings.setFont(font);
     settings.setTextFill(Color.WHITE);
     settings.setId("settingsButton");
     Button howToPlay = new Button("Tutorial");
-    howToPlay.setFont(menuFont);
+    howToPlay.setFont(font);
     howToPlay.setTextFill(Color.WHITE);
     howToPlay.setId("howToPlayButton");
     Button exit = new Button("Exit Game");
-    exit.setFont(menuFont);
+    exit.setFont(font);
     exit.setTextFill(Color.WHITE);
     exit.setId("exitButton");
 

@@ -115,6 +115,7 @@ public class Game {
    */
   public void gameToFile(Game game, Passage currentPassage) {
     DataBase dataBase = new DataBase();
+
     String gameState = dataBase.getActiveStoryPath() + "\n"
         + currentPassage.getTitle() + "\n"
         + game.getPlayer().getName() + "\n"
@@ -124,7 +125,7 @@ public class Game {
         + game.getGoals().get(0).getGoal().replace(" Gold", "") + "\n"
         + game.getGoals().get(1).getGoal().replace(" Health", "") + "\n"
         + game.getGoals().get(2).getGoal().replace(" Points", "") + "\n"
-        + game.getGoals().get(3).getGoal().replace(" ,Items!", "") + "\n"
+        + dataBase.readGoalsFromFile().get(3).getGoal() + "\n"
         + game.getPlayer().getInventory();
 
     dataBase.writeStateToFile(gameState);

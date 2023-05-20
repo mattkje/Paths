@@ -1,8 +1,0 @@
-If show Win
-Data/PlayerData/Images/pp2.png
-61
-13041
-190742
-0
-0
-0

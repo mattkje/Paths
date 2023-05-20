@@ -1,11 +1,11 @@
 src\main\resources\gruppe\fire\Paths\MurderMystery.paths
-Hall way
-Matissetass
+Beginning
+Default
 0
-3
+1
 0
-300
-4
-250
-,!
+0
+0
+0
+,
 []
