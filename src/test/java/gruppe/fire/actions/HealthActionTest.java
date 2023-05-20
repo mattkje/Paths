@@ -1,4 +1,4 @@
-package gruppe.fire;
+package gruppe.fire.actions;
 import gruppe.fire.actions.GoldAction;
 import gruppe.fire.actions.HealthAction;
 import gruppe.fire.logic.Player;

@@ -1,13 +1,19 @@
 package gruppe.fire.ui;
 
-import gruppe.fire.fileHandling.DataBase;
-import gruppe.fire.fileHandling.FileToStory;
+import gruppe.fire.filehandling.DataBase;
+import gruppe.fire.filehandling.FileToStory;
 import gruppe.fire.logic.Game;
+import gruppe.fire.logic.Link;
 import gruppe.fire.logic.Player;
 import gruppe.fire.logic.Story;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.file.Files;
-import java.util.ArrayList;
+import java.nio.file.Path;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import javafx.animation.Animation;
 import javafx.animation.Interpolator;
 import javafx.animation.ParallelTransition;
@@ -33,12 +39,6 @@ import javafx.stage.FileChooser;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.Map;
-import java.util.Objects;
 
 /**
  * Represents a controller for the main menu class.
@@ -49,6 +49,9 @@ import java.util.Objects;
  */
 public class MainMenuController {
 
+  private static final File CURRENT_PATHS_FILE = new File("Data/currentPathsFile.cfg");
+
+  private static final String GPATHS = ".Gpaths";
   private File selectedFile;
   private ImageView citySkyline;
   private ImageView citySkyline2;
@@ -65,14 +68,12 @@ public class MainMenuController {
    */
   public void setActiveGpaths(String filename) {
     Path savedPaths = Path.of(filename);
-    try {
-      FileWriter writer;
-      writer = new FileWriter("Data/currentPathsFile.cfg");
+    try (FileWriter writer = new FileWriter(CURRENT_PATHS_FILE)) {
       writer.write(String.valueOf(savedPaths));
-      writer.close();
 
     } catch (IOException ex) {
-      throw new RuntimeException(ex);
+      String exceptionString = "Something went wrong while setting active Gpaths" + ex;
+      System.getLogger(exceptionString);
     }
   }
 
@@ -84,14 +85,12 @@ public class MainMenuController {
    */
   public void setDefaultPath(String filename) {
     Path savedPaths = Path.of("src/main/resources/gruppe/fire/Paths/" + filename);
-    try {
-      FileWriter writer;
-      writer = new FileWriter("Data/currentPathsFile.cfg");
+    try (FileWriter writer = new FileWriter(CURRENT_PATHS_FILE)) {
       writer.write(String.valueOf(savedPaths));
-      writer.close();
 
     } catch (IOException ex) {
-      throw new RuntimeException(ex);
+      String exceptionString = "Something went wrong while setting default path" + ex;
+      System.getLogger(exceptionString);
     }
   }
 
@@ -102,16 +101,13 @@ public class MainMenuController {
    */
   public void getBackground(BorderPane root) {
 
-    DataBase dataBase = new DataBase();
-    Map map = dataBase.readSettingsFromFile();
-    boolean bg = (Boolean) map.get("bg");
     ColorAdjust colorAdjust = new ColorAdjust();
     colorAdjust.setBrightness(0);
     Image cityImage = new Image("/gruppe/fire/Media/gameBG.png");
-    Image cityImage2 = new Image("/gruppe/fire/Media/gameBGC.png");
     this.citySkyline = new ImageView(cityImage);
     this.citySkyline2 = new ImageView(cityImage);
     this.citySkyline3 = new ImageView(cityImage);
+    Image cityImage2 = new Image("/gruppe/fire/Media/gameBGC.png");
     this.citySkyline4 = new ImageView(cityImage2);
     this.citySkyline5 = new ImageView(cityImage2);
     this.citySkyline6 = new ImageView(cityImage2);
@@ -119,7 +115,7 @@ public class MainMenuController {
     TranslateTransition translateTransition =
         new TranslateTransition(Duration.millis(20000), citySkyline);
     translateTransition.setFromX(0);
-    translateTransition.setToX(-1 * 1300);
+    translateTransition.setToX(-1 * (double) 1300);
     translateTransition.setInterpolator(Interpolator.LINEAR);
 
     TranslateTransition translateTransition2 =
@@ -137,7 +133,7 @@ public class MainMenuController {
     TranslateTransition translateTransition4 =
         new TranslateTransition(Duration.millis(10000), citySkyline4);
     translateTransition4.setFromX(0);
-    translateTransition4.setToX(-1 * 1300);
+    translateTransition4.setToX(-1 * (double) 1300);
     translateTransition4.setInterpolator(Interpolator.LINEAR);
 
     TranslateTransition translateTransition5 =
@@ -174,12 +170,15 @@ public class MainMenuController {
     citySkyline5.setLayoutY(200);
     citySkyline6.setLayoutY(200);
 
-    citySkyline.setStyle("-fx-opacity: 0.1");
-    citySkyline2.setStyle("-fx-opacity: 0.1");
-    citySkyline3.setStyle("-fx-opacity: 0.1");
+    citySkyline.setOpacity(0.1);
+    citySkyline2.setOpacity(0.1);
+    citySkyline3.setOpacity(0.1);
     citySkyline4.setEffect(colorAdjust);
     citySkyline5.setEffect(colorAdjust);
     citySkyline6.setEffect(colorAdjust);
+    DataBase dataBase = new DataBase();
+    Map<String, String> map = dataBase.readSettingsFromFile();
+    boolean bg = Boolean.parseBoolean(map.get("bg"));
     if (bg) {
       root.getChildren().addAll(citySkyline, citySkyline2, citySkyline3, citySkyline4, citySkyline5,
           citySkyline6);
@@ -197,29 +196,29 @@ public class MainMenuController {
     this.selectedFile = fileChooser.showOpenDialog(scene.getWindow());
 
     //Prevents user from opening non-paths files (typing direct path will bypass filter)
-    if (!String.valueOf(selectedFile).endsWith(".paths") &&
-        !String.valueOf(selectedFile).endsWith(".Gpaths") && selectedFile != null) {
+    if (!String.valueOf(selectedFile).endsWith(".paths")
+        && !String.valueOf(selectedFile).endsWith(GPATHS) && selectedFile != null) {
       noFile.setText("Incorrect file type!");
 
     } else if (selectedFile != null) {
       Path currentFile = Path.of(selectedFile.getPath());
-      try {
-        FileWriter writer;
-        writer = new FileWriter("Data/currentPathsFile.cfg");
+      try (FileWriter writer = new FileWriter(CURRENT_PATHS_FILE)) {
         writer.write(String.valueOf(currentFile));
-        writer.close();
+
         noFile.setText(String.valueOf(currentFile));
-        if (String.valueOf(selectedFile).endsWith(".Gpaths")) {
-          DataBase dataBase = new DataBase();
-          dataBase.gpathHandler();
-        }
+
       } catch (IOException ex) {
-        throw new RuntimeException(ex);
+        String exceptionString = "Something went wrong while opening paths file" + ex;
+        System.getLogger(exceptionString);
       }
 
       //Sets status if user cancels open file.
     } else {
       noFile.setText("No file was selected");
+    }
+    if (String.valueOf(selectedFile).endsWith(GPATHS)) {
+      DataBase dataBase = new DataBase();
+      dataBase.gpathHandler();
     }
   }
 
@@ -232,12 +231,12 @@ public class MainMenuController {
    * @param noFile     Feedback label.
    */
   public void startGameButton(PlayerMenu playerMenu, Scene scene, Label noFile) {
-    if (String.valueOf(selectedFile).endsWith(".Gpaths") && selectedFile != null) {
+    if (String.valueOf(selectedFile).endsWith(GPATHS) && selectedFile != null) {
       if (checkBrokenGpath()) {
         setActiveGpaths("Data/currentGpaths/story.paths");
         playerMenu.start(scene);
       } else {
-        noFile.setText("Could not load file. Wrong format?");
+        noFile.setText("Could not load Gpaths. Wrong format?");
         return;
       }
     }
@@ -266,11 +265,10 @@ public class MainMenuController {
   public void deadLinkPopUp(Font font, Font menuFontLarge, Scene scene, MediaPlayer player) {
     FileToStory fileToStory = new FileToStory(selectedFile);
     Story story = fileToStory.readFile();
-    List list = story.getBrokenLinks();
-    Label warning = new Label("Warning");
+    List<Link> list = story.getBrokenLinks();
     Label warningInfo = new Label("This story has dead links:");
     warningInfo.setFont(font);
-    ListView deadLinks = new ListView();
+    ListView<Link> deadLinks = new ListView<>();
     deadLinks.getItems().setAll(list);
     Button dismissButton = new Button("Dismiss");
     dismissButton.setFont(font);
@@ -279,6 +277,7 @@ public class MainMenuController {
     HBox buttonBox = new HBox(editorButton, dismissButton);
     buttonBox.setAlignment(Pos.CENTER);
     buttonBox.setSpacing(30);
+    Label warning = new Label("Warning");
     warning.setFont(menuFontLarge);
     warning.setAlignment(Pos.CENTER);
     VBox warningBox = new VBox(warning, warningInfo, deadLinks, buttonBox);
@@ -290,22 +289,24 @@ public class MainMenuController {
     Popup popup = new Popup();
     popup.getContent().add(warningBox);
     popup.show(scene.getWindow());
-    dismissButton.setOnAction(e -> {
-      popup.hide();
-    });
-    editorButton.setOnAction(e ->{
+    dismissButton.setOnAction(e ->
+        popup.hide());
+
+    editorButton.setOnAction(e -> {
       popup.hide();
       player.dispose();
       String fileContent = null;
-      byte[] fileBytes = new byte[0];
+      byte[] fileBytes;
       try {
         fileBytes = Files.readAllBytes(selectedFile.toPath());
         fileContent = new String(fileBytes);
       } catch (IOException ex) {
-        throw new RuntimeException(ex);
+        String exceptionString = "Something went wrong while reading dead links" + ex;
+        System.getLogger(exceptionString);
       }
 
       FileEditorMenu fileEditorMenu = new FileEditorMenu();
+      assert fileContent != null;
       fileEditorMenu.start(scene, fileContent);
     });
   }
@@ -356,7 +357,6 @@ public class MainMenuController {
   public void exitButton(BorderPane root, Font font, Font menuFontLarge, HBox titleBox, HBox bottom,
                          HBox menuBox, MediaPlayer player) {
     player.setVolume(player.getVolume() - 0.4);
-    Label quitTitle = new Label("Exit the game");
     Label confirmationLabel = new Label("Are you sure you want to quit?");
     confirmationLabel.setFont(font);
     Button yesButton = new Button("Yes");
@@ -366,6 +366,7 @@ public class MainMenuController {
     quitButtons.setAlignment(Pos.CENTER);
     yesButton.setFont(font);
     noButton.setFont(font);
+    Label quitTitle = new Label("Exit the game");
     quitTitle.setFont(menuFontLarge);
     quitTitle.setAlignment(Pos.CENTER);
     VBox quitBox = new VBox(quitTitle, confirmationLabel, quitButtons);
@@ -378,9 +379,8 @@ public class MainMenuController {
     root.setCenter(quitBox);
 
 
-    yesButton.setOnAction(exitEvent -> {
-      Platform.exit();
-    });
+    yesButton.setOnAction(exitEvent ->
+        Platform.exit());
     noButton.setOnAction(exitEvent -> {
       root.setTop(titleBox);
       root.setBottom(bottom);
@@ -404,7 +404,8 @@ public class MainMenuController {
   }
 
   /**
-   * Responsible for giving the player instant feedback when disabling/enabling the background animation.
+   * Responsible for giving the player instant feedback when
+   * disabling/enabling the background animation.
    *
    * @param root The game root node.
    * @param bg   Background boolean
@@ -462,11 +463,16 @@ public class MainMenuController {
         stage.setWidth(800);
         stage.setHeight(600);
       }
+      default -> {
+        stage.setWidth(0);
+        stage.setHeight(0);
+      }
     }
   }
 
   /**
-   * Validates the imported paths file by creating a game object and checking if crucial content is null.
+   * Validates the imported paths file by creating a game object and checking
+   * if crucial content is null.
    *
    * @param game The created Game object.
    * @return True if paths file is valid, false otherwise.

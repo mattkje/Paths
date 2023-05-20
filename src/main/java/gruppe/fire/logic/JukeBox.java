@@ -1,10 +1,10 @@
 package gruppe.fire.logic;
 
-import gruppe.fire.fileHandling.DataBase;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
+import gruppe.fire.filehandling.DataBase;
 import java.io.File;
 import java.util.Objects;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 
 /**
  * Represents the music in the game.
@@ -30,7 +30,7 @@ public class JukeBox {
         Objects.requireNonNull(getClass().getResource("/gruppe/fire/Media/backgroundMusic.wav"))
             .toString());
     this.mediaPlayer = new MediaPlayer(sound);
-    mediaPlayer.setVolume((double) dataBase.readSettingsFromFile().get("vlm"));
+    mediaPlayer.setVolume(Double.parseDouble(dataBase.readSettingsFromFile().get("vlm")));
     return mediaPlayer;
   }
 
@@ -45,7 +45,7 @@ public class JukeBox {
         Objects.requireNonNull(getClass().getResource(MAIN_MENU_MUSIC))
             .toString());
     this.mediaPlayer = new MediaPlayer(sound);
-    mediaPlayer.setVolume((double) dataBase.readSettingsFromFile().get("vlm"));
+    mediaPlayer.setVolume(Double.parseDouble(dataBase.readSettingsFromFile().get("vlm")));
     return mediaPlayer;
   }
 
@@ -95,7 +95,7 @@ public class JukeBox {
     if (mediaPlayer == null) {
       this.mediaPlayer = new MediaPlayer(defaultSound);
     }
-    mediaPlayer.setVolume((double) dataBase.readSettingsFromFile().get("vlm"));
+    mediaPlayer.setVolume(Double.parseDouble(dataBase.readSettingsFromFile().get("vlm")));
     return mediaPlayer;
   }
 }

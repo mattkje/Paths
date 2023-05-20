@@ -1,8 +1,7 @@
 package gruppe.fire.logic;
 
-import gruppe.fire.fileHandling.DataBase;
+import gruppe.fire.filehandling.DataBase;
 import gruppe.fire.goals.Goal;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +9,9 @@ import java.util.List;
 /**
  * The Game class is responsible for connecting a player to a story, and has
  * handy methods for starting and maneuvering in the game.
+ *
+ * @author Matti Kjellstadli
+ * @version 2023-05-20
  */
 public class Game {
 
@@ -32,29 +34,16 @@ public class Game {
     this.currentPassage = story.getOpeningPassage();
   }
 
-  /**
-   * This method returns the player.
-   *
-   * @return The player.
-   */
+
   public Player getPlayer() {
     return player;
   }
 
-  /**
-   * This method returns the story.
-   *
-   * @return The story.
-   */
   public Story getStory() {
     return story;
   }
 
-  /**
-   * This method returns the goals.
-   *
-   * @return The goals.
-   */
+
   public ArrayList<Goal> getGoals() {
     return goals;
   }
@@ -89,7 +78,7 @@ public class Game {
   /**
    * This method should return the passage that matches the provided the link.
    *
-   * @param link
+   * @param link The link provided by the user.
    * @return The passage which matches the provided Link.
    */
   public Passage go(Link link) {
@@ -97,6 +86,12 @@ public class Game {
     return currentPassage;
   }
 
+  /**
+   * This method is responsible for reading all players and returning
+   * a list of players.
+   *
+   * @return List of players.
+   */
   public String[] readPlayers() {
     File folder = new File("Data/PlayerData/Players");
     File[] listOfFiles = folder.listFiles();
@@ -112,18 +107,25 @@ public class Game {
     return result;
   }
 
+  /**
+   * This method is responsible for saving story progress to a file.
+   *
+   * @param game           Current game.
+   * @param currentPassage Current passage.
+   */
   public void gameToFile(Game game, Passage currentPassage) {
     DataBase dataBase = new DataBase();
-    String gameState = dataBase.getActiveStoryPath() + "\n" +
-        //game.getStory().getPassage(link).getTitle() + "\n" +
-        //game.getStory().getPassage(link).getContent() + "\n" +
-        currentPassage.getTitle() + "\n" +
-        game.getPlayer().getName() + "\n" +
-        game.getPlayer().getGold() + "\n" +
-        game.getPlayer().getHealth() + "\n" +
-        game.getPlayer().getScore() + "\n" +
-        game.getGoals() + "\n" +
-        game.getPlayer().getInventory();
+    String gameState = dataBase.getActiveStoryPath() + "\n"
+        + currentPassage.getTitle() + "\n"
+        + game.getPlayer().getName() + "\n"
+        + game.getPlayer().getGold() + "\n"
+        + game.getPlayer().getHealth() + "\n"
+        + game.getPlayer().getScore() + "\n"
+        + game.getGoals().get(0).getGoal().replace(" Gold", "") + "\n"
+        + game.getGoals().get(1).getGoal().replace(" Health", "") + "\n"
+        + game.getGoals().get(2).getGoal().replace(" Points", "") + "\n"
+        + game.getGoals().get(3).getGoal().replace(" ,Items!", "") + "\n"
+        + game.getPlayer().getInventory();
 
     dataBase.writeStateToFile(gameState);
   }

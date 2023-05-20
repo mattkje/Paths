@@ -1,33 +1,43 @@
 package gruppe.fire.ui;
 
 
-import gruppe.fire.fileHandling.DataBase;
-import gruppe.fire.fileHandling.FileToStory;
+import gruppe.fire.filehandling.DataBase;
 import gruppe.fire.logic.Game;
 import gruppe.fire.logic.JukeBox;
-import gruppe.fire.logic.Passage;
-import gruppe.fire.logic.Player;
-import gruppe.fire.logic.Story;
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import java.io.IOException;
-import javafx.animation.*;
+import java.util.Map;
+import java.util.Objects;
+import javafx.animation.Animation;
+import javafx.animation.FadeTransition;
+import javafx.animation.Interpolator;
+import javafx.animation.TranslateTransition;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.Slider;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
+import javafx.scene.control.TextArea;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.*;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import javafx.stage.*;
+import javafx.stage.FileChooser;
+import javafx.stage.Popup;
+import javafx.stage.Stage;
 import javafx.util.Duration;
-import java.io.File;
-import java.util.Map;
-import java.util.Objects;
+
 
 /**
  * This class represents a starting point for the GUI (Main menu).
@@ -37,26 +47,10 @@ import java.util.Objects;
  */
 public class MainMenu {
 
-  private PlayerMenu playerMenu;
+  private static final String DEFAULT_STORY = "defaultStory";
+  private static final String PACIFICO = "Pacifico";
 
-  private GameDisplay gameDisplay;
-
-  private DataBase dataBase;
-
-  private Map map;
-
-  private MainMenuController controller;
-
-  private File selectedFile;
-
-  private double musicVolume;
-
-  private double fxVolume;
-
-  private MediaPlayer player;
-  private MediaPlayer fxPlayer;
-
-  private Boolean ifSaved = false;
+  private static final String VERSION = "Version: 2023.05.18";
 
 
   /**
@@ -66,19 +60,15 @@ public class MainMenu {
    */
   public void startMain(Scene mainScene) {
 
-    //Universal app version String.
-    String version = "Version: 2023.05.18";
 
     //Defining variables
-    this.dataBase = new DataBase();
-    this.map = dataBase.readSettingsFromFile();
-    this.musicVolume = (Double) map.get("vlm");
-    this.fxVolume = (Double) map.get("vlm2");
+    DataBase dataBase = new DataBase();
+    Map<String, String> map = dataBase.readSettingsFromFile();
+    double musicVolume = Double.parseDouble(map.get("vlm"));
+    double fxVolume = Double.parseDouble(map.get("vlm2"));
 
-    this.controller = new MainMenuController();
-    this.playerMenu = new PlayerMenu();
-    this.gameDisplay = new GameDisplay();
-    JukeBox jukeBox = new JukeBox();
+    MainMenuController controller = new MainMenuController();
+
 
     //Clear active goals
     dataBase.writeGoalsToFile(0, 0, 0, "");
@@ -88,17 +78,17 @@ public class MainMenu {
     root.getChildren().clear();
 
     //Initializing saved settings.
-    controller.changeSettings((Boolean) map.get("fs"), (Boolean) map.get("bg"), musicVolume,
-        musicVolume);
+    controller.changeSettings(Boolean.parseBoolean(map.get("fs")),
+        Boolean.parseBoolean(map.get("bg")), musicVolume, fxVolume);
 
     //Initializing sounds and music.
-
-    this.player = jukeBox.getMainMenuMusic();
+    JukeBox jukeBox = new JukeBox();
+    MediaPlayer player = jukeBox.getMainMenuMusic();
     player.setOnEndOfMedia(() -> player.seek(javafx.util.Duration.ZERO));
     player.play();
 
 
-    this.fxPlayer = controller.getButtonClick(fxVolume);
+    MediaPlayer fxPlayer = controller.getButtonClick(fxVolume);
     mainScene.addEventFilter(ActionEvent.ACTION, event -> {
       fxPlayer.seek(Duration.ZERO);
       fxPlayer.play();
@@ -138,11 +128,9 @@ public class MainMenu {
 
     Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     double width = screenSize.getWidth();
-    Font font = Font.font("Comfortaa", width /100);
-    Font titleFont = Font.font("Pacifico", width/9);
-    Font titleFontSmall = Font.font("Pacifico", 100);
-    Font menuFont = Font.font("Pacifico", 34);
-    Font menuFontLarge = Font.font("Pacifico", 64);
+    Font font = Font.font("Comfortaa", width / 100);
+    Font titleFont = Font.font(PACIFICO, width / 9);
+    Font titleFontSmall = Font.font(PACIFICO, 100);
 
 
     //Title (P and aths are separated to make them closer to each other)
@@ -184,13 +172,14 @@ public class MainMenu {
     root.setTop(titleBox);
 
     //Import file menu.
-    VBox importMenu = new VBox();
+    Font menuFont = Font.font(PACIFICO, 34);
     Label label = new Label("About story:");
     Label selectGame = new Label("Upload story");
     selectGame.setFont(menuFont);
     selectGame.setTextFill(Color.WHITE);
     label.setFont(menuFont);
     label.setTextFill(Color.WHITE);
+    VBox importMenu = new VBox();
     importMenu.getChildren().add(selectGame);
     importMenu.setId("importMenu");
     importMenu.setPrefWidth(400);
@@ -226,16 +215,17 @@ public class MainMenu {
     aboutStoryPane.setId("aboutStoryPane");
     aboutStoryPane.setMaxWidth(360);
     aboutStoryPane.setAlignment(Pos.CENTER);
-    aboutStoryPane.add(storyNameLabel,0,0);
-    aboutStoryPane.add(storyPassagesLabel, 0,1);
-    aboutStoryPane.add(deadLinksLabel,0,2);
-    aboutStoryPane.add(storyName,1,0);
-    aboutStoryPane.add(storyPassages,1,1);
-    aboutStoryPane.add(deadLinks,1,2);
+    aboutStoryPane.add(storyNameLabel, 0, 0);
+    aboutStoryPane.add(storyPassagesLabel, 0, 1);
+    aboutStoryPane.add(deadLinksLabel, 0, 2);
+    aboutStoryPane.add(storyName, 1, 0);
+    aboutStoryPane.add(storyPassages, 1, 1);
+    aboutStoryPane.add(deadLinks, 1, 2);
 
     //Dead links warning
 
     //Open paths button.
+    Font menuFontLarge = Font.font(PACIFICO, 64);
     Button openPathsFile = new Button("Open paths file");
     openPathsFile.setEffect(dropShadow);
     openPathsFile.setFont(font);
@@ -246,7 +236,7 @@ public class MainMenu {
       storyPassages.setText(dataBase.getActiveStoryPassages());
       deadLinks.setText(dataBase.getBrokenStoryLinks());
       //Checks if story has any dead links
-      if (Integer.parseInt(dataBase.getBrokenStoryLinks()) > 0){
+      if (Integer.parseInt(dataBase.getBrokenStoryLinks()) > 0) {
         controller.deadLinkPopUp(font, menuFontLarge, mainScene, player);
       }
     });
@@ -257,9 +247,10 @@ public class MainMenu {
     startGame.setFont(font);
     startGame.setTextFill(Color.WHITE);
     //Game Starting point. Checks if imported file is valid, and opens the next menu.
+    PlayerMenu playerMenu = new PlayerMenu();
     startGame.setOnAction(e -> {
       //Prevents user from starting game if the story has dead links.
-      if (Integer.parseInt(dataBase.getBrokenStoryLinks()) > 0){
+      if (Integer.parseInt(dataBase.getBrokenStoryLinks()) > 0) {
         controller.deadLinkPopUp(font, menuFontLarge, mainScene, player);
         return;
       }
@@ -341,10 +332,10 @@ public class MainMenu {
       player.dispose();
     });
 
-    defaultStory1.setId("defaultStory");
-    defaultStory2.setId("defaultStory");
-    defaultStory3.setId("defaultStory");
-    defaultStory4.setId("defaultStory");
+    defaultStory1.setId(DEFAULT_STORY);
+    defaultStory2.setId(DEFAULT_STORY);
+    defaultStory3.setId(DEFAULT_STORY);
+    defaultStory4.setId(DEFAULT_STORY);
 
     defaultStories.add(defaultStory1, 0, 0);
     defaultStories.add(defaultStory2, 0, 1);
@@ -370,18 +361,17 @@ public class MainMenu {
     savedTitle.setFont(menuFont);
     savedTitle.setTextFill(Color.WHITE);
     savedTitle.setAlignment(Pos.CENTER);
+    GameDisplay gameDisplay = new GameDisplay();
     Button continueGame = new Button("Continue");
     continueGame.setFont(font);
     continueGame.setOnAction(e -> {
-      this.ifSaved = true;
-      gameDisplay.start(mainScene, ifSaved);
+      gameDisplay.start(mainScene, true);
       player.dispose();
 
     });
 
     //Previously played game info.
     Game gamePreview = dataBase.readFile();
-    //Game gamePreview = new Game(new Player.PlayerBuilder().build(), new Story("Test", new Passage("Gay", "Cringe")));
 
     Label savedStoryTitle = new Label("Game: " + gamePreview.getStory().getTitle());
     savedStoryTitle.setFont(font);
@@ -397,15 +387,15 @@ public class MainMenu {
 
     label.setFont(menuFont);
     label.setTextFill(Color.WHITE);
-    HBox scoreHBox = new HBox(savedPlayerGold, savedPlayerHealth, savedPlayerScore);
-    scoreHBox.setAlignment(Pos.CENTER);
-    scoreHBox.setSpacing(10);
-    VBox savedVBox = new VBox(savedStoryTitle, savedStoryPassage, savedStoryPlayer, scoreHBox);
-    savedVBox.setAlignment(Pos.CENTER);
-    savedVBox.setId("savedVBox");
-    savedVBox.setMaxWidth(380);
+    HBox scoreHbox = new HBox(savedPlayerGold, savedPlayerHealth, savedPlayerScore);
+    scoreHbox.setAlignment(Pos.CENTER);
+    scoreHbox.setSpacing(10);
+    VBox savedVbox = new VBox(savedStoryTitle, savedStoryPassage, savedStoryPlayer, scoreHbox);
+    savedVbox.setAlignment(Pos.CENTER);
+    savedVbox.setId("savedVBox");
+    savedVbox.setMaxWidth(380);
     VBox savedBox = new VBox();
-    savedBox.getChildren().addAll(savedTitle, savedVBox, continueGame);
+    savedBox.getChildren().addAll(savedTitle, savedVbox, continueGame);
     savedBox.setId("savedBox");
     savedBox.setPrefWidth(400);
     savedBox.setMaxHeight(400);
@@ -453,9 +443,8 @@ public class MainMenu {
     Button toggleFullscreen = new Button("Toggle fullscreen");
     toggleFullscreen.setFont(font);
     toggleFullscreen.setAlignment(Pos.CENTER);
-    toggleFullscreen.setOnAction(e -> {
-      controller.fullscreenButton(stage, title1, title2, titleBox, titleFontSmall, titleFont);
-    });
+    toggleFullscreen.setOnAction(e ->
+        controller.fullscreenButton(stage, title1, title2, titleBox, titleFontSmall, titleFont));
 
     //Change Resolution
     Label smallScreen = new Label("Set resolution");
@@ -465,7 +454,7 @@ public class MainMenu {
     //Display resolution combobox
     ComboBox<String> resolutionComboBox = new ComboBox<>();
     resolutionComboBox.setId("resolutionComboBox");
-    resolutionComboBox.getItems().addAll("1920 x 1080", "1280 x 1024","800 x 600");
+    resolutionComboBox.getItems().addAll("1920 x 1080", "1280 x 1024", "800 x 600");
     resolutionComboBox.getSelectionModel().selectFirst();
     resolutionComboBox.setOnAction(e -> {
       String selectedResolution = resolutionComboBox.getSelectionModel().getSelectedItem();
@@ -480,16 +469,18 @@ public class MainMenu {
     disableAnimation.setFont(font);
     disableAnimation.setAlignment(Pos.CENTER);
     disableAnimation.setOnAction(e -> {
-      controller.changeSettings((Boolean) map.get("fs"), false, (Double) map.get("vlm"),
-          (Double) map.get("vlm2"));
+      controller.changeSettings(Boolean.parseBoolean(map.get("fs")), false,
+          Double.parseDouble(map.get("vlm")),
+          Double.parseDouble(map.get("vlm2")));
       controller.updateBackground(root, false);
     });
     Button enableBackground = new Button("Enable background");
     enableBackground.setFont(font);
     enableBackground.setAlignment(Pos.CENTER);
     enableBackground.setOnAction(e -> {
-      controller.changeSettings((Boolean) map.get("fs"), true, (Double) map.get("vlm"),
-          (Double) map.get("vlm2"));
+      controller.changeSettings(Boolean.parseBoolean(map.get("fs")), true,
+          Double.parseDouble(map.get("vlm")),
+          Double.parseDouble(map.get("vlm2")));
       controller.updateBackground(root, true);
     });
 
@@ -537,10 +528,10 @@ public class MainMenu {
     Button setVol = new Button("Save settings");
     setVol.setFont(font);
     setVol.setAlignment(Pos.CENTER);
-    setVol.setOnAction(e -> {
-      controller.changeSettings((Boolean) map.get("fs"), (Boolean) map.get("bg"),
-          musicVolumeSlider.getValue(), fxVolumeSlider.getValue());
-    });
+    setVol.setOnAction(e ->
+        controller.changeSettings(Boolean.parseBoolean(map.get("fs")),
+            Boolean.parseBoolean(map.get("bg")),
+            musicVolumeSlider.getValue(), fxVolumeSlider.getValue()));
 
 
     VBox audioBox = new VBox(msBox, fxBox, setVol);
@@ -563,22 +554,22 @@ public class MainMenu {
     startMenu.setSpacing(30);
 
     Button story = new Button("Start Game");
-    Button fileEditor = new Button("File Editor");
-    Button settings = new Button("Settings");
-    Button howToPlay = new Button("Tutorial");
-    Button exit = new Button("Exit Game");
     story.setFont(menuFontLarge);
     story.setTextFill(Color.WHITE);
     story.setId("startButton");
+    Button fileEditor = new Button("File Editor");
     fileEditor.setFont(menuFont);
     fileEditor.setTextFill(Color.WHITE);
     fileEditor.setId("fileEditorButton");
+    Button settings = new Button("Settings");
     settings.setFont(menuFont);
     settings.setTextFill(Color.WHITE);
     settings.setId("settingsButton");
+    Button howToPlay = new Button("Tutorial");
     howToPlay.setFont(menuFont);
     howToPlay.setTextFill(Color.WHITE);
     howToPlay.setId("howToPlayButton");
+    Button exit = new Button("Exit Game");
     exit.setFont(menuFont);
     exit.setTextFill(Color.WHITE);
     exit.setId("exitButton");
@@ -626,13 +617,14 @@ public class MainMenu {
     ImageView info = new ImageView("/gruppe/fire/Media/info.png");
     info.setFitHeight(20);
     info.setFitWidth(20);
+    Label versionLabel = new Label(VERSION);
+    versionLabel.setTextFill(Color.WHITE);
     about.setGraphic(info);
     about.setOnMouseClicked(mouseEvent -> {
 
       Label aboutTitle = new Label("About");
       Label team = new Label("Created by G4");
       team.setFont(font);
-      Label versionLabel = new Label(version);
       Button dismissButton = new Button("Dismiss");
       dismissButton.setFont(font);
       aboutTitle.setFont(menuFontLarge);
@@ -645,30 +637,22 @@ public class MainMenu {
       Popup popup = new Popup();
       popup.getContent().add(aboutBox);
       popup.show(mainScene.getWindow());
-      dismissButton.setOnAction(e -> {
-        popup.hide();
-      });
+      dismissButton.setOnAction(e ->
+          popup.hide());
     });
 
-
-    //Version label.
-    Label versionLabel = new Label(version);
-    versionLabel.setTextFill(Color.WHITE);
 
     //Bottom bar.
     HBox bottom = new HBox();
     bottom.setMaxHeight(30);
     HBox growBox = new HBox();
-    growBox.setHgrow(growBox, Priority.ALWAYS); // set horizontal grow priority
+    HBox.setHgrow(growBox, Priority.ALWAYS); // set horizontal grow priority
     growBox.setMaxWidth(Double.MAX_VALUE); // set maximum width to a large value
     bottom.getChildren().addAll(versionLabel, growBox, about);
     root.setBottom(bottom);
 
-    exit.setOnAction(e -> {
-      controller.exitButton(root, font, menuFontLarge, titleBox, bottom, menuBox, player);
-    });
-
-
+    exit.setOnAction(e ->
+        controller.exitButton(root, font, menuFontLarge, titleBox, bottom, menuBox, player));
   }
 
 }

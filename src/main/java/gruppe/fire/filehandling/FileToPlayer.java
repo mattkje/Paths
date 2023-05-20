@@ -1,4 +1,4 @@
-package gruppe.fire.fileHandling;
+package gruppe.fire.filehandling;
 
 import gruppe.fire.logic.Player;
 import javafx.scene.image.Image;

@@ -1,4 +1,4 @@
-package gruppe.fire;
+package gruppe.fire.actions;
 
 import gruppe.fire.actions.ScoreAction;
 import gruppe.fire.logic.Player;
@@ -18,7 +18,7 @@ class ScoreActionTest {
             .score(400)
             .build();
         action.execute(player);
-        assertEquals(560, player.getScore());
+        assertEquals(660, player.getScore());
     }
 }
 

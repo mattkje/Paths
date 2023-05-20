@@ -1,8 +1,13 @@
 package gruppe.fire.ui;
 
 import gruppe.fire.actions.Action;
-import gruppe.fire.fileHandling.DataBase;
-import gruppe.fire.logic.*;
+import gruppe.fire.filehandling.DataBase;
+import gruppe.fire.logic.Game;
+import gruppe.fire.logic.Link;
+import gruppe.fire.logic.Passage;
+import java.io.File;
+import java.net.URL;
+import java.util.ArrayList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -13,12 +18,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import java.io.*;
-import java.net.URL;
-import java.util.ArrayList;
 
 /**
  * Represents a controller for the game menu class.
@@ -29,139 +30,118 @@ import java.util.ArrayList;
  */
 public class GameDisplayController {
 
-  private Player player;
+  private ArrayList<String> winList;
 
-  private String winLabel;
+  private Label roomTitleLabel;
+  private Text roomContentLabel;
+  private Label healthAmountLabel;
+  private Label goldAmountLabel;
+  private Label scoreAmountLabel;
+  private ImageView passageImage;
 
 
   /**
    * This method determines if a paths file is new.
    *
    * @return true if active path is already saved or if it is default, false otherwise.
-   * @throws IOException Exception
    */
   public boolean checkIfDefault() {
     DataBase dataBase = new DataBase();
     String activeStory = dataBase.getActiveStoryPath();
-    if (activeStory.contains("paths1.paths") || activeStory.contains("paths2.paths") ||
-        activeStory.contains("paths3.paths") || activeStory.contains("paths4.paths") ||
-        activeStory.contains("Castle.paths") || activeStory.contains("HauntedHouse.paths") ||
-        activeStory.contains("MurderMystery.paths") || activeStory.contains("SpaceShip.paths")) {
-      return false;
-    } else {
-      return true;
-    }
-
+    return !(activeStory.contains("Castle.paths") || activeStory.contains("HauntedHouse.paths")
+        || activeStory.contains("MurderMystery.paths") || activeStory.contains("SpaceShip.paths"));
   }
-
-  public boolean checkIfGPaths() {
-    DataBase dataBase = new DataBase();
-    if (dataBase.getActiveStoryPath().contains("currentGpaths")) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
 
   /**
-   * Displays the opening passage to user
+   * This method is responsible for acquiring and displaying the opening passage
+   * to the user.
    *
-   * @param game
-   * @param actionBar
-   * @param inventoryPane
-   * @param gameTitle
-   * @param roomTitle
-   * @param roomContent
-   * @param healthAmount
-   * @param goldAmount
-   * @param scoreAmount
-   * @param font
-   * @param dropShadow
+   * @param game          The current game.
+   * @param actionBar     The HBox containing the link buttons.
+   * @param inventoryPane The flow pane containing the inventory items.
+   * @param gameTitle     The game Title.
+   * @param font          Default font.
+   * @param dropShadow    Default shadow.
    */
-  public void writeOpeningPassage(Game game, HBox actionBar, FlowPane inventoryPane,
-                                  Label gameTitle, Label roomTitle, Text roomContent,
-                                  Label healthAmount, Label goldAmount, Label scoreAmount,
-                                  Font font, DropShadow dropShadow, ImageView passageImage) {
-    ArrayList links = game.getStory().getOpeningPassage().getLinks();
-    int linkCount = links.size();
+  public void writeOpeningStringPassage(Game game, HBox actionBar, FlowPane inventoryPane,
+                                        Label gameTitle, Font font, DropShadow dropShadow) {
+    ArrayList<Link> links = game.getStory().getOpeningPassage().getLinks();
 
-    for (int i = 0; i < linkCount; i++) {
-      Link link = (Link) links.get(i);
+    for (Link link : links) {
       Button nextPath = new Button("");
       Passage passage = game.go(link);
       game.setCurrentPassage(passage);
       nextPath.setText(link.getText());
-      ImageView finalPassageImage = passageImage;
-      finalPassageImage.setFitWidth(300);
-      finalPassageImage.setFitHeight(300);
-      if (finalPassageImage.getImage() == null){
-        finalPassageImage.setFitWidth(1);
-        finalPassageImage.setFitHeight(1);
+      if (checkGoals(game)) {
+        goalsAccomplished();
+        return;
       }
-      nextPath.setOnAction(e -> {
-        writePassage(game, link, actionBar, inventoryPane, passage, roomTitle,
-            roomContent, healthAmount, goldAmount, scoreAmount, font, dropShadow,
-            finalPassageImage);
-      });
+      nextPath.setOnAction(e ->
+          writeStringPassage(game, link, actionBar, inventoryPane, passage, font, dropShadow));
+
       nextPath.setFont(font);
       nextPath.setEffect(dropShadow);
       actionBar.getChildren().add(nextPath);
     }
 
     gameTitle.setText(game.getStory().getTitle());
-    roomTitle.setText(game.getStory().getOpeningPassage().getTitle());
-    roomContent.setText(game.getStory().getOpeningPassage().getContent());
-    passageImage.setImage(getPassageImage(game.getCurrentPassage()));
+    setRoomTitleLabel(game.getStory().getOpeningPassage().getTitle());
+    setRoomContentLabel(game.getStory().getOpeningPassage().getContent());
+    setPassageImage(getPassageImage(game.getStory().getOpeningPassage().getTitle()));
+    if (passageImage.getImage() != null) {
+      passageImage.setFitHeight(500);
+      passageImage.setFitWidth(500);
+    } else {
+      passageImage.setFitHeight(1);
+      passageImage.setFitWidth(1);
+    }
 
-    healthAmount.setText(String.valueOf(game.getPlayer().getHealth()));
-    goldAmount.setText(String.valueOf(game.getPlayer().getGold()));
-    scoreAmount.setText(String.valueOf(game.getPlayer().getScore()));
+    setHealthAmountLabel(String.valueOf(game.getPlayer().getHealth()));
+    setGoldAmountLabel(String.valueOf(game.getPlayer().getGold()));
+    setScoreAmountLabel(String.valueOf(game.getPlayer().getScore()));
   }
 
   /**
-   * Displays the nest passage.
+   * This method is responsible for acquiring and displaying the opening passage
+   * to the user.
    *
-   * @param game
-   * @param link
-   * @param actionBar
-   * @param inventoryPane
-   * @param passage
-   * @param roomTitle
-   * @param roomContent
-   * @param healthAmount
-   * @param goldAmount
-   * @param scoreAmount
-   * @param font
-   * @param dropShadow
+   * @param game          The current game.
+   * @param actionBar     The HBox containing the link buttons.
+   * @param inventoryPane The flow pane containing the inventory items.
+   * @param passage       The current Title.
+   * @param font          Default font.
+   * @param dropShadow    Default shadow.
    */
-  public void writePassage(Game game, Link link, HBox actionBar, FlowPane inventoryPane,
-                           Passage passage, Label roomTitle, Text roomContent,
-                           Label healthAmount, Label goldAmount, Label scoreAmount,
-                           Font font, DropShadow dropShadow, ImageView passageImage) {
+  public void writeStringPassage(Game game, Link link, HBox actionBar, FlowPane inventoryPane,
+                                 Passage passage, Font font, DropShadow dropShadow) {
+
 
     //Refresh text
-    checkGoals(game);
-    System.out.println(this.winLabel);
-    roomTitle.setText(passage.getTitle());
-    roomContent.setText(passage.getContent());
+    setRoomTitleLabel(passage.getTitle());
+    setRoomContentLabel(passage.getContent());
 
 
     //Refresh buttons
     actionBar.getChildren().clear();
 
     ArrayList<Action> actionArrayList = link.getActions();
-    for (int j = 0; j < actionArrayList.size(); j++) {
+    for (Action value : actionArrayList) {
 
-      if (actionArrayList.get(j) != null){
-        Action action = actionArrayList.get(j);
-        action.execute(game.getPlayer());
+      if (value != null) {
+        value.execute(game.getPlayer());
       }
 
-      healthAmount.setText(String.valueOf(game.getPlayer().getHealth()));
-      goldAmount.setText(String.valueOf(game.getPlayer().getGold()));
-      scoreAmount.setText(String.valueOf(game.getPlayer().getScore()));
-      passageImage.setImage(getPassageImage(game.getStory().getPassageByLink(link)));
+      setHealthAmountLabel(String.valueOf(game.getPlayer().getHealth()));
+      setGoldAmountLabel(String.valueOf(game.getPlayer().getGold()));
+      setScoreAmountLabel(String.valueOf(game.getPlayer().getScore()));
+      setPassageImage(getPassageImage(game.getStory().getPassageByLink(link).getTitle()));
+      if (passageImage.getImage() != null) {
+        passageImage.setFitHeight(500);
+        passageImage.setFitWidth(500);
+      } else {
+        passageImage.setFitHeight(1);
+        passageImage.setFitWidth(1);
+      }
 
       for (String item : game.getPlayer().getInventory()) {
         if (!flowPaneContainsItem(inventoryPane, item)) {
@@ -170,45 +150,87 @@ public class GameDisplayController {
       }
 
     }
-    ArrayList links2 = passage.getLinks();
-    int linkCount = links2.size();
+    ArrayList<Link> links2 = passage.getLinks();
 
-    for (int i = 0; i < linkCount; i++) {
-      link = (Link) links2.get(i);
+    for (Link value : links2) {
+      link = value;
       Button nextPath = new Button("");
-      Passage nextPassage = game.go(link);
       game.setCurrentPassage(passage);
       nextPath.setText(link.getText());
       Link finalLink = link;
+      Passage nextPassage = game.go(link);
       FlowPane finalInventoryPane = inventoryPane;
-      ImageView finalPassageImage = passageImage;
-      finalPassageImage.setFitWidth(300);
-      finalPassageImage.setFitHeight(300);
-      if (finalPassageImage.getImage() == null){
-        finalPassageImage.setFitWidth(1);
-        finalPassageImage.setFitHeight(1);
+      if (checkGoals(game)) {
+        goalsAccomplished();
+        Button restartButton = new Button("Restart");
+        restartButton.setFont(font);
+        restartButton.setEffect(dropShadow);
+        restartButton.setOnAction(e -> {
+          GameDisplay gameDisplay = new GameDisplay();
+          gameDisplay.start(restartButton.getScene(), false);
+        });
+        Button mainMenuButton = new Button("Main menu");
+        mainMenuButton.setFont(font);
+        mainMenuButton.setEffect(dropShadow);
+        mainMenuButton.setOnAction(e -> {
+          MainMenu mainMenu = new MainMenu();
+          mainMenu.startMain(mainMenuButton.getScene());
+        });
+        actionBar.getChildren().addAll(restartButton, mainMenuButton);
+        return;
       }
-      nextPath.setOnAction(e -> {
-        if (this.winLabel == null){
-          writePassage(game, finalLink, actionBar, finalInventoryPane, nextPassage, roomTitle,
-              roomContent, healthAmount, goldAmount, scoreAmount, font, dropShadow,
-              finalPassageImage);
-        } else {
-          writePassage(game, finalLink, actionBar, finalInventoryPane, nextPassage, roomTitle,
-              roomContent, healthAmount, goldAmount, scoreAmount, font, dropShadow,
-              finalPassageImage);
-          roomTitle.setText("Goal accomplished!");
-          roomContent.setText("You reached a goal: "+winLabel);
-          passageImage.setImage(new Image("/gruppe/fire/Media/scoreGoal.png"));
-        }
-
-      });
+      nextPath.setOnAction(e ->
+          writeStringPassage(game, finalLink, actionBar, finalInventoryPane, nextPassage, font,
+              dropShadow));
       nextPath.setFont(font);
       nextPath.setEffect(dropShadow);
       actionBar.getChildren().add(nextPath);
-
     }
 
+  }
+
+  public void setRoomTitleLabel(String roomTitle) {
+    this.roomTitleLabel.setText(roomTitle);
+  }
+
+  public void setRoomContentLabel(String roomContent) {
+    this.roomContentLabel.setText(roomContent);
+  }
+
+  public void setHealthAmountLabel(String healthAmount) {
+    this.healthAmountLabel.setText(healthAmount);
+  }
+
+  public void setGoldAmountLabel(String goldAmount) {
+    this.goldAmountLabel.setText(goldAmount);
+  }
+
+  public void setScoreAmountLabel(String scoreAmount) {
+    this.scoreAmountLabel.setText(scoreAmount);
+  }
+
+  public void setPassageImage(Image currentImage) {
+    this.passageImage.setImage(currentImage);
+  }
+
+  /**
+   * This method is responsible setting all display nodes to the ones from gameDisplay.
+   *
+   * @param roomTitleLabel    Room name label.
+   * @param roomContentLabel  Room content label.
+   * @param healthAmountLabel Health amount label.
+   * @param goldAmountLabel   Gold amount label.
+   * @param scoreAmountLabel  Score amount label.
+   * @param currentImage      Current passage image;
+   */
+  public void setLabels(Label roomTitleLabel, Text roomContentLabel, Label healthAmountLabel,
+                        Label goldAmountLabel, Label scoreAmountLabel, ImageView currentImage) {
+    this.roomTitleLabel = roomTitleLabel;
+    this.roomContentLabel = roomContentLabel;
+    this.healthAmountLabel = healthAmountLabel;
+    this.goldAmountLabel = goldAmountLabel;
+    this.scoreAmountLabel = scoreAmountLabel;
+    this.passageImage = currentImage;
   }
 
   /**
@@ -227,7 +249,6 @@ public class GameDisplayController {
     Label itemName = new Label(item);
     itemName.setFont(font);
     itemName.setAlignment(Pos.CENTER);
-    System.out.println(item);
     if (item.equals("Knife")) {
       Image image = new Image(("gruppe/fire/Media/2.png"));
       itemImage.setImage(image);
@@ -270,22 +291,20 @@ public class GameDisplayController {
   /**
    * This method is responsible for get the image which corresponds to the passage.
    *
-   * @param passage Current passage.
-   * @return The image which corresponds to the passage, null if passage does not have
-   * a corresponding image.
+   * @param passageTitle Current passage title.
+   * @return The image which corresponds to the passage, null otherwise.
    */
-  public Image getPassageImage(Passage passage) {
+  public Image getPassageImage(String passageTitle) {
     if (!checkIfDefault() && checkFileExistence(
-        "/gruppe/fire/Media/defaultPathsImages/MurderMysteryImages/" + passage.getTitle().strip() +
-            ".png")) {
-      return new Image("/gruppe/fire/Media/defaultPathsImages/MurderMysteryImages/" +
-          passage.getTitle().strip() + ".png");
+        "/gruppe/fire/Media/defaultPathsImages/MurderMysteryImages/" + passageTitle
+            + ".png")) {
+      return new Image("/gruppe/fire/Media/defaultPathsImages/MurderMysteryImages/"
+          + passageTitle + ".png");
 
-    } else if (checkFileExistence("Data/currentGpaths/Images/" + passage.getTitle() + ".png")) {
-      String passageImageString = ("Data/currentGpaths/Images/" + passage.getTitle() + ".png");
+    } else if (checkFileExistence("Data/currentGpaths/Images/" + passageTitle + ".png")) {
+      String passageImageString = ("Data/currentGpaths/Images/" + passageTitle + ".png");
       File file = new File(passageImageString);
       String absolutePath = file.toURI().toString();
-      System.out.println(absolutePath);
       return new Image(absolutePath);
 
     } else {
@@ -315,14 +334,27 @@ public class GameDisplayController {
    *
    * @param game Current game.
    */
-  public void checkGoals(Game game) {
+  public boolean checkGoals(Game game) {
+    this.winList = new ArrayList<>();
     game.getGoals().stream()
         .filter(g -> g.isFulfilled(game.getPlayer()))
-        .forEach(g -> this.winLabel = g.getGoal());
+        .forEach(g -> this.winList.add(g.getGoal()));
+    if (this.winList.contains("0 Gold") && this.winList.contains("0 Health")
+        && this.winList.contains("0 Points")) {
+      return false;
+    } else {
+      return this.winList.get(0).contains("Gold") && this.winList.get(1).contains("Health")
+          && this.winList.get(2).contains("Points");
+    }
   }
 
-  public String getWinLabel(){
-    return this.winLabel;
+  /**
+   * This method is responsible for creating the goal-accomplished screen.
+   */
+  public void goalsAccomplished() {
+    setRoomTitleLabel("Goal accomplished!");
+    setRoomContentLabel("You reached all goals: " + winList);
+    passageImage.setImage(new Image("/gruppe/fire/Media/scoreGoal.png"));
   }
 
 }

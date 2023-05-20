@@ -1,4 +1,4 @@
-package gruppe.fire.fileHandling;
+package gruppe.fire.filehandling;
 
 import java.io.*;
 import java.util.Scanner;
@@ -105,7 +105,7 @@ public class FileToStory {
     return link;
   }
 
-  private Action createAction(String actionType, String actionAmount) {
+  public Action createAction(String actionType, String actionAmount) {
     Action action = null;
     switch (actionType) {
       case "GoldAction" -> action = new GoldAction(Integer.parseInt(actionAmount));

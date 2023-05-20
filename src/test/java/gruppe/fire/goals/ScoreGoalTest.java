@@ -1,4 +1,4 @@
-package gruppe.fire;
+package gruppe.fire.goals;
 
 import gruppe.fire.goals.ScoreGoal;
 import gruppe.fire.logic.Player;
@@ -24,9 +24,9 @@ class ScoreGoalTest {
             .name("Mathias")
             .health(5)
             .gold(15)
-            .score(55)
+            .score(50)
             .build();
-        ScoreGoal goal = new ScoreGoal(0);
+        ScoreGoal goal = new ScoreGoal(100);
         Assertions.assertEquals(50, goal.remainingPoints(player));
     }
 
@@ -39,6 +39,6 @@ class ScoreGoalTest {
             .score(100)
             .build();
         ScoreGoal goal = new ScoreGoal(0);
-        Assertions.assertFalse(goal.isFulfilled(player));
+        Assertions.assertTrue(goal.isFulfilled(player));
     }
 }

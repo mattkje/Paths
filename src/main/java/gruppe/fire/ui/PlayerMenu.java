@@ -1,35 +1,54 @@
 package gruppe.fire.ui;
 
-import com.sun.javafx.scene.control.DatePickerContent;
-import gruppe.fire.fileHandling.DataBase;
-import gruppe.fire.fileHandling.FileToPlayer;
+import gruppe.fire.filehandling.DataBase;
+import gruppe.fire.filehandling.FileToPlayer;
 import gruppe.fire.logic.JukeBox;
 import gruppe.fire.logic.Player;
+import java.io.File;
+import java.nio.file.Paths;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.control.Spinner;
+import javafx.scene.control.SpinnerValueFactory;
+import javafx.scene.control.SpinnerValueFactory.IntegerSpinnerValueFactory;
+import javafx.scene.control.TextField;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.*;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
-import java.io.File;
-import java.nio.file.Paths;
 
+/**
+ * Represents the player select screen.
+ * At this menu, the user should be able to create a player and goals
+ *
+ * @author Matti Kjellstadli
+ * @version 2023-05-20
+ */
 public class PlayerMenu {
 
 
   private Image newProfileImage;
 
-
+  /**
+   * This method is responsible for building and displaying the player select screen.
+   *
+   * @param scene The game scene
+   */
   public void start(Scene scene) {
 
-    GameDisplay gameDisplay = new GameDisplay();
-    MainMenu mainMenu = new MainMenu();
+
     PlayerMenuController controller = new PlayerMenuController();
     JukeBox jukeBox = new JukeBox();
 
@@ -37,8 +56,6 @@ public class PlayerMenu {
     selectMusic.setOnEndOfMedia(() -> selectMusic.seek(javafx.util.Duration.ZERO));
     selectMusic.play();
 
-
-    DataBase dataBase = new DataBase();
 
     //Background
 
@@ -61,14 +78,11 @@ public class PlayerMenu {
     glow.setSpread(1);
     glow.setRadius(2);
 
-    //Font font = Font.loadFont(MainMenu.class.getResource("/gruppe/fire/fonts/Comfortaa-Regular.ttf").toExternalForm(), 24);
-    //Font buttonFont = Font.loadFont(MainMenu.class.getResource("/gruppe/fire/fonts/Comfortaa-Regular.ttf").toExternalForm(), 34);
-    //Font menuFont = Font.loadFont(MainMenu.class.getResource("/gruppe/fire/fonts/Pacifico-Regular.ttf").toExternalForm(), 44);
 
     Font font = Font.font("Comfortaa", 24);
-    Font buttonFont = Font.font("Comfortaa", 34);
-    Font menuFont = Font.font("Pacifico", 44);
-    Font menuFontLarge = Font.font("Pacifico", 64);
+
+
+
 
 
     //logo
@@ -76,7 +90,7 @@ public class PlayerMenu {
     title.setFitWidth(107);
     title.setFitHeight(50);
 
-
+    Font menuFont = Font.font("Pacifico", 44);
     Label playerTitle = new Label("Select player");
     playerTitle.setAlignment(Pos.CENTER);
     playerTitle.setTextFill(Color.WHITE);
@@ -84,7 +98,6 @@ public class PlayerMenu {
 
 
     FlowPane ppImageBox = new FlowPane();
-    //ppImageBox.setSpacing(100);
     ppImageBox.setHgap(50);
     ppImageBox.setHgap(50);
     ppImageBox.setAlignment(Pos.CENTER);
@@ -92,7 +105,7 @@ public class PlayerMenu {
     selectedPlayer.setFont(font);
     selectedPlayer.setAlignment(Pos.CENTER);
 
-
+    DataBase dataBase = new DataBase();
     String[] players = dataBase.createGame(new File(dataBase.getActivePlayerPath()),
         new File(dataBase.getActiveStoryPath())).readPlayers();
 
@@ -113,13 +126,13 @@ public class PlayerMenu {
       ppLabels[i - 1].setTextFill(Color.WHITE);
       ppLabels[i - 1].setAlignment(Pos.CENTER);
       ppLabels[i - 1].setFont(font);
-      VBox vBox = new VBox();
-      vBox.setAlignment(Pos.CENTER);
-      vBox.getChildren().addAll(ppImages[i - 1], ppLabels[i - 1]);
+      VBox playerSelectBox = new VBox();
+      playerSelectBox.setAlignment(Pos.CENTER);
+      playerSelectBox.getChildren().addAll(ppImages[i - 1], ppLabels[i - 1]);
       String playerName = ppLabels[i - 1].getText();
       Button playerButton = new Button();
       playerButton.setId("ppButton");
-      playerButton.setGraphic(vBox);
+      playerButton.setGraphic(playerSelectBox);
       playerButton.setPadding(new Insets(30));
       playerButton.setStyle("-fx-background-radius: 10");
 
@@ -136,7 +149,7 @@ public class PlayerMenu {
     //Create new user button
     Button newPlayerButton = new Button();
     newPlayerButton.setId("ppButton");
-    String imagePath = Paths.get("").toAbsolutePath().toString() + "/Data/PlayerData/Images/pp.png";
+    String imagePath = Paths.get("").toAbsolutePath() + "/Data/PlayerData/Images/pp.png";
     Image image = new Image(new File(imagePath).toURI().toString());
     ImageView newPlayer = new ImageView(image);
     newPlayer.setFitHeight(100);
@@ -145,24 +158,24 @@ public class PlayerMenu {
     createPlayer.setTextFill(Color.WHITE);
     createPlayer.setAlignment(Pos.CENTER);
     createPlayer.setFont(font);
-    VBox vBox = new VBox();
-    vBox.setAlignment(Pos.CENTER);
-    vBox.setStyle(
+    VBox newPlayerBox = new VBox();
+    newPlayerBox.setAlignment(Pos.CENTER);
+    newPlayerBox.setStyle(
         "-fx-background-color: rgba(255,255,255,0.14);-fx-background-radius: 20; -fx-padding: 20");
-    vBox.getChildren().addAll(newPlayer, createPlayer);
-    newPlayerButton.setGraphic(vBox);
+    newPlayerBox.getChildren().addAll(newPlayer, createPlayer);
+    newPlayerButton.setGraphic(newPlayerBox);
     newPlayerButton.setPadding(new Insets(30));
 
     ppImageBox.getChildren().add(newPlayerButton);
 
 
     //Create new user
-    HBox newUserHBox = new HBox();
-    newUserHBox.setAlignment(Pos.CENTER);
-    newUserHBox.setSpacing(20);
-    VBox newUserVBox = new VBox();
-    newUserVBox.setAlignment(Pos.CENTER);
-    newUserVBox.setSpacing(20);
+    HBox newUserHbox = new HBox();
+    newUserHbox.setAlignment(Pos.CENTER);
+    newUserHbox.setSpacing(20);
+    VBox newUserVbox = new VBox();
+    newUserVbox.setAlignment(Pos.CENTER);
+    newUserVbox.setSpacing(20);
     VBox imageSelectBox = new VBox();
     imageSelectBox.setAlignment(Pos.CENTER);
     imageSelectBox.setSpacing(20);
@@ -176,22 +189,21 @@ public class PlayerMenu {
     createPlayerTitle.setFont(font);
     createPlayerTitle.setTextFill(Color.WHITE);
 
-    Label playerNameLabel = new Label("Player name:");
-    Label playerHealthLabel = new Label("Set health:");
-    Label playerGoldLabel = new Label("Set gold:");
-    Label playerGoalsLabel = new Label("Set custom goals:");
-    TextField playerTextField = new TextField();
 
     SpinnerValueFactory<Integer> healthFactory =
-        new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 10);
-    SpinnerValueFactory<Integer> goldFactory =
-        new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 15000);
-    ((SpinnerValueFactory.IntegerSpinnerValueFactory) goldFactory).setAmountToStepBy(100);
-    Spinner healthSpinner = new Spinner(healthFactory);
-    Spinner goldSpinner = new Spinner(goldFactory);
+        new IntegerSpinnerValueFactory(1, 10);
+    IntegerSpinnerValueFactory goldFactory =
+        new IntegerSpinnerValueFactory(0, 15000);
+    goldFactory.setAmountToStepBy(100);
+    Spinner<Integer> healthSpinner = new Spinner<>(healthFactory);
+    Spinner<Integer> goldSpinner = new Spinner<>(goldFactory);
 
 
     Button createPlayerButton = new Button("Create player");
+    Label playerNameLabel = new Label("Player name:");
+    Label playerHealthLabel = new Label("Set health:");
+    Label playerGoldLabel = new Label("Set gold:");
+    TextField playerTextField = new TextField();
 
     newUserOptions.add(playerNameLabel, 0, 0);
     newUserOptions.add(playerTextField, 1, 0);
@@ -199,8 +211,6 @@ public class PlayerMenu {
     newUserOptions.add(healthSpinner, 1, 1);
     newUserOptions.add(playerGoldLabel, 0, 2);
     newUserOptions.add(goldSpinner, 1, 2);
-    //newUserOptions.add(playerGoalsLabel,0,3);
-    //newUserOptions.add(addGoalsButton,1,3);
     newUserOptions.add(createPlayerButton, 0, 3);
 
 
@@ -223,7 +233,7 @@ public class PlayerMenu {
     ImageView backImage = new ImageView("/gruppe/fire/Media/back.png");
     Button backButton = new Button();
     backButton.setGraphic(backImage);
-    backButton.setStyle("-fx-background-color: rgba(0,0,0,0.7); -fx-background-radius: 40px");
+    backButton.setId("backButton");
     backButton.setPrefSize(100, 100);
     backButton.setAlignment(Pos.CENTER);
     backButton.setEffect(dropShadow);
@@ -231,8 +241,8 @@ public class PlayerMenu {
     createPlayerButton.setOnAction(event -> {
       String playerName = playerTextField.getText();
       Image profileImage = newProfileImage;
-      int playerHealth = (int) healthSpinner.getValue();
-      int playerGold = (int) goldSpinner.getValue();
+      int playerHealth = healthSpinner.getValue();
+      int playerGold = goldSpinner.getValue();
 
       Player addedPlayer = new Player.PlayerBuilder()
           .name(playerName)
@@ -244,20 +254,19 @@ public class PlayerMenu {
     });
 
     imageSelectBox.getChildren().addAll(imageDisplay, uploadImage);
-    //goalsListBox.getChildren().addAll(goalsTitle, goalsList);
-    newUserVBox.getChildren().addAll(createPlayerTitle, newUserOptions);
-    newUserHBox.getChildren().addAll(backButton, newUserVBox, imageSelectBox);
+    newUserVbox.getChildren().addAll(createPlayerTitle, newUserOptions);
+    newUserHbox.getChildren().addAll(backButton, newUserVbox, imageSelectBox);
 
     //Goal Menu
-    SpinnerValueFactory<Integer> scoreFactory =
-        new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 15000);
-    ((SpinnerValueFactory.IntegerSpinnerValueFactory) scoreFactory).setAmountToStepBy(50);
+    var scoreFactory =
+        new IntegerSpinnerValueFactory(0, 15000);
+    scoreFactory.setAmountToStepBy(50);
     GridPane goalSetMenu = new GridPane();
     goalSetMenu.setAlignment(Pos.CENTER);
     goalSetMenu.setVgap(20);
     goalSetMenu.setHgap(20);
     goalSetMenu.setPadding(new Insets(70));
-    goalSetMenu.setStyle("-fx-background-color: rgba(0,0,0,0.7); -fx-background-radius: 40px");
+    goalSetMenu.setId("backButton");
     Label goldGoal = new Label("Gold goal:");
     goldGoal.setFont(font);
     Label healthGoal = new Label("Health goal:");
@@ -266,11 +275,11 @@ public class PlayerMenu {
     scoreGoal.setFont(font);
     Label inventoryGoal = new Label("Inventory goal:");
     inventoryGoal.setFont(font);
-    Spinner setGoldSpinner = new Spinner(goldFactory);
+    Spinner<Integer> setGoldSpinner = new Spinner<>(goldFactory);
     setGoldSpinner.getEditor().setFont(font);
-    Spinner setHealthSpinner = new Spinner(healthFactory);
+    Spinner<Integer> setHealthSpinner = new Spinner<>(healthFactory);
     setHealthSpinner.getEditor().setFont(font);
-    Spinner setScoreSpinner = new Spinner(scoreFactory);
+    Spinner<Integer> setScoreSpinner = new Spinner<>(scoreFactory);
     setScoreSpinner.getEditor().setFont(font);
     TextField inventoryField = new TextField();
     inventoryField.setFont(font);
@@ -287,10 +296,10 @@ public class PlayerMenu {
     Button cancelGoals = new Button("Cancel");
     setGoals.setFont(font);
     cancelGoals.setFont(font);
-    HBox buttonHBox = new HBox(cancelGoals, setGoals);
-    buttonHBox.setSpacing(20);
-    buttonHBox.setAlignment(Pos.CENTER);
-    VBox goalSetBox = new VBox(goalSetMenu, buttonHBox);
+    HBox buttonHbox = new HBox(cancelGoals, setGoals);
+    buttonHbox.setSpacing(20);
+    buttonHbox.setAlignment(Pos.CENTER);
+    VBox goalSetBox = new VBox(goalSetMenu, buttonHbox);
     goalSetBox.setSpacing(20);
     goalSetBox.setAlignment(Pos.CENTER);
 
@@ -300,16 +309,16 @@ public class PlayerMenu {
     goalMenu.setAlignment(Pos.CENTER);
     goalMenu.setEffect(dropShadow);
     goalMenu.setSpacing(30);
-    ListView goalsList = new ListView();
+    ListView<String> goalsList = new ListView<>();
     String goalsString = dataBase.readGoalsFromFileList();
     goalsList.getItems().add(goalsString);
-    Label goalsTitle = new Label("Active goals");
     Label goalStatus = new Label();
     goalStatus.setFont(font);
     goalStatus.setId(("goalStatus"));
     if (dataBase.checkGoalsEmpty()) {
       goalStatus.setText("No goals set!");
     }
+    Label goalsTitle = new Label("Active goals");
     goalsTitle.setFont(font);
     Button addGoalsButton = new Button("Add goal");
     addGoalsButton.setFont(font);
@@ -319,28 +328,28 @@ public class PlayerMenu {
     goalMenu.setSpacing(10);
     goalMenu.setPadding(new Insets(20));
 
-    HBox playerHBox = new HBox();
-    playerHBox.setAlignment(Pos.CENTER);
-    playerHBox.setSpacing(50);
+    HBox playerHbox = new HBox();
+    playerHbox.setAlignment(Pos.CENTER);
+    playerHbox.setSpacing(50);
 
+    MainMenu mainMenu = new MainMenu();
+    Font buttonFont = Font.font("Comfortaa", 34);
     Button cancelButton = new Button("Cancel");
     cancelButton.setPrefSize(400, 100);
     cancelButton.setFont(buttonFont);
     cancelButton.setTextFill(Color.WHITE);
     cancelButton.setOnAction(e -> {
-      try {
-        mainMenu.startMain(scene);
-        selectMusic.dispose();
-      } catch (Exception ex) {
-        throw new RuntimeException(ex);
-      }
+      selectMusic.dispose();
+      mainMenu.startMain(scene);
     });
+    GameDisplay gameDisplay = new GameDisplay();
+    Font menuFontLarge = Font.font("Pacifico", 64);
     Button startButton = new Button("Start Game");
     startButton.setPrefSize(1000, 100);
     startButton.setFont(buttonFont);
     startButton.setTextFill(Color.WHITE);
     startButton.setOnAction(e -> {
-      if (dataBase.checkGoalsEmpty()){
+      if (dataBase.checkGoalsEmpty()) {
         controller.noGoalsPopUp(gameDisplay, font, menuFontLarge, scene, selectMusic);
       } else {
         gameDisplay.start(scene, false);
@@ -357,57 +366,56 @@ public class PlayerMenu {
     buttonBox.setId("playerButtonBox");
 
 
-    VBox playerVBox = new VBox();
-    playerVBox.setMinWidth(400);
-    VBox playerContainer = new VBox(playerVBox, buttonBox);
+    VBox playerVbox = new VBox();
+    playerVbox.setMinWidth(400);
+    VBox playerContainer = new VBox(playerVbox, buttonBox);
     playerContainer.setAlignment(Pos.CENTER);
     playerContainer.setSpacing(20);
-    playerHBox.getChildren().addAll(playerContainer, goalMenu);
-    playerVBox.getChildren().addAll(playerTitle, selectedPlayer, ppImageBox);
+    playerHbox.getChildren().addAll(playerContainer, goalMenu);
+    playerVbox.getChildren().addAll(playerTitle, selectedPlayer, ppImageBox);
     newPlayerButton.setOnAction(e -> {
-      playerHBox.getChildren().removeAll(goalMenu);
+      playerHbox.getChildren().removeAll(goalMenu);
       playerContainer.getChildren().clear();
-      playerContainer.getChildren().add(newUserHBox);
+      playerContainer.getChildren().add(newUserHbox);
     });
     backButton.setOnAction(e -> {
       playerContainer.getChildren().clear();
-      playerContainer.getChildren().addAll(playerVBox, buttonBox);
-      playerHBox.getChildren().add(goalMenu);
+      playerContainer.getChildren().addAll(playerVbox, buttonBox);
+      playerHbox.getChildren().add(goalMenu);
     });
     addGoalsButton.setOnAction(event -> {
-      playerHBox.getChildren().removeAll(goalMenu);
+      playerHbox.getChildren().removeAll(goalMenu);
       playerContainer.getChildren().clear();
       playerContainer.getChildren().addAll(goalSetBox);
     });
     cancelGoals.setOnAction(e -> {
       playerContainer.getChildren().clear();
-      playerContainer.getChildren().addAll(playerVBox, buttonBox);
-      playerHBox.getChildren().addAll(goalMenu);
+      playerContainer.getChildren().addAll(playerVbox, buttonBox);
+      playerHbox.getChildren().addAll(goalMenu);
     });
     setGoals.setOnAction(e -> {
-      int goldInt = (int) setGoldSpinner.getValue();
-      int healthInt = (int) setHealthSpinner.getValue();
-      int scoreInt = (int) setScoreSpinner.getValue();
+      int goldInt = setGoldSpinner.getValue();
+      int healthInt = setHealthSpinner.getValue();
+      int scoreInt = setScoreSpinner.getValue();
       dataBase.writeGoalsToFile(goldInt, healthInt, scoreInt, inventoryField.getText());
       start(scene);
 
     });
 
 
-    playerVBox.setStyle("-fx-background-color: rgba(0,0,0,0.7); -fx-background-radius: 40px");
-    playerVBox.setPrefSize(1100, 400);
+    playerVbox.setStyle("-fx-background-color: rgba(0,0,0,0.7); -fx-background-radius: 40px");
+    playerVbox.setPrefSize(1100, 400);
 
-    playerVBox.setAlignment(Pos.CENTER);
-    playerVBox.setEffect(dropShadow);
-    playerVBox.setSpacing(30);
-
+    playerVbox.setAlignment(Pos.CENTER);
+    playerVbox.setEffect(dropShadow);
+    playerVbox.setSpacing(30);
 
 
     VBox menuBox = new VBox();
     menuBox.setAlignment(Pos.CENTER);
     menuBox.setSpacing(20);
 
-    menuBox.getChildren().addAll(playerHBox);
+    menuBox.getChildren().addAll(playerHbox);
 
 
     root.setCenter(menuBox);

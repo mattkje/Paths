@@ -1,4 +1,4 @@
-package gruppe.fire;
+package gruppe.fire.logic;
 
 import gruppe.fire.logic.Player;
 import org.junit.jupiter.api.Test;

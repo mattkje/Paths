@@ -1,0 +1,12 @@
+Space Ship
+::Sleeping quarters
+You wake up for another day in your space mission. You must do the following tasks: - Make breakfast for crew - Clean floors
+[Procrastinate](10 minutes later);ScoreAction;-100;GoldAction;100;
+[Start doing tasks](Hall);GoldAction;100;HealthAction;12;
+::10 minutes later
+Your boss pulls you out of the bed. You are forced to start doing your tasks;
+[Start doing tasks](Hall);ScoreAction;10;GoldAction;100;
+::Hall
+You walk you to the ship hall. What task do you do first?
+[Make breakfast for crew](10 minutes later);HealthAction;2;
+[Clean floors](Sleeping quarters);HealthAction;-2;GoldAction;100;

@@ -1,11 +1,16 @@
 package gruppe.fire.ui;
 
 
-import gruppe.fire.fileHandling.DataBase;
-import gruppe.fire.logic.*;
+import gruppe.fire.filehandling.DataBase;
+import gruppe.fire.goals.Goal;
+import gruppe.fire.logic.Game;
+import gruppe.fire.logic.JukeBox;
+import gruppe.fire.logic.Passage;
+import gruppe.fire.logic.Player;
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import java.util.List;
+import java.io.File;
+import java.util.ArrayList;
 import javafx.animation.Animation;
 import javafx.animation.TranslateTransition;
 import javafx.geometry.Insets;
@@ -16,47 +21,42 @@ import javafx.scene.control.Label;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.*;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
-import java.io.File;
-import java.util.ArrayList;
 
 /**
  * Represents the game menu GUI.
  * This class lets the user play a story file.
+ *
  * @author Matti Kjellstadli
  * @version 2023-05-18
  */
 public class GameDisplay {
 
-  private FlowPane inventoryPane;
-
-  private Label gameTitle;
-  private Label roomTitle;
-  private Text roomContent;
-  private ImageView passageImage;
-  private Label healthAmount;
-  private Label goldAmount;
-
-  private Label scoreAmount;
-
   private HBox actionBar;
+
+  private static final String GOAL = "Goal: ";
 
   /**
    * This method is responsible for building and displaying the game menu.
    *
-   * @param scene The game scene.
+   * @param scene   The game scene.
    * @param ifSaved True if game is saved, false otherwise.
    */
   public void start(Scene scene, Boolean ifSaved) {
 
 
-    GameDisplayController controller = new GameDisplayController();
     JukeBox jukeBox = new JukeBox();
     DataBase dataBase = new DataBase();
     File gameFile = new File(dataBase.getActiveStoryPath());
@@ -64,9 +64,9 @@ public class GameDisplay {
 
     //Add goals.
     Game game = dataBase.createGame(playerFile, gameFile);
-    ArrayList goalList = dataBase.readGoalsFromFile();
+    ArrayList<Goal> goalList = dataBase.readGoalsFromFile();
     game.setGoalsList(goalList);
-    Player player = game.getPlayer();
+
 
     MediaPlayer mediaPlayer = jukeBox.getGameplayMusic();
     mediaPlayer.setOnEndOfMedia(() -> mediaPlayer.seek(javafx.util.Duration.ZERO));
@@ -75,23 +75,10 @@ public class GameDisplay {
     //Background
     BorderPane root = (BorderPane) scene.getRoot();
     root.getChildren().clear();
-    MainMenu mainMenu = new MainMenu();
     root.setStyle("-fx-background-color: linear-gradient(#6746a9, #3829cd)");
     MainMenuController mainMenuController = new MainMenuController();
     mainMenuController.getBackground(root);
 
-    //Fonts
-    //Font font = Font.loadFont(GameDisplay.class.getResource("/gruppe/fire/fonts/Comfortaa.ttf").toExternalForm(), 24);
-    //Font pauseFont = Font.loadFont(GameDisplay.class.getResource("/gruppe/fire/fonts/Comfortaa.ttf").toExternalForm(), 34);
-    //Font menuFont = Font.loadFont(GameDisplay.class.getResource("/gruppe/fire/fonts/Pacifico-Regular.ttf").toExternalForm(), 44);
-
-    Font font2 = Font.font("Comfortaa", 24);
-    Font pauseFont = Font.font("Comfortaa", 34);
-    Font menuFont = Font.font("Pacifico", 44);
-
-    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-    double width = screenSize.getWidth();
-    Font font = Font.font("Comfortaa", (int)width/100);
 
     //Shadows and fonts
     DropShadow dropShadow = new DropShadow();
@@ -108,10 +95,11 @@ public class GameDisplay {
 
     //logo
     Label title = new Label("Paths");
+    Font menuFont = Font.font("Pacifico", 44);
     title.setFont(menuFont);
 
     HBox growBox = new HBox();
-    growBox.setHgrow(growBox, Priority.ALWAYS); // set horizontal grow priority
+    HBox.setHgrow(growBox, Priority.ALWAYS); // set horizontal grow priority
     growBox.setMaxWidth(Double.MAX_VALUE); // set maximum width to a large value
 
     //Back to main menu
@@ -121,13 +109,10 @@ public class GameDisplay {
     mainMenuImage.setFitHeight(50);
     mainMenuButton.setGraphic(mainMenuImage);
     mainMenuButton.setEffect(dropShadow);
+    MainMenu mainMenu = new MainMenu();
     mainMenuButton.setOnAction(e -> {
-      try {
-        mainMenu.startMain(scene);
-        mediaPlayer.dispose();
-      } catch (Exception ex) {
-        throw new RuntimeException(ex);
-      }
+      mainMenu.startMain(scene);
+      mediaPlayer.dispose();
     });
 
     //Options
@@ -135,6 +120,7 @@ public class GameDisplay {
     optionsBox.setSpacing(30);
     optionsBox.setStyle("-fx-background-color: rgba(0,0,0,0.7)");
     optionsBox.setAlignment(Pos.CENTER);
+    Font pauseFont = Font.font("Comfortaa", 34);
     Button resume = new Button("Resume game");
     resume.setFont(pauseFont);
     resume.setPrefSize(400, 100);
@@ -152,13 +138,13 @@ public class GameDisplay {
     back.setPrefSize(400, 100);
     optionsBox.getChildren().addAll(resume, restart, tutorial, settings, back);
 
-    StackPane gameWindowPane = new StackPane();
     Button optionsButton = new Button();
     ImageView playerMenuImage = new ImageView("/gruppe/fire/Media/menu.png");
     playerMenuImage.setFitWidth(50);
     playerMenuImage.setFitHeight(50);
     optionsButton.setGraphic(playerMenuImage);
     optionsButton.setEffect(dropShadow);
+    StackPane gameWindowPane = new StackPane();
     optionsButton.setOnAction(e -> {
       gameWindowPane.getChildren().add(optionsBox);
       root.setBottom(null);
@@ -172,12 +158,8 @@ public class GameDisplay {
       mediaPlayer.dispose();
     });
     back.setOnAction(e -> {
-      try {
-        mainMenu.startMain(scene);
-        mediaPlayer.dispose();
-      } catch (Exception ex) {
-        throw new RuntimeException(ex);
-      }
+      mainMenu.startMain(scene);
+      mediaPlayer.dispose();
     });
 
     ImageView saveImage = new ImageView("/gruppe/fire/Media/diskette.png");
@@ -191,8 +173,9 @@ public class GameDisplay {
 
     HBox menuBar = new HBox();
     menuBar.setStyle("-fx-background-color: rgba(0,0,0,0.7); -fx-padding: 10px");
+    GameDisplayController controller = new GameDisplayController();
 
-    if (controller.checkIfDefault() == true) {
+    if (controller.checkIfDefault()) {
       menuBar.getChildren()
           .addAll(title, growBox, optionsButton, mainMenuButton);
     } else {
@@ -218,12 +201,10 @@ public class GameDisplay {
     //Stats
     GridPane inventory = new GridPane();
     inventory.setAlignment(Pos.CENTER_LEFT);
-    //inventory.setPrefHeight(500);
-    //inventory.setPrefWidth(300);
     inventory.setVgap(40);
     inventory.setHgap(50);
 
-
+    Player player = game.getPlayer();
     Image profileImage = player.getImage();
     ImageView playerPicture = new ImageView(profileImage);
     playerPicture.setFitWidth(50);
@@ -231,30 +212,35 @@ public class GameDisplay {
     String playerString = player.getName();
     Label playerName = new Label(playerString);
 
-    Label info = new Label("Stats");
-    Label health = new Label("Health:");
-    Label gold = new Label("Gold:");
-    Label score = new Label("Score:");
-    Label inventoryTitle = new Label("Inventory");
-    Label healthGoalLabel = new Label("Goal: ");
-    Label goldGoalLabel = new Label("Goal: ");
-    Label scoreGoalLabel = new Label("Goal: ");
-    //this.inventoryList = new ListView();
-    this.inventoryPane = new FlowPane();
+
+    FlowPane inventoryPane = new FlowPane();
     inventoryPane.setMaxHeight(600);
 
     inventoryPane.setId("inventoryPane");
 
     playerName.setTextFill(Color.WHITE);
+    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+    double width = screenSize.getWidth();
+    Font font = Font.font("Comfortaa", width / 100);
+
 
     playerName.setFont(font);
+    Label info = new Label("Stats");
     info.setFont(menuFont);
+    Label health = new Label("Health:");
     health.setFont(font);
+    Label gold = new Label("Gold:");
     gold.setFont(font);
+    Label score = new Label("Score:");
     score.setFont(font);
+
+    Label healthGoalLabel = new Label(GOAL);
     healthGoalLabel.setFont(font);
+    Label goldGoalLabel = new Label(GOAL);
     goldGoalLabel.setFont(font);
+    Label scoreGoalLabel = new Label(GOAL);
     scoreGoalLabel.setFont(font);
+    Label inventoryTitle = new Label("Inventory");
     inventoryTitle.setFont(menuFont);
     inventory.add(playerPicture, 1, 0);
     inventory.add(playerName, 0, 0);
@@ -265,10 +251,8 @@ public class GameDisplay {
     VBox inventoryBox = new VBox();
     inventoryBox.setStyle("-fx-background-color: rgba(0,0,0,0.7); -fx-padding: 50px");
     inventoryBox.getChildren().addAll(inventory, inventoryTitle, inventoryPane);
-    //double rootWidth = root.getWidth();
     inventoryBox.prefWidthProperty().bind(root.widthProperty().multiply(0.3));
-    HBox sideBox = new HBox();
-    Button showInventory = new Button();
+
     ImageView showImage = new ImageView("/gruppe/fire/Media/back.png");
     TranslateTransition translate = new TranslateTransition();
     translate.setNode(showImage);
@@ -280,11 +264,12 @@ public class GameDisplay {
     translate.play();
 
     showImage.setScaleX(-1);
+    Button showInventory = new Button();
     showInventory.setGraphic(showImage);
     showInventory.setStyle(
         "-fx-background-color: rgba(0,0,0,0.7); -fx-background-radius: 0px; -fx-translate-y: 0px;");
     showInventory.setPrefSize(80, 2000);
-
+    HBox sideBox = new HBox();
     sideBox.getChildren().addAll(showInventory, inventoryBox);
     root.setRight(sideBox);
     showInventory.setOnAction(e -> {
@@ -300,36 +285,30 @@ public class GameDisplay {
     });
 
     //The Game
-    this.gameTitle = new Label();
-    this.roomTitle = new Label();
-    this.roomContent = new Text();
+    Text roomContent = new Text();
     roomContent.setWrappingWidth(400);
-    Text gameRoom = new Text();
-    HBox titleBox = new HBox();
-    VBox gameBox = new VBox();
-    this.passageImage = new ImageView();
+    ImageView passageImage = new ImageView();
 
     Button cancelButton = new Button("Cancel");
-    cancelButton.setOnAction(event1 -> {
-      root.setCenter(gameWindow);
-    });
-
+    cancelButton.setOnAction(event1 ->
+        root.setCenter(gameWindow));
+    Label gameTitle = new Label();
     gameTitle.setAlignment(Pos.CENTER);
     gameTitle.setFont(menuFont);
     gameTitle.setTextFill(Color.WHITE);
+    Label roomTitle = new Label();
     roomTitle.setAlignment(Pos.CENTER);
     roomTitle.setFont(font);
     roomTitle.setTextFill(Color.WHITE);
     roomContent.setFont(font);
     roomContent.setFill(Color.WHITE);
+    Text gameRoom = new Text();
     gameRoom.setTextAlignment(TextAlignment.CENTER);
     gameRoom.setFont(font);
     gameRoom.setFill(Color.WHITE);
-    ImageView lives = new ImageView("/gruppe/fire/Media/health.png");
-    ImageView livesLost = new ImageView("/gruppe/fire/Media/lostHealth.png");
-    this.healthAmount = new Label();
-    this.goldAmount = new Label();
-    this.scoreAmount = new Label();
+    Label healthAmount = new Label();
+    Label goldAmount = new Label();
+    Label scoreAmount = new Label();
     inventory.add(healthAmount, 1, 2);
     inventory.add(goldAmount, 1, 3);
     inventory.add(scoreAmount, 1, 4);
@@ -360,15 +339,19 @@ public class GameDisplay {
     });
 
     Game game1 = dataBase.readFile();
-    if (ifSaved == true) {
-      controller.writeOpeningPassage(game1, actionBar, inventoryPane, gameTitle, roomTitle,
-          roomContent, healthAmount, goldAmount, scoreAmount, font, dropShadow, passageImage);
+    if (Boolean.TRUE.equals(ifSaved)) {
+      controller.setLabels(roomTitle, roomContent, healthAmount,
+          goldAmount, scoreAmount, passageImage);
+      controller.writeOpeningStringPassage(game1, actionBar, inventoryPane, gameTitle, font,
+          dropShadow);
     } else {
-      controller.writeOpeningPassage(game, actionBar, inventoryPane, gameTitle, roomTitle,
-          roomContent, healthAmount, goldAmount, scoreAmount, font, dropShadow, passageImage);
+      controller.setLabels(roomTitle, roomContent, healthAmount,
+          goldAmount, scoreAmount, passageImage);
+      controller.writeOpeningStringPassage(game, actionBar, inventoryPane, gameTitle, font,
+          dropShadow);
     }
 
-
+    HBox titleBox = new HBox();
     titleBox.getChildren().add(gameTitle);
     titleBox.setAlignment(Pos.CENTER);
 
@@ -379,6 +362,7 @@ public class GameDisplay {
     scoreAmount.setFont(font);
     scoreAmount.setTextFill(Color.WHITE);
     gameWindow.setTop(titleBox);
+    VBox gameBox = new VBox();
     gameBox.setSpacing(50);
     gameBox.setAlignment(Pos.CENTER);
     gameBox.getChildren().addAll(roomTitle, gameRoom, passageImage, roomContent);

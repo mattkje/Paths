@@ -1,4 +1,4 @@
-package gruppe.fire;
+package gruppe.fire.goals;
 
 import gruppe.fire.goals.GoldGoal;
 import gruppe.fire.logic.Player;

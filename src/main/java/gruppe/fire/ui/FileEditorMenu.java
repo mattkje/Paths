@@ -1,6 +1,6 @@
 package gruppe.fire.ui;
 
-import gruppe.fire.fileHandling.DataBase;
+import gruppe.fire.filehandling.DataBase;
 import gruppe.fire.logic.JukeBox;
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -22,6 +22,7 @@ import javafx.stage.FileChooser;
 /**
  * Represents the File editor menu. This menu should let the user write
  * their own story and save it as a ".paths" file.
+ *
  * @author Matti Kjellstadli
  * @version 2023-05-18
  */
@@ -29,14 +30,12 @@ public class FileEditorMenu {
 
   /**
    * This method is responsible for building and displaying the file editor menu.
+   *
    * @param scene The game scene.
    */
   public void start(Scene scene, String string) {
 
 
-    MainMenu mainMenu = new MainMenu();
-    FileEditorMenuController controller = new FileEditorMenuController();
-    MainMenuController mainController = new MainMenuController();
     JukeBox jukeBox = new JukeBox();
 
     MediaPlayer selectMusic = jukeBox.getPlayerMenuMusic();
@@ -72,19 +71,18 @@ public class FileEditorMenu {
 
     Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     double width = screenSize.getWidth();
-    Font font = Font.font("Comfortaa", width/100);
-    Font titleFontSmall = Font.font("Pacifico", width/27);
-    Font textFont = Font.font("JetBrains Mono", width/120);
-    Font textFontSmall = Font.font("JetBrains Mono", width/200);
+    Font font = Font.font("Comfortaa", width / 100);
+    Font textFont = Font.font("JetBrains Mono", width / 120);
 
     TextArea editArea = new TextArea();
-    editArea.setPrefSize(root.getWidth()*0.7, 2000);
+    editArea.setPrefSize(root.getWidth() * 0.7, 2000);
     editArea.setFont(textFont);
     editArea.setId("fileEditArea");
     editArea.setPromptText("Start with title");
     VBox editContainer = new VBox();
     editContainer.setAlignment(Pos.CENTER);
-    editContainer.setPadding(new Insets(0,30,0,30));
+    editContainer.setPadding(new Insets(0, 30, 0, 30));
+    Font titleFontSmall = Font.font("Pacifico", width / 27);
     Label fileTitle = new Label("File Editor");
     fileTitle.setEffect(solidShadow);
     fileTitle.setFont(titleFontSmall);
@@ -110,23 +108,19 @@ public class FileEditorMenu {
         new FileChooser.ExtensionFilter("Paths files (*.paths)", "*.paths");
     FileChooser fileChooser = new FileChooser();
     fileChooser.getExtensionFilters().add(extFilter);
-
+    MainMenu mainMenu = new MainMenu();
+    FileEditorMenuController controller = new FileEditorMenuController();
 
     uploadButton.setOnAction(e -> {
       String selectedFile = controller.openFileButton(fileChooser, scene, noFile);
       editArea.setText(selectedFile);
     });
-    saveButton.setOnAction(e -> {
-      controller.saveFileButton(fileChooser, scene, editArea.getText(), noFile);
-    });
-    backButton.setOnAction(e -> {
-      try {
-        mainMenu.startMain(scene);
-      } catch (Exception ex) {
-        throw new RuntimeException(ex);
-      }
-    });
+    saveButton.setOnAction(e ->
+        controller.saveFileButton(fileChooser, scene, editArea.getText(), noFile));
+    backButton.setOnAction(e ->
+        mainMenu.startMain(scene));
     DataBase dataBase = new DataBase();
+    Font textFontSmall = Font.font("JetBrains Mono", width / 200);
     TextArea tutorialArea = new TextArea(dataBase.readTutorial());
     tutorialArea.setEditable(false);
     tutorialArea.setOpacity(1);
@@ -140,7 +134,7 @@ public class FileEditorMenu {
     root.setRight(tutorialArea);
     root.setCenter(editContainer);
     editContainer.getChildren().setAll(topBar, editArea, menuBar);
-    if (!string.isEmpty()){
+    if (!string.isEmpty()) {
       editArea.setText(string);
     }
   }

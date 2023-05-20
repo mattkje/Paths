@@ -55,6 +55,9 @@ public class Story {
    * @param passage The passage to add to the story.
    */
   public void addPassage(Passage passage) {
+    if (passage == null){
+      throw new IllegalArgumentException("Passage can not be null");
+    }
     Link link = new Link(passage.getTitle(), passage.getTitle());
     this.passages.put(link, passage);
   }

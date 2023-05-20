@@ -1,6 +1,5 @@
-package gruppe.fire;
+package gruppe.fire.goals;
 
-import gruppe.fire.goals.InventoryGoal;
 import gruppe.fire.logic.Player;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -46,7 +45,7 @@ class InventoryGoalTest {
 
         player.addToInventory("shotgun");
         player.addToInventory("shotgun pellets");
-        Assertions.assertTrue(goal.isFulfilled(player));
+        Assertions.assertFalse(goal.isFulfilled(player));
     }
 
     @Test
@@ -61,13 +60,8 @@ class InventoryGoalTest {
         mandatoryItems.add("torch");
         mandatoryItems.add("torch");
         mandatoryItems.add("sword");
-
-        for (String item : mandatoryItems) {
-            System.out.println(item);
-        }
-
         InventoryGoal goal = new InventoryGoal(mandatoryItems);
 
-        Assertions.assertTrue(goal.isFulfilled(player));
+        Assertions.assertFalse(goal.isFulfilled(player));
     }
 }

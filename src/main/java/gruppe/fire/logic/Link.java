@@ -19,7 +19,9 @@ public class Link {
    * @param reference a string that uniquely identifies a passage.
    */
   public Link(String text, String reference) {
-
+    if (reference == null){
+      throw new IllegalArgumentException("Reference can not be null");
+    }
     this.text = text;
     this.reference = reference;
     this.actions = new ArrayList<>();
@@ -46,7 +48,7 @@ public class Link {
   /**
    * Adds the specified action to this object's list of actions.
    *
-   * @param actions the action to be added to the list.
+   * @param action the action to be added to the list.
    */
   public void addAction(Action action) {
     actions.add(action);

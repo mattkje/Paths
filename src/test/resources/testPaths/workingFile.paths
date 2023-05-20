@@ -1,0 +1,12 @@
+StoryTitle
+::Room1
+text 1
+[link1](Room2);ScoreAction;-100;
+[Start doing tasks](Room3);GoldAction;100;
+::Room2
+text 2
+[link2](Room3);ScoreAction;10;
+::Room3
+You walk you to the ship hall. What task do you do first?
+[link3](Room1);HealthAction;2;
+[link4](Room2);HealthAction;-2;

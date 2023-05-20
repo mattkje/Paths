@@ -1,8 +1,11 @@
 src\main\resources\gruppe\fire\Paths\MurderMystery.paths
-Clue 4
-Calm Matt
-1200
-6
-10
-[gruppe.fire.goals.GoldGoal@7f677a29, gruppe.fire.goals.HealthGoal@8f86f59, gruppe.fire.goals.ScoreGoal@4744390d, gruppe.fire.goals.InventoryGoal@393e60de]
-[Clue 1, Clue 3, Clue 5, Clue 6, Clue 4]
+Hall way
+Matissetass
+0
+3
+0
+300
+4
+250
+,!
+[]

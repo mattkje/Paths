@@ -1,4 +1,4 @@
-package gruppe.fire.fileHandling;
+package gruppe.fire.filehandling;
 
 import gruppe.fire.goals.*;
 import gruppe.fire.logic.Game;
@@ -6,7 +6,6 @@ import gruppe.fire.logic.Link;
 import gruppe.fire.logic.Passage;
 import gruppe.fire.logic.Player;
 import gruppe.fire.logic.Story;
-import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +28,9 @@ import java.util.zip.ZipInputStream;
  * @version 2023-05-19
  */
 public class DataBase {
-  private Path targetPath;
+
+  private static final String GPATHS = ".Gpaths";
+  private static final String CURRENT_GPATHS = "Data/currentGpaths/story.paths";
 
   public String getActivePlayerPath() {
     String activePlayer = null;
@@ -44,15 +45,16 @@ public class DataBase {
 
   public String getActiveStoryName() {
     String storyTitle = null;
-    File currentStoryFile = new File((getActiveStoryPath()));
-    if (!String.valueOf(currentStoryFile).endsWith(".Gpaths") && currentStoryFile != null){
-      try (Scanner scanner = new Scanner(currentStoryFile)) {
-        storyTitle = scanner.nextLine();
+    File currentStoryFile = new File(getActiveStoryPath());
+    if (String.valueOf(currentStoryFile).endsWith(GPATHS)){
+      currentStoryFile  = new File(CURRENT_GPATHS);
+    }
+    try (Scanner scanner = new Scanner(currentStoryFile)) {
+      storyTitle = scanner.nextLine();
 
-      } catch (IOException e) {
-        String exceptionString = "Something went wrong while reading active story file" + e;
-        System.getLogger(exceptionString);
-      }
+    } catch (IOException e) {
+      String exceptionString = "Something went wrong while reading active story file" + e;
+      System.getLogger(exceptionString);
     }
 
     return storyTitle;
@@ -60,8 +62,11 @@ public class DataBase {
 
   public String getActiveStoryPassages() {
     File currentStoryFile = new File((getActiveStoryPath()));
+    if (String.valueOf(currentStoryFile).endsWith(GPATHS)){
+      currentStoryFile  = new File(CURRENT_GPATHS);
+    }
     String returnString = "0";
-    if (!String.valueOf(currentStoryFile).endsWith(".Gpaths") && currentStoryFile != null){
+    if (!String.valueOf(currentStoryFile).endsWith(GPATHS)){
       FileToStory fileToStory = new FileToStory(currentStoryFile);
       Story story = fileToStory.readFile();
       returnString = String.valueOf(story.getPassages().size());
@@ -71,8 +76,11 @@ public class DataBase {
 
   public String getBrokenStoryLinks() {
     File currentStoryFile = new File((getActiveStoryPath()));
+    if (String.valueOf(currentStoryFile).endsWith(GPATHS)){
+      currentStoryFile  = new File(CURRENT_GPATHS);
+    }
     String returnString = "0";
-    if (!String.valueOf(currentStoryFile).endsWith(".Gpaths") && currentStoryFile != null){
+    if (!String.valueOf(currentStoryFile).endsWith(GPATHS)){
       FileToStory fileToStory = new FileToStory(currentStoryFile);
       Story story = fileToStory.readFile();
       returnString =String.valueOf(story.getBrokenLinks().size());
@@ -113,6 +121,7 @@ public class DataBase {
 
   public void writeFile(Player player) {
     DataBase dataBase = new DataBase();
+    Path targetPath;
     String[] players = createGame(new File(dataBase.getActivePlayerPath()),
         new File(dataBase.getActiveStoryPath())).readPlayers();
     int i = players.length + 1;
@@ -123,7 +132,7 @@ public class DataBase {
       String imagePath = playerImage.getUrl();
       String filePathStr = imagePath.replace("file:/", "");
       Path sourcePath = Paths.get(filePathStr);
-      this.targetPath = Paths.get("Data/PlayerData/Images/pp" + i + ".png");
+      targetPath = Paths.get("Data/PlayerData/Images/pp" + i + ".png");
       try {
         Files.copy(sourcePath, targetPath);
       } catch (IOException e) {
@@ -131,7 +140,7 @@ public class DataBase {
         System.getLogger(exceptionString);
       }
     } else {
-      this.targetPath = Paths.get("Data/PlayerData/Images/noSelect.png");
+      targetPath = Paths.get("Data/PlayerData/Images/noSelect.png");
     }
 
 
@@ -199,7 +208,7 @@ public class DataBase {
 
 
   public void writeStateToFile(String gameState) {
-    try (FileWriter fileWriter = new FileWriter("Data/GameStates/state1.txt");) {
+    try (FileWriter fileWriter = new FileWriter("Data/GameStates/state1.txt")) {
       fileWriter.write(gameState);
     } catch (IOException e) {
       String exceptionString = "Something went wrong" + e;
@@ -229,15 +238,25 @@ public class DataBase {
       player.setGold(scanner.nextInt());
       player.setHealth(scanner.nextInt());
       player.setScore(scanner.nextInt());
-      String goals = scanner.nextLine();
+      int goldGoal = scanner.nextInt();
+      int healthGoal = scanner.nextInt();
+      int scoreGoal = scanner.nextInt();
+      String inventoryGoal = scanner.nextLine();
       String inventory = scanner.nextLine();
-
       Link link = new Link(passageTitle, passageTitle);
 
+      String[] inventoryList = (inventoryGoal.replace("[" + "]", "")).split(",");
+      List<String> invList = new ArrayList<>(
+          Arrays.asList(inventoryList));
       Passage passage = story.getPassageByLink(link);
       story.setOpeningPassage(passage);
-      player.addToInventory(inventory.strip());
+      ArrayList<Goal> goals = new ArrayList<>();
+      goals.add(new GoldGoal(goldGoal));
+      goals.add(new HealthGoal(healthGoal));
+      goals.add(new ScoreGoal(scoreGoal));
+      goals.add(new InventoryGoal(invList));
       game = new Game(player, story);
+      game.setGoalsList(goals);
 
     } catch (FileNotFoundException e) {
       String exceptionString = "Something went wrong while reading state file" + e;
@@ -333,18 +352,18 @@ public class DataBase {
     }
   }
 
-  public Map readSettingsFromFile() {
-    Map map = new HashMap<>();
+  public Map<String, String> readSettingsFromFile() {
+    Map<String, String> map = new HashMap<>();
     File settingsFile = new File("Data/settings.cfg");
     try (Scanner scanner = new Scanner(settingsFile)) {
       String fs = scanner.nextLine();
-      boolean fullscreen = Boolean.parseBoolean(fs.replace("fullscreen=", ""));
+      String fullscreen = (fs.replace("fullscreen=", ""));
       String bg = scanner.nextLine();
-      boolean background = Boolean.parseBoolean(bg.replace("background=", ""));
+      String background = (bg.replace("background=", ""));
       String vlm = scanner.nextLine();
-      double volume = Double.parseDouble(vlm.replace("music=", ""));
+      String volume = (vlm.replace("music=", ""));
       String vlm2 = scanner.nextLine();
-      double volume2 = Double.parseDouble(vlm2.replace("fx=", ""));
+      String volume2 = (vlm2.replace("fx=", ""));
 
 
       map.put("fs", fullscreen);
