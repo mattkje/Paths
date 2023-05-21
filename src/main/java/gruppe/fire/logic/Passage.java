@@ -96,6 +96,19 @@ public class Passage {
   }
 
   /**
+   * Check if a passage has any links with empty text.
+   *
+   * @return True if passage has empty link text.
+   */
+  public boolean emptyLinks() {
+    boolean brokenLinks = false;
+    for (int i = 0; i < this.links.size(); i++) {
+      brokenLinks = this.links.get(i).getText().isEmpty();
+    }
+    return brokenLinks;
+  }
+
+  /**
    * Returns a String representation of the Passage object, which consists of the title
    * and content fields concatenated together, separated by a space.
    *
