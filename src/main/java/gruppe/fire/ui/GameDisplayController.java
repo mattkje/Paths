@@ -10,6 +10,7 @@ import java.awt.Toolkit;
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -67,11 +68,11 @@ public class GameDisplayController {
    */
   public void writeOpeningStringPassage(Game game, HBox actionBar, FlowPane inventoryPane,
                                         Label gameTitle, Font font, DropShadow dropShadow) {
-    ArrayList<Link> links = game.getStory().getOpeningPassage().getLinks();
+    List<Link> links = game.getStory().getOpeningPassage().getLinks();
 
     for (Link link : links) {
       Button nextPath = new Button("");
-      Passage passage = game.go(link);
+      Passage passage = game.begin(game.getStory().getOpeningPassage());
       game.setCurrentPassage(passage);
       nextPath.setText(link.getText());
       if (checkGoals(game)) {
@@ -128,7 +129,7 @@ public class GameDisplayController {
     //Refresh buttons
     actionBar.getChildren().clear();
 
-    ArrayList<Action> actionArrayList = link.getActions();
+    List<Action> actionArrayList = link.getActions();
     for (Action value : actionArrayList) {
 
       if (value != null) {
@@ -156,7 +157,7 @@ public class GameDisplayController {
       }
 
     }
-    ArrayList<Link> links2 = passage.getLinks();
+    List<Link> links2 = passage.getLinks();
 
     for (Link value : links2) {
       link = value;

@@ -15,9 +15,9 @@ import java.util.List;
  */
 public class Game {
 
-  private Player player;
-  private Story story;
-  private ArrayList<Goal> goals;
+  private final Player player;
+  private final Story story;
+  private List<Goal> goals;
 
   private Passage currentPassage;
 
@@ -44,17 +44,14 @@ public class Game {
   }
 
 
-  public ArrayList<Goal> getGoals() {
+  public List<Goal> getGoals() {
     return goals;
   }
 
-  public void setGoalsList(ArrayList goals) {
+  public void setGoalsList(List<Goal> goals) {
     this.goals = goals;
   }
 
-  public void addGoals(Goal goal) {
-    this.goals.add(goal);
-  }
 
   public Passage getCurrentPassage() {
     return currentPassage;
@@ -82,29 +79,28 @@ public class Game {
    * @return The passage which matches the provided Link.
    */
   public Passage go(Link link) {
-    Passage currentPassage = story.getPassageByLink(link);
+    currentPassage = story.getPassageByLink(link);
     return currentPassage;
   }
 
   /**
-   * This method is responsible for reading all players and returning
-   * a list of players.
+   * This method is responsible for reading all players and returning.
    *
-   * @return List of players.
+   * @return Array of players.
    */
   public String[] readPlayers() {
     File folder = new File("Data/PlayerData/Players");
     File[] listOfFiles = folder.listFiles();
     List<String> paths = new ArrayList<>();
 
-    for (File file : listOfFiles) {
-      if (file.isFile()) {
-        paths.add(file.getPath());
+    if (listOfFiles != null) {
+      for (File file : listOfFiles) {
+        if (file.isFile()) {
+          paths.add(file.getPath());
+        }
       }
     }
-
-    String[] result = paths.toArray(new String[0]);
-    return result;
+    return paths.toArray(new String[0]);
   }
 
   /**

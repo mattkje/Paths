@@ -1,8 +1,6 @@
 package gruppe.fire.goals;
 
-import gruppe.fire.goals.GoldGoal;
 import gruppe.fire.logic.Player;
-import javafx.scene.image.Image;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -42,8 +40,8 @@ class GoldGoalTest {
             .gold(750)
             .score(250)
             .build();
-        assertEquals(300, goal.remainingGold(player1));
-        assertEquals(250, goal.remainingGold(player2));
+        assertEquals(300, goal.getRemainingGold(player1));
+        assertEquals(250, goal.getRemainingGold(player2));
     }
 
 }

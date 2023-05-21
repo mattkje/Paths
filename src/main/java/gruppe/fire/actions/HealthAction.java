@@ -4,6 +4,9 @@ import gruppe.fire.logic.Player;
 
 /**
  * This class represents an action that changes the player's health.
+ *
+ * @author Matti Kjellstadli
+ * @version 2023-05-21
  */
 public class HealthAction implements Action {
   private int health;

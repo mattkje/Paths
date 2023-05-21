@@ -4,9 +4,12 @@ import gruppe.fire.logic.Player;
 
 /**
  * This class responsible for changing the player's gold.
+ *
+ * @author Matti Kjellstadli
+ * @version 2023-05-21
  */
 public class GoldAction implements Action {
-  private int gold;
+  private final int gold;
 
   /**
    * Creates an instance of GoldAction with the specified gold amount.

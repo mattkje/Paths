@@ -2,15 +2,19 @@ package gruppe.fire.logic;
 
 import gruppe.fire.actions.Action;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class makes it possible to go from one passage to another. Links bind together
  * different parts of a story.
+ *
+ * @author Matti Kjellstadli
+ * @version 2023-05-21
  */
 public class Link {
-  private String text;
-  private String reference;
-  private ArrayList<Action> actions;
+  private final String text;
+  private final String reference;
+  private final ArrayList<Action> actions;
 
   /**
    * Creates an instance of Link.
@@ -19,7 +23,7 @@ public class Link {
    * @param reference a string that uniquely identifies a passage.
    */
   public Link(String text, String reference) {
-    if (reference == null){
+    if (reference == null) {
       throw new IllegalArgumentException("Reference can not be null");
     }
     this.text = text;
@@ -28,18 +32,18 @@ public class Link {
   }
 
   /**
-   * This method returns the text.
+   * Returns the text.
    *
-   * @return the text
+   * @return The text.
    */
   public String getText() {
     return text;
   }
 
   /**
-   * This method returns the reference.
+   * Returns the reference.
    *
-   * @return the reference.
+   * @return reference a string that uniquely identifies a passage.
    */
   public String getReference() {
     return reference;
@@ -55,11 +59,11 @@ public class Link {
   }
 
   /**
-   * This method returns a list of actions.
+   * Returns a list of actions.
    *
-   * @return The list of actions.
+   * @return List The list of actions.
    */
-  public ArrayList<Action> getActions() {
+  public List<Action> getActions() {
     return actions;
   }
 
@@ -83,13 +87,12 @@ public class Link {
     if (this == object) {
       return true;
     }
-    if (!(object instanceof Link)) {
+    if (!(object instanceof Link otherLink)) {
       return false;
     }
-    Link otherLink = (Link) object;
-    return this.text.equals(otherLink.text) &&
-        this.reference.equals(otherLink.reference) &&
-        this.actions.equals(otherLink.actions);
+    return this.text.equals(otherLink.text)
+        && this.reference.equals(otherLink.reference)
+        && this.actions.equals(otherLink.actions);
   }
 
   /**

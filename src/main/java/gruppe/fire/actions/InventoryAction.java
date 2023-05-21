@@ -4,9 +4,12 @@ import gruppe.fire.logic.Player;
 
 /**
  * This class represents an action that adds an item to the player's inventory.
+ *
+ * @author Matti Kjellstadli
+ * @version 2023-05-21
  */
 public class InventoryAction implements Action {
-  private String item;
+  private final String item;
 
   /**
    * Creates an instance of InventoryAction with the specified item to be added to the player's inventory.

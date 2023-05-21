@@ -1,14 +1,20 @@
 package gruppe.fire.logic;
 
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * The Story class represents a story composed of Passage objects.
+ *
+ * @author Matti Kjellstadli
+ * @version 2023-05-21
  */
 public class Story {
   private String title;
-  private HashMap<Link, Passage> passages;
+  private final HashMap<Link, Passage> passages;
   private Passage openingPassage;
 
   /**
@@ -55,7 +61,7 @@ public class Story {
    * @param passage The passage to add to the story.
    */
   public void addPassage(Passage passage) {
-    if (passage == null){
+    if (passage == null) {
       throw new IllegalArgumentException("Passage can not be null");
     }
     Link link = new Link(passage.getTitle(), passage.getTitle());
@@ -90,15 +96,10 @@ public class Story {
    * @param link The link of the passage to remove.
    */
   public void removePassage(Link link) {
-    //TODO: STREAMS HAHA MATHIAS DO IT LOL
-    boolean isUsed = false;
-    for (Passage passage : passages.values()) {
-      if (passage.hasLinks()) {
-        isUsed = true;
-        break;
-      }
-    }
-    if (!isUsed) {
+    boolean noLinks = passages.values().stream()
+        .allMatch(passage -> passage.getLinks().stream()
+            .noneMatch(link1 -> link1.equals(link)));
+    if (noLinks) {
       passages.remove(link);
     }
   }

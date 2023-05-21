@@ -8,9 +8,13 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Tests the class
- * the followig pos
- * neg
+ * Test class for the Link Class.
+ * The following positive tests:
+ * - Test 1
+ * - Test 2
+ * The following negative tests:
+ * - Test 1
+ * - Test 2
  */
 class LinkTest {
 

@@ -1,16 +1,20 @@
 package gruppe.fire.logic;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
  * This class represents a smaller part of a story. The class makes it possible to leave
  * one passage to another through a link.
+ *
+ * @author Matti Kjellstadli
+ * @version 2023-05-21
  */
 public class Passage {
   private String title;
   private String content;
-  private ArrayList<Link> links;
+  private final ArrayList<Link> links;
 
   /**
    * Constructs a new Passage object with the specified title, content, and links.
@@ -27,7 +31,7 @@ public class Passage {
   }
 
   /**
-   * This method returns the title.
+   * Returns the title.
    *
    * @return the title.
    */
@@ -40,7 +44,7 @@ public class Passage {
   }
 
   /**
-   * This method returns the content.
+   * Returns the content.
    *
    * @return returns the content.
    */
@@ -53,7 +57,7 @@ public class Passage {
   }
 
   /**
-   * This method checks if the link is available and adds it to the links list if it is.
+   * This method checks if the link is available and adds it to the link list if it is.
    *
    * @param link The Link object to be added.
    * @return true if the link is added successfully, false otherwise.
@@ -68,12 +72,12 @@ public class Passage {
   }
 
   /**
-   * This method returns all available links in a new list: activeLink.
+   * Returns all available links in a new list: activeLink.
    *
    * @return an ArrayList containing active links.
    */
-  public ArrayList<Link> getLinks() {
-    ArrayList<Link> activeLinks = new ArrayList<Link>();
+  public List<Link> getLinks() {
+    List<Link> activeLinks = new ArrayList<>();
     for (Link link : links) {
       if (link != null) {
         activeLinks.add(link);
@@ -108,16 +112,15 @@ public class Passage {
    * Passage objects using the Objects.equals() method.
    *
    * @param obj The object to compare to.
-   * @return True if both fields are null, or if both fields are equal according to their equals() method
+   * @return True if both fields are null or equal, false otherwise.
    */
   public boolean equals(Object obj) {
     if (obj == this) {
       return true;
     }
-    if (!(obj instanceof Passage)) {
+    if (!(obj instanceof Passage other)) {
       return false;
     }
-    Passage other = (Passage) obj;
     return Objects.equals(title, other.title)
         && Objects.equals(content, other.content)
         && Objects.equals(links, other.links);

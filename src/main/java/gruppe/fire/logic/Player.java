@@ -1,11 +1,14 @@
 package gruppe.fire.logic;
 
-import javafx.scene.image.Image;
-
 import java.util.ArrayList;
+import java.util.List;
+import javafx.scene.image.Image;
 
 /**
  * The Player class represents a player with various properties that can be influenced in a story.
+ *
+ * @author Matti Kjellstadli
+ * @version 2023-05-21
  */
 public class Player {
   private String name;
@@ -13,7 +16,7 @@ public class Player {
   private int health;
   private int score;
   private int gold;
-  private ArrayList<String> inventory;
+  private final ArrayList<String> inventory;
 
   /**
    * Creates an instance of Player.
@@ -78,11 +81,7 @@ public class Player {
   }
 
   public boolean checkIfAlive() {
-    if (health >= 0) {
-      return true;
-    } else {
-      return false;
-    }
+    return health >= 0;
   }
 
   /**
@@ -98,20 +97,13 @@ public class Player {
    * Adds the specified amount to the player's score and returns the new score value.
    *
    * @param amount The amount to add to the player's score.
-   * @return The player's new score value.
-   * @throws IllegalArgumentException If the resulting score value is less than 0.
    */
-  public int addScore(int amount) {
+  public void addScore(int amount) {
     score += amount;
-    return score;
   }
 
   public boolean checkScore() {
-    if (score >= 0) {
-      return true;
-    } else {
-      return false;
-    }
+    return score >= 0;
   }
 
   /**
@@ -145,11 +137,7 @@ public class Player {
   }
 
   public boolean checkIfAfford() {
-    if (gold >= 0) {
-      return true;
-    } else {
-      return false;
-    }
+    return gold >= 0;
   }
 
   /**
@@ -172,11 +160,14 @@ public class Player {
    *
    * @return a list of items in the player's inventory
    */
-  public ArrayList<String> getInventory() {
+  public List<String> getInventory() {
     return inventory;
   }
 
-
+  /**
+   * Uses the Builder design pattern on the Player class, so that it is possible to create different
+   * representations of players with a dedicated builder.
+   */
   public static class PlayerBuilder {
     private String name;
     private Image image;
@@ -184,6 +175,9 @@ public class Player {
     private int score;
     private int gold;
 
+    /**
+     * Creates a new instance of the PlayerBuilder class.
+     */
     public PlayerBuilder() {
       this.name = "";
       this.image = null;
@@ -192,16 +186,34 @@ public class Player {
       this.gold = 0;
     }
 
+    /**
+     * Sets the name of the player.
+     *
+     * @param name Player name.
+     * @return The player name.
+     */
     public PlayerBuilder name(String name) {
       this.name = name;
       return this;
     }
 
+    /**
+     * Sets the image of the player.
+     *
+     * @param image Player image.
+     * @return The player image.
+     */
     public PlayerBuilder image(Image image) {
       this.image = image;
       return this;
     }
 
+    /**
+     * Sets the health of the player.
+     *
+     * @param health Player health.
+     * @return The player health.
+     */
     public PlayerBuilder health(int health) {
       if (health > 0) {
         this.health = health;
@@ -209,7 +221,12 @@ public class Player {
       return this;
     }
 
-
+    /**
+     * Sets the score of the player.
+     *
+     * @param score Player score.
+     * @return The player score.
+     */
     public PlayerBuilder score(int score) {
       if (score > 0) {
         this.score = score;
@@ -217,7 +234,12 @@ public class Player {
       return this;
     }
 
-
+    /**
+     * Sets the gold of the player.
+     *
+     * @param gold Player gold.
+     * @return The player gold.
+     */
     public PlayerBuilder gold(int gold) {
       if (gold > 0) {
         this.gold = gold;
@@ -225,7 +247,11 @@ public class Player {
       return this;
     }
 
-
+    /**
+     * Builds the player.
+     *
+     * @return The player.
+     */
     public Player build() {
       return new Player(name, image, health, score, gold);
     }
