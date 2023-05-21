@@ -12,7 +12,7 @@ class PlayerTest {
     @BeforeEach
     void setUp() {
         player = new Player.PlayerBuilder()
-            .name("Hans")
+            .name("Johansen")
             .image(null)
             .health(100)
             .score(10)
@@ -44,7 +44,7 @@ class PlayerTest {
 
     @Test
     void testAddToInventory() {
-        player.addToInventory("Sword");
-        Assertions.assertTrue(player.getInventory().contains("Sword"));
+        player.addToInventory("Book");
+        Assertions.assertTrue(player.getInventory().contains("Book"));
     }
 }
