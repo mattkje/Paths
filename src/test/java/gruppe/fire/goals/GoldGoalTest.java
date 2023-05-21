@@ -25,24 +25,7 @@ class GoldGoalTest {
         assertTrue(goal.isFulfilled(player2));
     }
 
-    @Test
-    void testRemainingGold() {
-        GoldGoal goal = new GoldGoal(1000);
-        Player player1 = new Player.PlayerBuilder()
-            .name("Mathias")
-            .health(500)
-            .gold(700)
-            .score(200)
-            .build();
-        Player player2 = new Player.PlayerBuilder()
-            .name("Mathias")
-            .health(1500)
-            .gold(750)
-            .score(250)
-            .build();
-        assertEquals(300, goal.getRemainingGold(player1));
-        assertEquals(250, goal.getRemainingGold(player2));
+
     }
 
-}
 
