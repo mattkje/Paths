@@ -2,9 +2,7 @@ package gruppe.fire.ui;
 
 import gruppe.fire.filehandling.DataBase;
 import gruppe.fire.filehandling.FileToStory;
-import gruppe.fire.logic.Game;
 import gruppe.fire.logic.Link;
-import gruppe.fire.logic.Player;
 import gruppe.fire.logic.Story;
 import java.io.File;
 import java.io.FileWriter;
@@ -14,8 +12,11 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-
-import javafx.animation.*;
+import javafx.animation.Animation;
+import javafx.animation.Interpolator;
+import javafx.animation.ParallelTransition;
+import javafx.animation.RotateTransition;
+import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -109,8 +110,6 @@ public class MainMenuController {
     this.citySkyline4 = new ImageView(cityImage2);
     this.citySkyline5 = new ImageView(cityImage2);
     this.citySkyline6 = new ImageView(cityImage2);
-    Image sunImage = new Image("/gruppe/fire/Media/sun.png");
-    ImageView sunImageView = new ImageView(sunImage);
 
     TranslateTransition translateTransition =
         new TranslateTransition(Duration.millis(20000), citySkyline);
@@ -148,6 +147,9 @@ public class MainMenuController {
     translateTransition6.setToX(1300);
     translateTransition6.setInterpolator(Interpolator.LINEAR);
 
+    Image sunImage = new Image("/gruppe/fire/Media/sun.png");
+    ImageView sunImageView = new ImageView(sunImage);
+
     RotateTransition rotateTransition = new RotateTransition(Duration.seconds(30), sunImageView);
     rotateTransition.setNode(sunImageView);
     rotateTransition.setFromAngle(0);
@@ -155,7 +157,6 @@ public class MainMenuController {
     rotateTransition.setInterpolator(Interpolator.LINEAR);
     rotateTransition.setCycleCount(Animation.INDEFINITE);
     rotateTransition.play();
-
 
 
     //Need two parallelTransitions as it stops if all are in one.
@@ -194,8 +195,8 @@ public class MainMenuController {
     Map<String, String> map = dataBase.readSettingsFromFile();
     boolean bg = Boolean.parseBoolean(map.get("bg"));
     if (bg) {
-      root.getChildren().addAll(sunImageView, citySkyline, citySkyline2, citySkyline3, citySkyline4, citySkyline5,
-          citySkyline6);
+      root.getChildren().addAll(sunImageView, citySkyline, citySkyline2,
+          citySkyline3, citySkyline4, citySkyline5, citySkyline6);
     }
   }
 
@@ -225,14 +226,35 @@ public class MainMenuController {
         String exceptionString = "Something went wrong while opening paths file" + ex;
         System.getLogger(exceptionString);
       }
-
-      //Sets status if user cancels open file.
-    } else {
+    } else if (checkBrokenStory(selectedFile)) {
       noFile.setText("No file was selected");
+    } else {
+      noFile.setText("This paths file is broken");
     }
     if (String.valueOf(selectedFile).endsWith(GPATHS)) {
       DataBase dataBase = new DataBase();
       dataBase.gpathHandler();
+    }
+  }
+
+  /**
+   * This method is responsible for setting the selected game status labels
+   * It should stop the game from setting the text if the game file is corrupted.
+   *
+   * @param storyName     The story name label.
+   * @param storyPassages Passages count label.
+   * @param deadLinks     Dead link count label.
+   */
+  public void setInfoText(Label storyName, Label storyPassages, Label deadLinks) {
+    DataBase dataBase = new DataBase();
+    if (checkBrokenStory(selectedFile)) {
+      storyName.setText(dataBase.getActiveStoryName());
+      storyPassages.setText(dataBase.getActiveStoryPassages());
+      deadLinks.setText(dataBase.getBrokenStoryLinks());
+    } else {
+      storyName.setText("Broken file");
+      storyPassages.setText("0");
+      deadLinks.setText("0");
     }
   }
 
@@ -256,8 +278,7 @@ public class MainMenuController {
     }
     if (String.valueOf(selectedFile).endsWith(".paths") && selectedFile != null) {
       try {
-        if (checkBrokenGame(new Game(new Player.PlayerBuilder()
-            .build(), new FileToStory(selectedFile).readFile()))) {
+        if (checkBrokenStory(selectedFile)) {
           playerMenu.start(scene);
         }
       } catch (Exception ex) {
@@ -276,53 +297,59 @@ public class MainMenuController {
    * @param menuFontLarge Larger font
    * @param scene         Game scene.
    */
-  public void deadLinkPopUp(Font font, Font menuFontLarge, Scene scene, MediaPlayer player) {
-    FileToStory fileToStory = new FileToStory(selectedFile);
-    Story story = fileToStory.readFile();
-    List<Link> list = story.getBrokenLinks();
-    Label warningInfo = new Label("This story has dead links:");
-    warningInfo.setFont(font);
-    ListView<Link> deadLinks = new ListView<>();
-    deadLinks.getItems().setAll(list);
-    Button dismissButton = new Button("Dismiss");
-    dismissButton.setFont(font);
-    Button editorButton = new Button("Open file in editor");
-    editorButton.setFont(font);
-    HBox buttonBox = new HBox(editorButton, dismissButton);
-    buttonBox.setAlignment(Pos.CENTER);
-    buttonBox.setSpacing(30);
-    Label warning = new Label("Warning");
-    warning.setFont(menuFontLarge);
-    warning.setAlignment(Pos.CENTER);
-    VBox warningBox = new VBox(warning, warningInfo, deadLinks, buttonBox);
-    warningBox.setSpacing(20);
-    warningBox.setPrefWidth(600);
-    warningBox.setPadding(new Insets(20));
-    warningBox.setId("warningBox");
-    warningBox.setAlignment(Pos.CENTER);
-    Popup popup = new Popup();
-    popup.getContent().add(warningBox);
-    popup.show(scene.getWindow());
-    dismissButton.setOnAction(e ->
-        popup.hide());
+  public void deadLinkPopUp(Font font, Font menuFontLarge, Scene scene, MediaPlayer player,
+                            Label noFile) {
+    if (checkBrokenStory(selectedFile)) {
+      FileToStory fileToStory = new FileToStory(selectedFile);
+      Story story = fileToStory.readFile();
+      List<Link> list = story.getBrokenLinks();
+      Label warningInfo = new Label("This story has dead links:");
+      warningInfo.setFont(font);
+      ListView<Link> deadLinks = new ListView<>();
+      deadLinks.getItems().setAll(list);
+      Button dismissButton = new Button("Dismiss");
+      dismissButton.setFont(font);
+      Button editorButton = new Button("Open file in editor");
+      editorButton.setFont(font);
+      HBox buttonBox = new HBox(editorButton, dismissButton);
+      buttonBox.setAlignment(Pos.CENTER);
+      buttonBox.setSpacing(30);
+      Label warning = new Label("Warning");
+      warning.setFont(menuFontLarge);
+      warning.setAlignment(Pos.CENTER);
+      VBox warningBox = new VBox(warning, warningInfo, deadLinks, buttonBox);
+      warningBox.setSpacing(20);
+      warningBox.setPrefWidth(600);
+      warningBox.setPadding(new Insets(20));
+      warningBox.setId("warningBox");
+      warningBox.setAlignment(Pos.CENTER);
+      Popup popup = new Popup();
+      popup.getContent().add(warningBox);
+      popup.show(scene.getWindow());
+      dismissButton.setOnAction(e ->
+          popup.hide());
 
-    editorButton.setOnAction(e -> {
-      popup.hide();
-      player.dispose();
-      String fileContent = null;
-      byte[] fileBytes;
-      try {
-        fileBytes = Files.readAllBytes(selectedFile.toPath());
-        fileContent = new String(fileBytes);
-      } catch (IOException ex) {
-        String exceptionString = "Something went wrong while reading dead links" + ex;
-        System.getLogger(exceptionString);
-      }
+      editorButton.setOnAction(e -> {
+        popup.hide();
+        player.dispose();
+        String fileContent = null;
+        byte[] fileBytes;
+        try {
+          fileBytes = Files.readAllBytes(selectedFile.toPath());
+          fileContent = new String(fileBytes);
+        } catch (IOException ex) {
+          String exceptionString = "Something went wrong while reading dead links" + ex;
+          System.getLogger(exceptionString);
+        }
 
-      FileEditorMenu fileEditorMenu = new FileEditorMenu();
-      assert fileContent != null;
-      fileEditorMenu.start(scene, fileContent);
-    });
+        FileEditorMenu fileEditorMenu = new FileEditorMenu();
+        assert fileContent != null;
+        fileEditorMenu.start(scene, fileContent);
+      });
+      noFile.setText("This story has dead links");
+    } else {
+      noFile.setText("You have to select a file first.");
+    }
   }
 
   /**
@@ -488,15 +515,25 @@ public class MainMenuController {
    * Validates the imported paths file by creating a game object and checking
    * if crucial content is null.
    *
-   * @param game The created Game object.
+   * @param selectedFile The current file.
    * @return True if paths file is valid, false otherwise.
    */
-  public boolean checkBrokenGame(Game game) {
-    String openingPassage = game.getStory().getOpeningPassage().toString();
-    String storyTitle = game.getStory().getTitle();
-    String passages = game.getStory().getPassages().toString();
-    String begin = game.begin(game.getStory().getOpeningPassage()).toString();
-    return openingPassage != null && storyTitle != null && passages != null && begin != null;
+  public boolean checkBrokenStory(File selectedFile) {
+    boolean isBrokenStory;
+    try {
+      FileToStory fileToStory = new FileToStory(selectedFile);
+      Story story = fileToStory.readFile();
+      String openingPassage = story.getOpeningPassage().toString();
+      String storyTitle = story.getTitle();
+      String passages = story.getPassages().toString();
+      boolean deadPassages = story.getBrokenPassage().isEmpty();
+
+      isBrokenStory =
+          openingPassage != null && storyTitle != null && passages != null && deadPassages;
+    } catch (Exception e) {
+      isBrokenStory = false;
+    }
+    return isBrokenStory;
   }
 
   /**

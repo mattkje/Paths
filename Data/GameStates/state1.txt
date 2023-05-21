@@ -1,6 +1,6 @@
 src\main\resources\gruppe\fire\Paths\MurderMystery.paths
-Beginning
-Default
+Beginning 2
+Tante Toril
 0
 1
 0

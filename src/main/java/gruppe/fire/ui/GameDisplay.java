@@ -221,7 +221,7 @@ public class GameDisplay {
     playerName.setTextFill(Color.WHITE);
     Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     double width = screenSize.getWidth();
-    Font font = Font.font("Comfortaa", width / 100);
+    Font font = Font.font("Comfortaa", width / 130);
 
 
     playerName.setFont(font);

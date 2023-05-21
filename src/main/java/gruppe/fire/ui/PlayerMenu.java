@@ -9,8 +9,13 @@ import java.nio.file.Paths;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.control.Spinner;
+import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.SpinnerValueFactory.IntegerSpinnerValueFactory;
+import javafx.scene.control.TextField;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -112,12 +117,14 @@ public class PlayerMenu {
     for (int i = 1; i <= players.length; i++) {
 
       File file = new File(players[i - 1]);
-      String playerNumber = file.toPath().toString().replaceAll("[^0-9]", "");
+      //Extracts the number from the file path.
+      String playerNumber = file.toPath().toString().replaceAll("\\D+", "");
       FileToPlayer fileToPlayer = new FileToPlayer(file);
       Player currentPlayer = fileToPlayer.readFile();
       Button deletePlayer = new Button("Delete");
       deletePlayer.setOnAction(event -> {
         controller.setActivePlayer("player1.txt");
+        //Deletes the player with matching number.
         dataBase.deletePlayer(Integer.parseInt(playerNumber));
         selectMusic.dispose();
         start(scene);
@@ -131,14 +138,13 @@ public class PlayerMenu {
       ppLabels[i - 1].setFont(font);
       VBox playerSelectBox = new VBox();
       playerSelectBox.setAlignment(Pos.CENTER);
-      String playerName = ppLabels[i - 1].getText();
       Button playerButton = new Button();
       playerButton.setId("ppButton");
       playerButton.setGraphic(ppImages[i - 1]);
       playerButton.setPadding(new Insets(30));
       playerButton.setStyle("-fx-background-radius: 10");
       playerSelectBox.getChildren().addAll(playerButton, ppLabels[i - 1]);
-      if (!playerNumber.equals("1")){
+      if (!playerNumber.equals("1")) {
         playerSelectBox.getChildren().add(deletePlayer);
       } else {
         Button invisButton = new Button();
@@ -147,6 +153,7 @@ public class PlayerMenu {
       }
 
       //Sets active player
+      String playerName = ppLabels[i - 1].getText();
       String activePlayerString = "player" + playerNumber + ".txt";
       playerButton.setOnAction(event -> {
         controller.setActivePlayer(activePlayerString);
@@ -168,11 +175,12 @@ public class PlayerMenu {
     createPlayer.setTextFill(Color.WHITE);
     createPlayer.setAlignment(Pos.CENTER);
     createPlayer.setFont(font);
+    Label createPlayerStatus = new Label();
     VBox newPlayerBox = new VBox();
     newPlayerBox.setAlignment(Pos.CENTER);
     newPlayerBox.setStyle(
         "-fx-background-color: rgba(255,255,255,0.14);-fx-background-radius: 20; -fx-padding: 20");
-    newPlayerBox.getChildren().addAll(newPlayer, createPlayer);
+    newPlayerBox.getChildren().addAll(newPlayer, createPlayer, createPlayerStatus);
     newPlayerButton.setGraphic(newPlayerBox);
     newPlayerButton.setPadding(new Insets(30));
 
@@ -387,10 +395,12 @@ public class PlayerMenu {
     playerHbox.getChildren().addAll(playerContainer, goalMenu);
     playerVbox.getChildren().addAll(playerTitle, selectedPlayer, ppImageBox);
     newPlayerButton.setOnAction(e -> {
-      if (players.length < 10){
+      if (players.length < 11) {
         playerHbox.getChildren().removeAll(goalMenu);
         playerContainer.getChildren().clear();
         playerContainer.getChildren().add(newUserHbox);
+      } else {
+        createPlayerStatus.setText("Player limit reached");
       }
     });
     backButton.setOnAction(e -> {

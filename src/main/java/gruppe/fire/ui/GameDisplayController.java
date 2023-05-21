@@ -5,6 +5,8 @@ import gruppe.fire.filehandling.DataBase;
 import gruppe.fire.logic.Game;
 import gruppe.fire.logic.Link;
 import gruppe.fire.logic.Passage;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
@@ -89,8 +91,10 @@ public class GameDisplayController {
     setRoomContentLabel(game.getStory().getOpeningPassage().getContent());
     setPassageImage(getPassageImage(game.getStory().getOpeningPassage().getTitle()));
     if (passageImage.getImage() != null) {
-      passageImage.setFitHeight(500);
-      passageImage.setFitWidth(500);
+      Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+      double imageSize = screenSize.getWidth()/6;
+      passageImage.setFitHeight(imageSize);
+      passageImage.setFitWidth(imageSize);
     } else {
       passageImage.setFitHeight(1);
       passageImage.setFitWidth(1);
@@ -136,8 +140,10 @@ public class GameDisplayController {
       setScoreAmountLabel(String.valueOf(game.getPlayer().getScore()));
       setPassageImage(getPassageImage(game.getStory().getPassageByLink(link).getTitle()));
       if (passageImage.getImage() != null) {
-        passageImage.setFitHeight(500);
-        passageImage.setFitWidth(500);
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        double imageSize = screenSize.getWidth()/6;
+        passageImage.setFitHeight(imageSize);
+        passageImage.setFitWidth(imageSize);
       } else {
         passageImage.setFitHeight(1);
         passageImage.setFitWidth(1);

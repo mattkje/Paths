@@ -232,12 +232,11 @@ public class MainMenu {
     openPathsFile.setTextFill(Color.WHITE);
     openPathsFile.setOnAction(e -> {
       controller.openFileButton(fileChooser, mainScene, noFile);
-      storyName.setText(dataBase.getActiveStoryName());
-      storyPassages.setText(dataBase.getActiveStoryPassages());
-      deadLinks.setText(dataBase.getBrokenStoryLinks());
+      controller.setInfoText(storyName, storyPassages, deadLinks);
+
       //Checks if story has any dead links
       if (Integer.parseInt(dataBase.getBrokenStoryLinks()) > 0) {
-        controller.deadLinkPopUp(font, menuFontLarge, mainScene, player);
+        controller.deadLinkPopUp(font, menuFontLarge, mainScene, player, noFile);
       }
     });
 
@@ -251,7 +250,7 @@ public class MainMenu {
     startGame.setOnAction(e -> {
       //Prevents user from starting game if the story has dead links.
       if (Integer.parseInt(dataBase.getBrokenStoryLinks()) > 0) {
-        controller.deadLinkPopUp(font, menuFontLarge, mainScene, player);
+        controller.deadLinkPopUp(font, menuFontLarge, mainScene, player, noFile);
         return;
       }
       controller.startGameButton(playerMenu, mainScene, noFile);
@@ -373,7 +372,7 @@ public class MainMenu {
     //Previously played game info.
     VBox savedBox = new VBox();
     Game gamePreview = dataBase.readFile();
-    if (dataBase.getGameState()){
+    if (dataBase.getGameState()) {
 
       Label savedStoryTitle = new Label("Game: " + gamePreview.getStory().getTitle());
       savedStoryTitle.setFont(font);
