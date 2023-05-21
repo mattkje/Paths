@@ -184,7 +184,7 @@ public class MainMenu {
     importMenu.setId("importMenu");
     importMenu.setPrefWidth(400);
     importMenu.setMaxHeight(400);
-    importMenu.setSpacing(20);
+    importMenu.setSpacing(10);
     importMenu.setAlignment(Pos.TOP_CENTER);
     importMenu.setEffect(dropShadow);
     FileChooser fileChooser = new FileChooser();
@@ -262,7 +262,9 @@ public class MainMenu {
     gameControl.getChildren().addAll(openPathsFile, startGame);
     gameControl.setAlignment(Pos.CENTER);
     gameControl.setSpacing(3);
-    importMenu.getChildren().addAll(gameControl, noFile, label, aboutStoryPane);
+    Button openFileEditor = new Button("Open in editor");
+    openFileEditor.setOnAction(event -> controller.openInEditor(player, mainScene, noFile));
+    importMenu.getChildren().addAll(gameControl,noFile, openFileEditor, label, aboutStoryPane);
 
 
     //Creates graphics for default story buttons.
@@ -377,7 +379,7 @@ public class MainMenu {
       Label savedStoryTitle = new Label("Game: " + gamePreview.getStory().getTitle());
       savedStoryTitle.setFont(font);
       Label savedStoryPassage =
-              new Label("Room: " + gamePreview.getStory().getOpeningPassage().getTitle());
+          new Label("Room: " + gamePreview.getStory().getOpeningPassage().getTitle());
       savedStoryPassage.setFont(font);
       Label savedStoryPlayer = new Label("Player: " + gamePreview.getPlayer().getName());
       savedStoryPlayer.setFont(font);

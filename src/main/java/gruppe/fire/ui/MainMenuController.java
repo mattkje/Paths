@@ -3,6 +3,7 @@ package gruppe.fire.ui;
 import gruppe.fire.filehandling.DataBase;
 import gruppe.fire.filehandling.FileToStory;
 import gruppe.fire.logic.Link;
+import gruppe.fire.logic.Passage;
 import gruppe.fire.logic.Story;
 import java.io.File;
 import java.io.FileWriter;
@@ -58,6 +59,7 @@ public class MainMenuController {
   private ImageView citySkyline4;
   private ImageView citySkyline5;
   private ImageView citySkyline6;
+  private ImageView sunImageView;
 
 
   /**
@@ -148,7 +150,7 @@ public class MainMenuController {
     translateTransition6.setInterpolator(Interpolator.LINEAR);
 
     Image sunImage = new Image("/gruppe/fire/Media/sun.png");
-    ImageView sunImageView = new ImageView(sunImage);
+    this.sunImageView = new ImageView(sunImage);
 
     RotateTransition rotateTransition = new RotateTransition(Duration.seconds(30), sunImageView);
     rotateTransition.setNode(sunImageView);
@@ -280,6 +282,8 @@ public class MainMenuController {
       try {
         if (checkBrokenStory(selectedFile)) {
           playerMenu.start(scene);
+        } else {
+          noFile.setText("Problem loading file. Check links!");
         }
       } catch (Exception ex) {
         noFile.setText("Could not load file. Wrong format?");
@@ -317,7 +321,11 @@ public class MainMenuController {
       Label warning = new Label("Warning");
       warning.setFont(menuFontLarge);
       warning.setAlignment(Pos.CENTER);
-      VBox warningBox = new VBox(warning, warningInfo, deadLinks, buttonBox);
+      Label emptyLink = new Label();
+      if (checkLink(story)){
+        emptyLink.setText("This story contains links without titles");
+      }
+      VBox warningBox = new VBox(warning, warningInfo, deadLinks, emptyLink, buttonBox);
       warningBox.setSpacing(20);
       warningBox.setPrefWidth(600);
       warningBox.setPadding(new Insets(20));
@@ -331,26 +339,57 @@ public class MainMenuController {
 
       editorButton.setOnAction(e -> {
         popup.hide();
-        player.dispose();
-        String fileContent = null;
-        byte[] fileBytes;
-        try {
-          fileBytes = Files.readAllBytes(selectedFile.toPath());
-          fileContent = new String(fileBytes);
-        } catch (IOException ex) {
-          String exceptionString = "Something went wrong while reading dead links" + ex;
-          System.getLogger(exceptionString);
-        }
-
-        FileEditorMenu fileEditorMenu = new FileEditorMenu();
-        assert fileContent != null;
-        fileEditorMenu.start(scene, fileContent);
+        openInEditor(player, scene, noFile);
       });
       noFile.setText("This story has dead links");
     } else {
       noFile.setText("You have to select a file first.");
     }
   }
+
+  /**
+   * This method is responsible for opening current file in editor.
+   *
+   * @param player Current media player.
+   * @param scene Game scene.
+   */
+  public void openInEditor(MediaPlayer player, Scene scene, Label noFile){
+    if (selectedFile != null){
+      player.dispose();
+      String fileContent = null;
+      byte[] fileBytes;
+      try {
+        fileBytes = Files.readAllBytes(selectedFile.toPath());
+        fileContent = new String(fileBytes);
+      } catch (IOException ex) {
+        String exceptionString = "Something went wrong while reading dead links" + ex;
+        System.getLogger(exceptionString);
+      }
+
+      FileEditorMenu fileEditorMenu = new FileEditorMenu();
+      assert fileContent != null;
+      fileEditorMenu.start(scene, fileContent);
+    } else {
+      noFile.setText("Select a file first");
+    }
+  }
+
+  /**
+   * This method is responsible for checking if any links in the story
+   * has empty text.
+   *
+   * @param story Current story
+   * @return True if the story has any empty link texts, false otherwise.
+   */
+  public boolean checkLink(Story story) {
+    for (Passage passage : story.getPassages()) {
+      if (passage.emptyLinks()) {
+        return false;
+      }
+    }
+    return true;
+  }
+
 
   /**
    * This method is responsible for handling the stage switching between
@@ -454,18 +493,21 @@ public class MainMenuController {
   public void updateBackground(BorderPane root, boolean bg) {
     if (!bg) {
       root.getChildren()
-          .removeAll(citySkyline, citySkyline2, citySkyline3, citySkyline4, citySkyline5,
+          .removeAll(sunImageView, citySkyline, citySkyline2, citySkyline3, citySkyline4,
+              citySkyline5,
               citySkyline6);
     }
     if (bg) {
-      root.getChildren().addAll(citySkyline, citySkyline2, citySkyline3, citySkyline4, citySkyline5,
-          citySkyline6);
+      root.getChildren()
+          .addAll(sunImageView, citySkyline, citySkyline2, citySkyline3, citySkyline4, citySkyline5,
+              citySkyline6);
       citySkyline6.toBack();
       citySkyline5.toBack();
       citySkyline4.toBack();
       citySkyline3.toBack();
       citySkyline2.toBack();
       citySkyline.toBack();
+      sunImageView.toBack();
     }
   }
 
@@ -527,9 +569,11 @@ public class MainMenuController {
       String storyTitle = story.getTitle();
       String passages = story.getPassages().toString();
       boolean deadPassages = story.getBrokenPassage().isEmpty();
+      boolean emptyLinks = checkLink(story);
 
       isBrokenStory =
-          openingPassage != null && storyTitle != null && passages != null && deadPassages;
+          openingPassage != null && storyTitle != null && passages != null && deadPassages &&
+              emptyLinks;
     } catch (Exception e) {
       isBrokenStory = false;
     }
