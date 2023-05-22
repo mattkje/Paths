@@ -14,17 +14,28 @@ import java.util.NoSuchElementException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+/**
+ * Test class for the FileToStory Class.
+ * The following positive tests:
+ * - readFileNoLinksTest
+ * - readFileMultipleActionsTest
+ * - createLinkTest
+ * - createActionText
+ * <p>
+ * The following negative tests:
+ * - readFileEmptyTest
+ */
 class FileToStoryTest {
 
   @Test
-  void readFileEmptyTest(){
+  void readFileEmptyTest() {
     String path = "src/test/resources/testPaths/emptyFile.paths";
     FileToStory fileToStory = new FileToStory(new File(path));
     assertThrows(NoSuchElementException.class, fileToStory::readFile);
   }
 
   @Test
-  void readFileNoLinksTest(){
+  void readFileNoLinksTest() {
     String path = "src/test/resources/testPaths/noLinks.paths";
     FileToStory fileToStory = new FileToStory(new File(path));
     Story story = fileToStory.readFile();
@@ -33,7 +44,7 @@ class FileToStoryTest {
   }
 
   @Test
-  void readFileMultipleActionsTest(){
+  void readFileMultipleActionsTest() {
     String path = "src/test/resources/testPaths/multipleActions.paths";
     FileToStory fileToStory = new FileToStory(new File(path));
     Story story = fileToStory.readFile();
@@ -41,7 +52,7 @@ class FileToStoryTest {
   }
 
   @Test
-  void createLinkTest(){
+  void createLinkTest() {
     String path = "src/test/resources/testPaths/workingFile.paths";
     FileToStory fileToStory = new FileToStory(new File(path));
     String linkString = "[link1](Room2)";
@@ -50,7 +61,7 @@ class FileToStoryTest {
   }
 
   @Test
-  void createActionText(){
+  void createActionText() {
     String path = "src/test/resources/testPaths/workingFile.paths";
     FileToStory fileToStory = new FileToStory(new File(path));
     Action action = fileToStory.createAction("GoldAction", "100");

@@ -1,24 +1,38 @@
 package gruppe.fire.actions;
 
-import gruppe.fire.actions.ScoreAction;
 import gruppe.fire.logic.Player;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/**
+ * Test class for the ScoreAction Class.
+ * The following positive tests:
+ * - testExecutePositiveScore
+ * - testExecuteNegativeScore
+ * <p>
+ * No negative tests.
+ */
 class ScoreActionTest {
 
     @Test
-    void testExecutePositiveGold() {
-        ScoreAction action = new ScoreAction(260);
+    void testExecutePositiveScore() {
+        ScoreAction action = new ScoreAction(1);
         Player player = new Player.PlayerBuilder()
-            .name("Mathias")
-            .health(500)
-            .gold(340)
-            .score(400)
+            .score(5)
             .build();
         action.execute(player);
-        assertEquals(660, player.getScore());
+        assertEquals(6, player.getScore());
+    }
+
+    @Test
+    void testExecuteNegativeScore() {
+        ScoreAction action = new ScoreAction(-1);
+        Player player = new Player.PlayerBuilder()
+            .score(5)
+            .build();
+        action.execute(player);
+        assertEquals(4, player.getScore());
     }
 }
 

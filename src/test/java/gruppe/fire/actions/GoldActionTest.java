@@ -6,16 +6,21 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
+/**
+ * Test class for the GoldAction Class.
+ * The following positive tests:
+ * - testExecutePositiveGold
+ * <p>
+ * The following negative tests:
+ * - testExecuteNegativeGold
+ */
 class GoldActionTest {
 
     @Test
     void testExecutePositiveGold() {
         GoldAction action = new GoldAction(260);
         Player player = new Player.PlayerBuilder()
-            .name("Mathias")
-            .health(500)
             .gold(340)
-            .score(400)
             .build();
         action.execute(player);
         assertEquals(600, player.getGold());
@@ -25,10 +30,7 @@ class GoldActionTest {
     void testExecuteNegativeGold() {
         GoldAction action = new GoldAction(260);
         Player player = new Player.PlayerBuilder()
-            .name("Mathias")
-            .health(500)
             .gold(340)
-            .score(400)
             .build();
         action.execute(player);
         assertNotEquals(500, player.getGold());

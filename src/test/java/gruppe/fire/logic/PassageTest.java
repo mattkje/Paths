@@ -5,19 +5,32 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+/**
+ * Test class for the Passage Class.
+ * The following positive tests:
+ * - addLinkTest
+ * - getLinkTest
+ * - hasLinksTest
+ * - equalsTest
+ * <p>
+ * The following negative tests:
+ * - hasLinksNegativeTest
+ * - equalsNegativeTest1
+ * - equalsNegativeTest2
+ * - equalsNegativeTest3
+ */
 class PassageTest {
 
   @Test
-  void addLinkTest(){
+  void addLinkTest() {
     Passage passage = new Passage("Title", "Content");
     assertTrue(passage.addLink(new Link("text", "reference")));
   }
 
   @Test
-  void getLinkTest(){
+  void getLinkTest() {
     Passage passage = new Passage("Title", "Content");
     Link link = new Link("text", "reference");
     passage.addLink(link);
@@ -25,7 +38,7 @@ class PassageTest {
   }
 
   @Test
-  void hasLinksTest(){
+  void hasLinksTest() {
     Passage passage = new Passage("Title", "Content");
     Link link = new Link("text", "reference");
     passage.addLink(link);
@@ -33,13 +46,13 @@ class PassageTest {
   }
 
   @Test
-  void hasLinksNegativeTest(){
+  void hasLinksNegativeTest() {
     Passage passage = new Passage("Title", "Content");
     assertFalse(passage.hasLinks());
   }
 
   @Test
-  void equalsTest(){
+  void equalsTest() {
     Passage passage = new Passage("Title", "Content");
     Passage passage2 = new Passage("Title", "Content");
     Link link = new Link("text", "reference");
@@ -49,7 +62,7 @@ class PassageTest {
   }
 
   @Test
-  void equalsNegativeTest1(){
+  void equalsNegativeTest1() {
     Passage passage = new Passage("Title", "Content");
     Passage passage2 = new Passage("Title2", "Content");
     Link link = new Link("text", "reference");
@@ -59,7 +72,7 @@ class PassageTest {
   }
 
   @Test
-  void equalsNegativeTest(){
+  void equalsNegativeTest2() {
     Passage passage = new Passage("Title", "Content");
     Passage passage2 = new Passage("Title", "Content2");
     Link link = new Link("text", "reference");
@@ -69,7 +82,7 @@ class PassageTest {
   }
 
   @Test
-  void equalsNegativeTest3(){
+  void equalsNegativeTest3() {
     Passage passage = new Passage("Title", "Content");
     Passage passage2 = new Passage("Title", "Content");
     Link link = new Link("text", "reference");
