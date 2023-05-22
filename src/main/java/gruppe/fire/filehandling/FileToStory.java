@@ -49,6 +49,9 @@ public class FileToStory {
       story.setTitle(scanner.nextLine());
       String line = scanner.nextLine();
       while (scanner.hasNext()) {
+        while (line.isEmpty()) {
+          line = scanner.nextLine();
+        }
         if (line.contains("::")) {
           String passageTitle = line.split("::")[1];
           String passageContent = scanner.nextLine();
