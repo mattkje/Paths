@@ -44,15 +44,26 @@ public class GameDisplayController {
 
 
   /**
-   * This method determines if a paths file is new.
+   * This method determines if a .paths file is new.
    *
-   * @return true if active path is already saved or if it is default, false otherwise.
+   * @return true if active file is already saved, or if it is default, false otherwise.
    */
   public boolean checkIfDefault() {
     DataBase dataBase = new DataBase();
     String activeStory = dataBase.getActiveStoryPath();
-    return !(activeStory.contains("Castle.paths") || activeStory.contains("HauntedHouse.paths")
-        || activeStory.contains("MurderMystery.paths") || activeStory.contains("SpaceShip.paths"));
+    return activeStory.contains("Castle.paths") || activeStory.contains("HauntedHouse.paths")
+        || activeStory.contains("MurderMystery.paths") || activeStory.contains("SpaceShip.paths");
+  }
+
+  /**
+   * This method determines if a file is of type gpaths.
+   *
+   * @return true if active file is of typ gpaths, false otherwise.
+   */
+  public boolean checkIfGpaths() {
+    DataBase dataBase = new DataBase();
+    String activeStory = dataBase.getActiveStoryPath();
+    return (activeStory.contains("currentGpaths") || activeStory.contains(".Gpaths"));
   }
 
   /**
@@ -93,7 +104,7 @@ public class GameDisplayController {
     setPassageImage(getPassageImage(game.getStory().getOpeningPassage().getTitle()));
     if (passageImage.getImage() != null) {
       Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-      double imageSize = screenSize.getWidth()/6;
+      double imageSize = screenSize.getWidth() / 6;
       passageImage.setFitHeight(imageSize);
       passageImage.setFitWidth(imageSize);
     } else {
@@ -142,7 +153,7 @@ public class GameDisplayController {
       setPassageImage(getPassageImage(game.getStory().getPassageByLink(link).getTitle()));
       if (passageImage.getImage() != null) {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        double imageSize = screenSize.getWidth()/6;
+        double imageSize = screenSize.getWidth() / 6;
         passageImage.setFitHeight(imageSize);
         passageImage.setFitWidth(imageSize);
       } else {
@@ -169,21 +180,13 @@ public class GameDisplayController {
       FlowPane finalInventoryPane = inventoryPane;
       if (checkGoals(game)) {
         goalsAccomplished();
-        Button restartButton = new Button("Restart");
-        restartButton.setFont(font);
-        restartButton.setEffect(dropShadow);
-        restartButton.setOnAction(e -> {
-          GameDisplay gameDisplay = new GameDisplay();
-          gameDisplay.start(restartButton.getScene(), false);
-        });
-        Button mainMenuButton = new Button("Main menu");
-        mainMenuButton.setFont(font);
-        mainMenuButton.setEffect(dropShadow);
-        mainMenuButton.setOnAction(e -> {
-          MainMenu mainMenu = new MainMenu();
-          mainMenu.startMain(mainMenuButton.getScene());
-        });
-        actionBar.getChildren().addAll(restartButton, mainMenuButton);
+        gameEndScreen(font, dropShadow, actionBar);
+        return;
+      } else if (!game.getPlayer().checkIfAlive()) {
+        setRoomTitleLabel("You died");
+        setRoomContentLabel("Stats: \n" + "Score: " + scoreAmountLabel.getText()
+            +"\n" + "Gold: " +goldAmountLabel.getText());
+        gameEndScreen(font, dropShadow, actionBar);
         return;
       }
       nextPath.setOnAction(e ->
@@ -194,6 +197,24 @@ public class GameDisplayController {
       actionBar.getChildren().add(nextPath);
     }
 
+  }
+
+  public void gameEndScreen(Font font, DropShadow dropShadow, HBox actionBar){
+    Button restartButton = new Button("Restart");
+    restartButton.setFont(font);
+    restartButton.setEffect(dropShadow);
+    restartButton.setOnAction(e -> {
+      GameDisplay gameDisplay = new GameDisplay();
+      gameDisplay.start(restartButton.getScene(), false);
+    });
+    Button mainMenuButton = new Button("Main menu");
+    mainMenuButton.setFont(font);
+    mainMenuButton.setEffect(dropShadow);
+    mainMenuButton.setOnAction(e -> {
+      MainMenu mainMenu = new MainMenu();
+      mainMenu.startMain(mainMenuButton.getScene());
+    });
+    actionBar.getChildren().addAll(restartButton, mainMenuButton);
   }
 
   public void setRoomTitleLabel(String roomTitle) {
@@ -302,7 +323,7 @@ public class GameDisplayController {
    * @return The image which corresponds to the passage, null otherwise.
    */
   public Image getPassageImage(String passageTitle) {
-    if (!checkIfDefault() && checkFileExistence(
+    if (checkIfDefault() && checkFileExistence(
         "/gruppe/fire/Media/defaultPathsImages/MurderMysteryImages/" + passageTitle
             + ".png")) {
       return new Image("/gruppe/fire/Media/defaultPathsImages/MurderMysteryImages/"
@@ -327,7 +348,7 @@ public class GameDisplayController {
    * @return True if the file exists, false otherwise;
    */
   public boolean checkFileExistence(String filePath) {
-    if (!checkIfDefault()) {
+    if (checkIfDefault()) {
       URL resourceUrl = getClass().getResource(filePath);
       return resourceUrl != null;
     } else {
