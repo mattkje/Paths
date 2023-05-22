@@ -1,0 +1,29 @@
+Arne Game
+::Bedroom
+You wake up from a goodnight sleep.
+[Go to school](School);ScoreAction;100;
+[Stay at home](Home);HealthAction;-2;
+
+::School
+You come in to the classroom. Arne greets you with a warm welcome. You proceed to sit down at a desk.
+[listen to the lecture](Hall);InventoryAction;GoodTip;
+[Play video games in class](Streets);ScoreAction;-100;
+
+::Home
+You stay at home, but you are reminded that Arne has a lecture today.
+[Go to school](School);ScoreAction;100;
+[Stay at home](Streets);ScoreAction;-100;
+
+::Streets
+You miss out on Arne's lecture and end up failing in life.
+[Watch the lecture online](School);ScoreAction;100;
+[Stay in streets](Streets);HealthAction;-1000;
+
+::Hall
+After the lecture you meet Arne on your way out. He tells you a good tip which he says will help you later.
+[Run home and study](You win);ScoreAction;100;
+[Run home and play video games](Home);ScoreAction;-100;
+
+::You win
+You win the game.
+[Restart game](Home);ScoreAction;100;

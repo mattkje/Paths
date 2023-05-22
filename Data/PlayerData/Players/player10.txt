@@ -1,5 +1,0 @@
-House
-Data\PlayerData\Images\pp10.png
-1
-0
-0

@@ -1,5 +1,0 @@
-Bitters
-Data\PlayerData\Images\pp5.png
-1
-0
-0
