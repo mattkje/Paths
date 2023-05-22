@@ -264,7 +264,7 @@ public class MainMenu {
     gameControl.setSpacing(3);
     Button openFileEditor = new Button("Open in editor");
     openFileEditor.setOnAction(event -> controller.openInEditor(player, mainScene, noFile));
-    importMenu.getChildren().addAll(gameControl,noFile, openFileEditor, label, aboutStoryPane);
+    importMenu.getChildren().addAll(gameControl, noFile, openFileEditor, label, aboutStoryPane);
 
 
     //Creates graphics for default story buttons.

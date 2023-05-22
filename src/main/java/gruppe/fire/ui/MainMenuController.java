@@ -228,10 +228,8 @@ public class MainMenuController {
         String exceptionString = "Something went wrong while opening paths file" + ex;
         System.getLogger(exceptionString);
       }
-    } else if (checkBrokenStory(selectedFile)) {
-      noFile.setText("No file was selected");
     } else {
-      noFile.setText("This paths file is broken");
+      noFile.setText("No file was selected");
     }
     if (String.valueOf(selectedFile).endsWith(GPATHS)) {
       DataBase dataBase = new DataBase();
@@ -322,7 +320,7 @@ public class MainMenuController {
       warning.setFont(menuFontLarge);
       warning.setAlignment(Pos.CENTER);
       Label emptyLink = new Label();
-      if (checkLink(story)){
+      if (checkLink(story)) {
         emptyLink.setText("This story contains links without titles");
       }
       VBox warningBox = new VBox(warning, warningInfo, deadLinks, emptyLink, buttonBox);
@@ -353,8 +351,8 @@ public class MainMenuController {
    * @param player Current media player.
    * @param scene Game scene.
    */
-  public void openInEditor(MediaPlayer player, Scene scene, Label noFile){
-    if (selectedFile != null){
+  public void openInEditor(MediaPlayer player, Scene scene, Label noFile) {
+    if (selectedFile != null) {
       player.dispose();
       String fileContent = null;
       byte[] fileBytes;
@@ -572,8 +570,8 @@ public class MainMenuController {
       boolean emptyLinks = checkLink(story);
 
       isBrokenStory =
-          openingPassage != null && storyTitle != null && passages != null && deadPassages &&
-              emptyLinks;
+          openingPassage != null && storyTitle != null && passages != null && deadPassages
+              && emptyLinks;
     } catch (Exception e) {
       isBrokenStory = false;
     }
