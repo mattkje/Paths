@@ -104,6 +104,7 @@ public class GameDisplay {
 
     //Back to main menu
     Button mainMenuButton = new Button();
+    mainMenuButton.setStyle("-fx-background-color: transparent");
     ImageView mainMenuImage = new ImageView("/gruppe/fire/Media/home.png");
     mainMenuImage.setFitWidth(50);
     mainMenuImage.setFitHeight(50);
@@ -140,6 +141,7 @@ public class GameDisplay {
 
     Button optionsButton = new Button();
     ImageView playerMenuImage = new ImageView("/gruppe/fire/Media/menu.png");
+    optionsButton.setStyle("-fx-background-color: transparent");
     playerMenuImage.setFitWidth(50);
     playerMenuImage.setFitHeight(50);
     optionsButton.setGraphic(playerMenuImage);
@@ -165,6 +167,7 @@ public class GameDisplay {
     ImageView saveImage = new ImageView("/gruppe/fire/Media/diskette.png");
 
     Button saveStateButton = new Button();
+    saveStateButton.setStyle("-fx-background-color: transparent");
     saveStateButton.setGraphic(saveImage);
 
 
@@ -175,7 +178,8 @@ public class GameDisplay {
     menuBar.setStyle("-fx-background-color: rgba(0,0,0,0.7); -fx-padding: 10px");
     GameDisplayController controller = new GameDisplayController();
 
-    if (controller.checkIfDefault()) {
+    //Disable saving for gpaths
+    if (controller.checkIfGpaths()) {
       menuBar.getChildren()
           .addAll(title, growBox, optionsButton, mainMenuButton);
     } else {
