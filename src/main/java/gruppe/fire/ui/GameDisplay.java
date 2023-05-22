@@ -10,7 +10,7 @@ import gruppe.fire.logic.Player;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.io.File;
-import java.util.ArrayList;
+import java.util.List;
 import javafx.animation.Animation;
 import javafx.animation.TranslateTransition;
 import javafx.geometry.Insets;
@@ -64,7 +64,7 @@ public class GameDisplay {
 
     //Add goals.
     Game game = dataBase.createGame(playerFile, gameFile);
-    ArrayList<Goal> goalList = dataBase.readGoalsFromFile();
+    List<Goal> goalList = dataBase.readGoalsFromFile();
     game.setGoalsList(goalList);
 
 
@@ -104,7 +104,7 @@ public class GameDisplay {
 
     //Back to main menu
     Button mainMenuButton = new Button();
-    mainMenuButton.setStyle("-fx-background-color: transparent");
+    mainMenuButton.setId("topButton");
     ImageView mainMenuImage = new ImageView("/gruppe/fire/Media/home.png");
     mainMenuImage.setFitWidth(50);
     mainMenuImage.setFitHeight(50);
@@ -141,7 +141,7 @@ public class GameDisplay {
 
     Button optionsButton = new Button();
     ImageView playerMenuImage = new ImageView("/gruppe/fire/Media/menu.png");
-    optionsButton.setStyle("-fx-background-color: transparent");
+    optionsButton.setId("topButton");
     playerMenuImage.setFitWidth(50);
     playerMenuImage.setFitHeight(50);
     optionsButton.setGraphic(playerMenuImage);
@@ -167,7 +167,7 @@ public class GameDisplay {
     ImageView saveImage = new ImageView("/gruppe/fire/Media/diskette.png");
 
     Button saveStateButton = new Button();
-    saveStateButton.setStyle("-fx-background-color: transparent");
+    saveStateButton.setId("topButton");
     saveStateButton.setGraphic(saveImage);
 
 
@@ -338,15 +338,14 @@ public class GameDisplay {
 
     //Import text
     saveStateButton.setOnAction(e -> {
-      Passage currentPassage = game.getCurrentPassage();
-      game.gameToFile(game, currentPassage);
+      dataBase.gameToFile(game);
     });
 
-    Game game1 = dataBase.readFile();
+    Game savedGame = dataBase.readFile();
     if (Boolean.TRUE.equals(ifSaved)) {
       controller.setLabels(roomTitle, roomContent, healthAmount,
           goldAmount, scoreAmount, passageImage);
-      controller.writeOpeningStringPassage(game1, actionBar, inventoryPane, gameTitle, font,
+      controller.writeOpeningStringPassage(savedGame, actionBar, inventoryPane, gameTitle, font,
           dropShadow);
     } else {
       controller.setLabels(roomTitle, roomContent, healthAmount,

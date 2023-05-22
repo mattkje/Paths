@@ -26,6 +26,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 
@@ -86,7 +89,7 @@ public class PlayerMenu {
 
 
     //logo
-    ImageView title = new ImageView("/gruppe/fire/Media/logo.png");
+    ImageView title = new ImageView("/gruppe/fire/Media/engineLogo.png");
     title.setFitWidth(107);
     title.setFitHeight(50);
 
@@ -106,8 +109,7 @@ public class PlayerMenu {
     selectedPlayer.setAlignment(Pos.CENTER);
 
     DataBase dataBase = new DataBase();
-    String[] players = dataBase.createGame(new File(dataBase.getActivePlayerPath()),
-        new File(dataBase.getActiveStoryPath())).readPlayers();
+    String[] players = dataBase.readPlayers();
 
 
     ImageView[] ppImages = new ImageView[players.length];
@@ -123,7 +125,7 @@ public class PlayerMenu {
       Player currentPlayer = fileToPlayer.readFile();
       Button deletePlayer = new Button("Delete");
       deletePlayer.setOnAction(event -> {
-        controller.setActivePlayer("player1.txt");
+        controller.setActivePlayer("player1.dat");
         //Deletes the player with matching number.
         dataBase.deletePlayer(Integer.parseInt(playerNumber));
         selectMusic.dispose();
@@ -136,6 +138,12 @@ public class PlayerMenu {
       ppLabels[i - 1].setTextFill(Color.WHITE);
       ppLabels[i - 1].setAlignment(Pos.CENTER);
       ppLabels[i - 1].setFont(font);
+      Rectangle clip = new Rectangle();
+      clip.setWidth(100);
+      clip.setHeight(100);
+      clip.setArcHeight(20);
+      clip.setArcWidth(20);
+      ppImages[i - 1].setClip(clip);
       VBox playerSelectBox = new VBox();
       playerSelectBox.setAlignment(Pos.CENTER);
       Button playerButton = new Button();
@@ -204,7 +212,7 @@ public class PlayerMenu {
     newUserOptions.setVgap(20);
 
     Label createPlayerTitle = new Label("Create player");
-    createPlayerTitle.setFont(font);
+    createPlayerTitle.setFont(menuFont);
     createPlayerTitle.setTextFill(Color.WHITE);
 
 
@@ -214,14 +222,23 @@ public class PlayerMenu {
         new IntegerSpinnerValueFactory(0, 15000);
     goldFactory.setAmountToStepBy(100);
     Spinner<Integer> healthSpinner = new Spinner<>(healthFactory);
+    healthSpinner.setPromptText("Health");
+    healthSpinner.getEditor().setFont(font);
     Spinner<Integer> goldSpinner = new Spinner<>(goldFactory);
+    goldSpinner.setPromptText("Gold");
+    goldSpinner.getEditor().setFont(font);
 
 
     Button createPlayerButton = new Button("Create player");
+    createPlayerButton.setFont(font);
     Label playerNameLabel = new Label("Player name:");
+    playerNameLabel.setFont(font);
     Label playerHealthLabel = new Label("Set health:");
+    playerHealthLabel.setFont(font);
     Label playerGoldLabel = new Label("Set gold:");
+    playerGoldLabel.setFont(font);
     TextField playerTextField = new TextField();
+    playerTextField.setFont(font);
 
     newUserOptions.add(playerNameLabel, 0, 0);
     newUserOptions.add(playerTextField, 1, 0);
@@ -236,6 +253,7 @@ public class PlayerMenu {
     imageDisplay.setFitHeight(100);
     imageDisplay.setFitWidth(100);
     Button uploadImage = new Button("Upload image");
+    uploadImage.setFont(font);
     uploadImage.setOnAction(event -> {
       FileChooser fileChooser = new FileChooser();
       FileChooser.ExtensionFilter extFilter =
@@ -268,13 +286,15 @@ public class PlayerMenu {
           .health(playerHealth)
           .gold(playerGold)
           .build();
-      dataBase.writeFile(addedPlayer);
+      dataBase.writeNewPlayerFile(addedPlayer);
       selectMusic.dispose();
       start(scene);
     });
 
     imageSelectBox.getChildren().addAll(imageDisplay, uploadImage);
+    imageSelectBox.setStyle("-fx-background-color: rgba(0,0,0,0.7); -fx-background-radius: 40px; -fx-padding: 30");
     newUserVbox.getChildren().addAll(createPlayerTitle, newUserOptions);
+    newUserVbox.setStyle("-fx-background-color: rgba(0,0,0,0.7); -fx-background-radius: 40px; -fx-padding: 30");
     newUserHbox.getChildren().addAll(backButton, newUserVbox, imageSelectBox);
 
     //Goal Menu
@@ -384,6 +404,7 @@ public class PlayerMenu {
     buttonBox.setSpacing(50);
     buttonBox.setMaxWidth(1440);
     buttonBox.getChildren().addAll(cancelButton, startButton);
+    buttonBox.setEffect(dropShadow);
     buttonBox.setId("playerButtonBox");
 
 
@@ -426,7 +447,6 @@ public class PlayerMenu {
       dataBase.writeGoalsToFile(goldInt, healthInt, scoreInt, inventoryString);
       selectMusic.dispose();
       start(scene);
-
     });
 
 

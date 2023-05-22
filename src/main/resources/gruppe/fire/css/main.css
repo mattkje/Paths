@@ -502,6 +502,10 @@
     -fx-background-color: transparent;
 }
 
+#topButton {
+    -fx-background-color: transparent
+}
+
 #inventoryPane {
     -fx-background-color: rgba(0, 0, 0, 0.5);
     -fx-background-radius: 30px;

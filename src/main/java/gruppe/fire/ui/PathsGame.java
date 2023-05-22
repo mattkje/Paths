@@ -51,10 +51,12 @@ public class PathsGame extends Application {
     root.setCenter(group);
     Scene scene = new Scene(root, 1920, 1080);
 
-    mediaView.getMediaPlayer().setOnEndOfMedia(() -> Platform.runLater(() -> {
+    /*
+     mediaView.getMediaPlayer().setOnEndOfMedia(() -> Platform.runLater(() -> {
       mediaView.getMediaPlayer().dispose();
       mainMenu.startMain(scene);
     }));
+     */
 
 
     stage.setFullScreen(true);
@@ -64,8 +66,7 @@ public class PathsGame extends Application {
     stage.setFullScreenExitHint("");
     stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
     stage.show();
-
-
+    mainMenu.startMain(scene);
   }
 
   /**

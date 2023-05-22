@@ -1,8 +1,6 @@
 package gruppe.fire.logic;
 
-import gruppe.fire.filehandling.DataBase;
 import gruppe.fire.goals.Goal;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -83,48 +81,5 @@ public class Game {
     return currentPassage;
   }
 
-  /**
-   * This method is responsible for reading all players and returning.
-   *
-   * @return Array of players.
-   */
-  public String[] readPlayers() {
-    File folder = new File("Data/PlayerData/Players");
-    File[] listOfFiles = folder.listFiles();
-    List<String> paths = new ArrayList<>();
-
-    if (listOfFiles != null) {
-      for (File file : listOfFiles) {
-        if (file.isFile()) {
-          paths.add(file.getPath());
-        }
-      }
-    }
-    return paths.toArray(new String[0]);
-  }
-
-  /**
-   * This method is responsible for saving story progress to a file.
-   *
-   * @param game           Current game.
-   * @param currentPassage Current passage.
-   */
-  public void gameToFile(Game game, Passage currentPassage) {
-    DataBase dataBase = new DataBase();
-
-    String gameState = dataBase.getActiveStoryPath() + "\n"
-        + currentPassage.getTitle() + "\n"
-        + game.getPlayer().getName() + "\n"
-        + game.getPlayer().getGold() + "\n"
-        + game.getPlayer().getHealth() + "\n"
-        + game.getPlayer().getScore() + "\n"
-        + game.getGoals().get(0).getGoal().replace(" Gold", "") + "\n"
-        + game.getGoals().get(1).getGoal().replace(" Health", "") + "\n"
-        + game.getGoals().get(2).getGoal().replace(" Points", "") + "\n"
-        + dataBase.readGoalsFromFile().get(3).getGoal() + "\n"
-        + game.getPlayer().getInventory();
-
-    dataBase.writeStateToFile(gameState);
-  }
 
 }

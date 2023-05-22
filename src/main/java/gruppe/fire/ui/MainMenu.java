@@ -303,7 +303,7 @@ public class MainMenu {
       player.dispose();
     });
 
-    Button defaultStory3 = new Button("Ancient Castle");
+    Button defaultStory3 = new Button("Arne Game");
     ImageView storyImage3 = new ImageView("/gruppe/fire/Media/3.png");
     HBox defaultStoryBox3 = new HBox();
     defaultStoryBox3.setAlignment(Pos.CENTER);
@@ -313,7 +313,7 @@ public class MainMenu {
     defaultStory3.setFont(font);
     defaultStory3.setTextFill(Color.WHITE);
     defaultStory3.setOnAction(e -> {
-      controller.setDefaultPath("Castle.paths");
+      controller.setDefaultPath("ArneGame.paths");
       playerMenu.start(mainScene);
       player.dispose();
     });

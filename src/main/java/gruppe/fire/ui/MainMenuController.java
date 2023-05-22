@@ -49,7 +49,7 @@ import javafx.util.Duration;
  */
 public class MainMenuController {
 
-  private static final File CURRENT_PATHS_FILE = new File("Data/currentPathsFile.cfg");
+  private static final File CURRENT_PATHS_FILE = new File("Data/currentPathsFile.csv");
 
   private static final String GPATHS = ".Gpaths";
   private File selectedFile;

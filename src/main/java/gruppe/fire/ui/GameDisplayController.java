@@ -51,7 +51,7 @@ public class GameDisplayController {
   public boolean checkIfDefault() {
     DataBase dataBase = new DataBase();
     String activeStory = dataBase.getActiveStoryPath();
-    return activeStory.contains("Castle.paths") || activeStory.contains("HauntedHouse.paths")
+    return activeStory.contains("ArneGame.paths") || activeStory.contains("HauntedHouse.paths")
         || activeStory.contains("MurderMystery.paths") || activeStory.contains("SpaceShip.paths");
   }
 
@@ -101,7 +101,8 @@ public class GameDisplayController {
     gameTitle.setText(game.getStory().getTitle());
     setRoomTitleLabel(game.getStory().getOpeningPassage().getTitle());
     setRoomContentLabel(game.getStory().getOpeningPassage().getContent());
-    setPassageImage(getPassageImage(game.getStory().getOpeningPassage().getTitle()));
+    setPassageImage(getPassageImage(game, new Link(game.getStory().getOpeningPassage().getTitle(),
+        game.getStory().getOpeningPassage().getTitle())));
     if (passageImage.getImage() != null) {
       Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
       double imageSize = screenSize.getWidth() / 6;
@@ -150,7 +151,7 @@ public class GameDisplayController {
       setHealthAmountLabel(String.valueOf(game.getPlayer().getHealth()));
       setGoldAmountLabel(String.valueOf(game.getPlayer().getGold()));
       setScoreAmountLabel(String.valueOf(game.getPlayer().getScore()));
-      setPassageImage(getPassageImage(game.getStory().getPassageByLink(link).getTitle()));
+      setPassageImage(getPassageImage(game, link));
       if (passageImage.getImage() != null) {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         double imageSize = screenSize.getWidth() / 6;
@@ -185,7 +186,7 @@ public class GameDisplayController {
       } else if (!game.getPlayer().checkIfAlive()) {
         setRoomTitleLabel("You died");
         setRoomContentLabel("Stats: \n" + "Score: " + scoreAmountLabel.getText()
-            +"\n" + "Gold: " +goldAmountLabel.getText());
+            + "\n" + "Gold: " + goldAmountLabel.getText());
         gameEndScreen(font, dropShadow, actionBar);
         return;
       }
@@ -199,7 +200,14 @@ public class GameDisplayController {
 
   }
 
-  public void gameEndScreen(Font font, DropShadow dropShadow, HBox actionBar){
+  /**
+   * This method is responsible for displaying the game-over screen.
+   *
+   * @param font       The default font.
+   * @param dropShadow The default drop-shadow.
+   * @param actionBar  HBox containing links and actions.
+   */
+  public void gameEndScreen(Font font, DropShadow dropShadow, HBox actionBar) {
     Button restartButton = new Button("Restart");
     restartButton.setFont(font);
     restartButton.setEffect(dropShadow);
@@ -319,26 +327,31 @@ public class GameDisplayController {
   /**
    * This method is responsible for get the image which corresponds to the passage.
    *
-   * @param passageTitle Current passage title.
    * @return The image which corresponds to the passage, null otherwise.
    */
-  public Image getPassageImage(String passageTitle) {
-    if (checkIfDefault() && checkFileExistence(
-        "/gruppe/fire/Media/defaultPathsImages/MurderMysteryImages/" + passageTitle
-            + ".png")) {
-      return new Image("/gruppe/fire/Media/defaultPathsImages/MurderMysteryImages/"
-          + passageTitle + ".png");
+  public Image getPassageImage(Game game, Link link) {
+    String passageTitle = game.getStory().getPassageByLink(link).getTitle();
+    String gameTitle = game.getStory().getTitle();
 
+    if (checkIfDefault()) {
+      if (gameTitle.equals("Murder Mystery") && checkFileExistence(
+          "/gruppe/fire/Media/defaultPathsImages/MurderMysteryImages/" + passageTitle + ".png")) {
+        return new Image("/gruppe/fire/Media/defaultPathsImages/MurderMysteryImages/"
+            + passageTitle + ".png");
+      }
+      if (gameTitle.equals("Arne Game") && checkFileExistence(
+          "/gruppe/fire/Media/defaultPathsImages/ArneStoryImages/" + passageTitle + ".png")) {
+        return new Image("/gruppe/fire/Media/defaultPathsImages/ArneStoryImages/"
+            + passageTitle + ".png");
+      }
     } else if (checkFileExistence("Data/currentGpaths/Images/" + passageTitle + ".png")) {
       String passageImageString = ("Data/currentGpaths/Images/" + passageTitle + ".png");
       File file = new File(passageImageString);
       String absolutePath = file.toURI().toString();
       return new Image(absolutePath);
 
-    } else {
-      return null;
     }
-
+    return null;
   }
 
   /**
@@ -370,9 +383,11 @@ public class GameDisplayController {
     if (this.winList.contains("0 Gold") && this.winList.contains("0 Health")
         && this.winList.contains("0 Points")) {
       return false;
-    } else {
+    } else if (!this.winList.isEmpty()) {
       return this.winList.get(0).contains("Gold") && this.winList.get(1).contains("Health")
           && this.winList.get(2).contains("Points");
+    } else {
+      return false;
     }
   }
 

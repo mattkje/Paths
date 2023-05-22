@@ -75,10 +75,11 @@ public class FileEditorMenu {
     Font textFont = Font.font("JetBrains Mono", width / 120);
 
     TextArea editArea = new TextArea();
-    editArea.setPrefSize(root.getWidth() * 0.7, 2000);
+    editArea.setPrefSize(root.getWidth() * 0.6, 2000);
     editArea.setFont(textFont);
     editArea.setId("fileEditArea");
     editArea.setPromptText("Start with title");
+    editArea.setEffect(dropShadow);
     VBox editContainer = new VBox();
     editContainer.setAlignment(Pos.CENTER);
     editContainer.setPadding(new Insets(0, 30, 0, 30));
@@ -125,7 +126,7 @@ public class FileEditorMenu {
     tutorialArea.setEditable(false);
     tutorialArea.setOpacity(1);
     tutorialArea.setId("tutorialArea");
-    tutorialArea.setFont(textFontSmall);
+    tutorialArea.setFont(textFont);
     tutorialArea.setPadding(new Insets(30));
     tutorialArea.setPrefWidth(root.getWidth() * 0.4);
     HBox centerBox = new HBox(editContainer, tutorialArea);
