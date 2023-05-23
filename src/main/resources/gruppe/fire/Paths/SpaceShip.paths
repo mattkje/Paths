@@ -58,4 +58,4 @@ You lend an ear to the stories shared by your fellow crew members. Each tale car
 [Share](Dead);ScoreAction;1000;
 ::Dead
 You died.
-[Restart](openingPassage);ScoreAction;0;
+[Restart](Sleeping quarters);ScoreAction;0;

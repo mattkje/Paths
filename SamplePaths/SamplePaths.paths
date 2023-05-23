@@ -1,0 +1,25 @@
+Story Name
+::Start
+This is the first passage.
+[Continue](Next Passage);HealthAction;1;
+
+::Next Passage
+This is the second passage.
+[Continue](Third Passage);ScoreAction;100;
+
+::Third Passage
+This is the third passage.
+[Continue](Next Passage);GoldAction;100;
+[Continue](Forth Passage);HealthAction;100;
+
+::Forth Passage
+This is the forth passage.
+[Continue](Fifth Passage);HealthAction;1;
+
+::Fifth Passage
+This is the fifth passage.
+[Continue](Sixth Passage);InventoryAction;Item;
+
+::Sixth Passage
+This is the sixth passage.
+[Restart](Next Passage);ScoreAction;1000;

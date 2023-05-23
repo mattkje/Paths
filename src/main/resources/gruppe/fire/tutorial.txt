@@ -1,3 +1,32 @@
+How to play
+
+Welcome the Paths game engine!
+
+To play a game, simply proceed to the main menu, and select open file to select a story
+to play. You can also choose a story from one of our pre-made ones.
+
+After you have selected a story, you will be sent to the player select menu. Here you
+can eiter create your own player, or select the default player for quick start.
+
+On the right side of the screen, there is a goal menu. Here you can set custom goals
+for your story. Reaching all goals will complete, end the game. Goals are not nessesary
+to start a game. Once all settings are set, you can press start game.
+
+Once you are in a game, you will be presented by a main window, bottom-bar, and a sidebar.
+The main window will display the current passage information, and sometimes illustrations.
+
+The bottom-bar contains actions you, the player, can choose between. These choices will take you
+to different parts in the story.
+
+The sidebar contains your inventory and set goals. This is so that you will be able to keep
+track of your progress through the game.
+
+If you want to save your game mid-gameplay, you can press the diskette icon in the top right corner.
+(Saving is not supported for .Gpaths files)
+
+To exit or restart a game you can press the pause icon in the top right corner to get a pause-menu
+where you are presented with these options.
+
 
 How to create your own story file:
 

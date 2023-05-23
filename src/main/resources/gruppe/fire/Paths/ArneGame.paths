@@ -11,12 +11,12 @@ You come in to the classroom. Arne greets you with a warm welcome. You proceed t
 
 ::Home
 You stay at home, but you are reminded that Arne has a lecture today.
-[Go to school](School);ScoreAction;100;
+[Go to school](School);HealthAction;100;
 [Stay at home](Streets);ScoreAction;-100;
 
 ::Streets
 You miss out on Arne's lecture and end up failing in life.
-[Watch the lecture online](School);ScoreAction;100;
+[Watch the lecture online](School);GoldAction;100;
 [Stay in streets](Streets);HealthAction;-1000;
 
 ::Hall

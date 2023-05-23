@@ -2,9 +2,28 @@ Haunted House
 ::Bedroom
 You are in a small, dimly lit room. There is a door in front of you.
 [Try to open the door](Hall);GoldAction;6;
-[Stay where you are](Bedroom)
+[Stay where you are](Back);HealthAction;2;
+
 ::Hall
-You see a Ghost, what do you do?
-[Run Away](Bed Room)
-[Fight the ghost](fight);HealthAction;2;
-[Beg for mercy](ending);GoldAction;1;
+You find yourself in a long, eerie hallway. Shadows dance along the walls, and a chilling breeze sends a shiver down your spine. As you venture further, you notice a figure emerging from the darkness.
+[Run Away](Back),
+[Fight the ghost](Fight);HealthAction;2;
+[Beg for mercy](Beg);GoldAction;1;
+
+::Back
+Returning to the Bedroom, you seek solace in its familiar surroundings. The air feels heavy with an inexplicable sense of unease.
+[Try to open the door](Hall);GoldAction;6;
+[Stay where you are](Back);HealthAction;2;
+
+::Fight
+Summoning your courage, you decide to confront the ghost head-on. A tense battle ensues, and you fight with all your might.
+[Continue fighting](Continue fight);HealthAction;2;
+[Retreat](Beg);GoldAction;3;
+
+::Beg
+Overwhelmed by fear, you drop to your knees and beg for mercy. Miraculously, the ghost relents, disappearing into thin air. You're filled with relief and gratitude.
+[Return to the Bedroom](Back);HealthAction;2;
+
+::Continue fight
+You quickly realize that you can not fight the ghost, as your han just phases through.
+[Retreat](Beg);GoldAction;3;
