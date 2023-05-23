@@ -50,7 +50,7 @@ public class MainMenu {
   private static final String DEFAULT_STORY = "defaultStory";
   private static final String PACIFICO = "Pacifico";
 
-  private static final String VERSION = "Version: 2023.05.18";
+  private static final String VERSION = "Version: 2023.05.23";
 
 
   /**
