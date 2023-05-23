@@ -66,8 +66,8 @@ public class JukeBox {
     Media hauntedSound = new Media(
         Objects.requireNonNull(getClass().getResource(MAIN_MENU_MUSIC))
             .toString());
-    Media castleSound = new Media(
-        Objects.requireNonNull(getClass().getResource(MAIN_MENU_MUSIC))
+    Media teacherSound = new Media(
+        Objects.requireNonNull(getClass().getResource("/gruppe/fire/Media/ArneGame.mp3"))
             .toString());
     Media spaceSound = new Media(
         Objects.requireNonNull(getClass().getResource("/gruppe/fire/Media/SpaceShip.mp3"))
@@ -79,8 +79,8 @@ public class JukeBox {
     if (dataBase.getActiveStoryPath().contains("Murder")) {
       this.mediaPlayer = new MediaPlayer(murderSound);
     }
-    if (dataBase.getActiveStoryPath().contains("Castle")) {
-      this.mediaPlayer = new MediaPlayer(castleSound);
+    if (dataBase.getActiveStoryPath().contains("ArneGame")) {
+      this.mediaPlayer = new MediaPlayer(teacherSound);
     }
     if (dataBase.getActiveStoryPath().contains("SpaceShip")) {
       this.mediaPlayer = new MediaPlayer(spaceSound);
