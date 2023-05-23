@@ -121,7 +121,6 @@ public class FileEditorMenu {
     backButton.setOnAction(e ->
         mainMenu.startMain(scene));
     DataBase dataBase = new DataBase();
-    Font textFontSmall = Font.font("JetBrains Mono", width / 200);
     TextArea tutorialArea = new TextArea(dataBase.readTutorial());
     tutorialArea.setEditable(false);
     tutorialArea.setOpacity(1);
