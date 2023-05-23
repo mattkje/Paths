@@ -85,9 +85,6 @@ public class PlayerMenu {
     Font font = Font.font("Comfortaa", 24);
 
 
-
-
-
     //logo
     ImageView title = new ImageView("/gruppe/fire/Media/engineLogo.png");
     title.setFitWidth(107);
@@ -220,7 +217,7 @@ public class PlayerMenu {
         new IntegerSpinnerValueFactory(1, 10);
     IntegerSpinnerValueFactory goldFactory =
         new IntegerSpinnerValueFactory(0, 15000);
-    goldFactory.setAmountToStepBy(100);
+    goldFactory.setAmountToStepBy(50);
     Spinner<Integer> healthSpinner = new Spinner<>(healthFactory);
     healthSpinner.setPromptText("Health");
     healthSpinner.getEditor().setFont(font);
@@ -292,9 +289,11 @@ public class PlayerMenu {
     });
 
     imageSelectBox.getChildren().addAll(imageDisplay, uploadImage);
-    imageSelectBox.setStyle("-fx-background-color: rgba(0,0,0,0.7); -fx-background-radius: 40px; -fx-padding: 30");
+    imageSelectBox.setStyle("-fx-background-color: rgba(0,0,0,0.7);"
+        + " -fx-background-radius: 40px; -fx-padding: 30");
     newUserVbox.getChildren().addAll(createPlayerTitle, newUserOptions);
-    newUserVbox.setStyle("-fx-background-color: rgba(0,0,0,0.7); -fx-background-radius: 40px; -fx-padding: 30");
+    newUserVbox.setStyle("-fx-background-color: rgba(0,0,0,0.7); "
+        + "-fx-background-radius: 40px; -fx-padding: 30");
     newUserHbox.getChildren().addAll(backButton, newUserVbox, imageSelectBox);
 
     //Goal Menu
@@ -324,6 +323,7 @@ public class PlayerMenu {
     TextField inventoryField = new TextField();
     inventoryField.setFont(font);
     inventoryField.setPromptText("Mandatory items (,)");
+    inventoryField.setDisable(true);
     goalSetMenu.add(goldGoal, 0, 0);
     goalSetMenu.add(healthGoal, 0, 1);
     goalSetMenu.add(scoreGoal, 0, 2);
