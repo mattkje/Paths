@@ -25,19 +25,16 @@ public class PathsGame extends Application {
 
   /**
    * This method should start the game after playing an intro video.
+   *
    * @param stage The Game stage.
    */
   @Override
   public void start(Stage stage) {
 
-    MainMenu mainMenu = new MainMenu();
     MainMenuController controller = new MainMenuController();
 
     MediaView mediaView = controller.getLoadingVideo();
     mediaView.getMediaPlayer().play();
-    Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
-    double screenWidth = screenBounds.getWidth();
-    double screenHeight = screenBounds.getHeight();
 
     BorderPane root = new BorderPane();
     root.setPrefSize(1920, 1080);
@@ -45,18 +42,20 @@ public class PathsGame extends Application {
     HBox group = new HBox();
     mediaView.fitWidthProperty().bind(group.widthProperty());
     mediaView.fitHeightProperty().bind(group.heightProperty());
+    Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+    double screenWidth = screenBounds.getWidth();
+    double screenHeight = screenBounds.getHeight();
     group.setPrefSize(screenWidth, screenHeight);
     group.setAlignment(Pos.CENTER);
     group.getChildren().add(mediaView);
     root.setCenter(group);
     Scene scene = new Scene(root, 1920, 1080);
 
-    /*
-     mediaView.getMediaPlayer().setOnEndOfMedia(() -> Platform.runLater(() -> {
+    MainMenu mainMenu = new MainMenu();
+    mediaView.getMediaPlayer().setOnEndOfMedia(() -> Platform.runLater(() -> {
       mediaView.getMediaPlayer().dispose();
       mainMenu.startMain(scene);
     }));
-     */
 
 
     stage.setFullScreen(true);
@@ -66,11 +65,11 @@ public class PathsGame extends Application {
     stage.setFullScreenExitHint("");
     stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
     stage.show();
-    mainMenu.startMain(scene);
   }
 
   /**
    * Responsible for launching the game.
+   *
    * @param args Launch args.
    */
   public static void appMain(String[] args) {

@@ -349,7 +349,7 @@ public class MainMenuController {
    * This method is responsible for opening current file in editor.
    *
    * @param player Current media player.
-   * @param scene Game scene.
+   * @param scene  Game scene.
    */
   public void openInEditor(MediaPlayer player, Scene scene, Label noFile) {
     if (selectedFile != null) {
