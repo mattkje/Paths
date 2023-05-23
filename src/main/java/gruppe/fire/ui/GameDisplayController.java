@@ -15,12 +15,12 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
@@ -75,10 +75,10 @@ public class GameDisplayController {
    * @param inventoryPane The flow pane containing the inventory items.
    * @param gameTitle     The game Title.
    * @param font          Default font.
-   * @param dropShadow    Default shadow.
+   * @param player        A MediaPlayer
    */
   public void writeOpeningStringPassage(Game game, HBox actionBar, FlowPane inventoryPane,
-                                        Label gameTitle, Font font, DropShadow dropShadow) {
+                                        Label gameTitle, Font font, MediaPlayer player) {
     List<Link> links = game.getStory().getOpeningPassage().getLinks();
 
     for (Link link : links) {
@@ -91,10 +91,9 @@ public class GameDisplayController {
         return;
       }
       nextPath.setOnAction(e ->
-          writeStringPassage(game, link, actionBar, inventoryPane, passage, font, dropShadow));
+          writeStringPassage(game, link, actionBar, inventoryPane, passage, font, player));
 
       nextPath.setFont(font);
-      nextPath.setEffect(dropShadow);
       actionBar.getChildren().add(nextPath);
     }
 
@@ -127,10 +126,10 @@ public class GameDisplayController {
    * @param inventoryPane The flow pane containing the inventory items.
    * @param passage       The current Title.
    * @param font          Default font.
-   * @param dropShadow    Default shadow.
+   * @param player        A MediaPlayer
    */
   public void writeStringPassage(Game game, Link link, HBox actionBar, FlowPane inventoryPane,
-                                 Passage passage, Font font, DropShadow dropShadow) {
+                                 Passage passage, Font font, MediaPlayer player) {
 
 
     //Refresh text
@@ -181,20 +180,19 @@ public class GameDisplayController {
       FlowPane finalInventoryPane = inventoryPane;
       if (checkGoals(game)) {
         goalsAccomplished();
-        gameEndScreen(font, dropShadow, actionBar);
+        gameEndScreen(font, actionBar, player);
         return;
       } else if (!game.getPlayer().checkIfAlive()) {
         setRoomTitleLabel("You died");
         setRoomContentLabel("Stats: \n" + "Score: " + scoreAmountLabel.getText()
             + "\n" + "Gold: " + goldAmountLabel.getText());
-        gameEndScreen(font, dropShadow, actionBar);
+        gameEndScreen(font, actionBar, player);
         return;
       }
       nextPath.setOnAction(e ->
-          writeStringPassage(game, finalLink, actionBar, finalInventoryPane, nextPassage, font,
-              dropShadow));
+          writeStringPassage(game, finalLink, actionBar,
+              finalInventoryPane, nextPassage, font, player));
       nextPath.setFont(font);
-      nextPath.setEffect(dropShadow);
       actionBar.getChildren().add(nextPath);
     }
 
@@ -203,21 +201,19 @@ public class GameDisplayController {
   /**
    * This method is responsible for displaying the game-over screen.
    *
-   * @param font       The default font.
-   * @param dropShadow The default drop-shadow.
-   * @param actionBar  HBox containing links and actions.
+   * @param font      The default font.
+   * @param actionBar HBox containing links and actions.
    */
-  public void gameEndScreen(Font font, DropShadow dropShadow, HBox actionBar) {
+  public void gameEndScreen(Font font, HBox actionBar, MediaPlayer player) {
     Button restartButton = new Button("Restart");
     restartButton.setFont(font);
-    restartButton.setEffect(dropShadow);
     restartButton.setOnAction(e -> {
       GameDisplay gameDisplay = new GameDisplay();
+      player.dispose();
       gameDisplay.start(restartButton.getScene(), false);
     });
     Button mainMenuButton = new Button("Main menu");
     mainMenuButton.setFont(font);
-    mainMenuButton.setEffect(dropShadow);
     mainMenuButton.setOnAction(e -> {
       MainMenu mainMenu = new MainMenu();
       mainMenu.startMain(mainMenuButton.getScene());
@@ -371,7 +367,7 @@ public class GameDisplayController {
   }
 
   /**
-   * Responsible for checking if goals are fulfilled.
+   * Responsible for checking if all goals are fulfilled.
    *
    * @param game Current game.
    */
@@ -383,12 +379,11 @@ public class GameDisplayController {
     if (this.winList.contains("0 Gold") && this.winList.contains("0 Health")
         && this.winList.contains("0 Points")) {
       return false;
-    } else if (!this.winList.isEmpty()) {
+    } else if (this.winList.size() >= 3) {
       return this.winList.get(0).contains("Gold") && this.winList.get(1).contains("Health")
           && this.winList.get(2).contains("Points");
-    } else {
-      return false;
     }
+    return false;
   }
 
   /**
