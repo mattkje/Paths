@@ -89,6 +89,21 @@ public class Story {
     return Collections.list(Collections.enumeration(passages.values()));
   }
 
+  /**
+   * Removes a given passage from passages.
+   * It shouldn't be possible to remove the passage
+   * if there are other passages linking to it.
+   *
+   * @param link The link of the passage to remove.
+   */
+  public void removePassage(Link link) {
+    boolean noLinks = passages.values().stream()
+        .allMatch(passage -> passage.getLinks().stream()
+            .noneMatch(link1 -> link1.equals(link)));
+    if (noLinks) {
+      passages.remove(link);
+    }
+  }
 
   /**
    * Finds and returns a list of dead links. A link is dead if it refers to a passage
