@@ -427,11 +427,12 @@ public class MainMenu {
     tutorialTitle.setTextFill(Color.WHITE);
     tutorialTitle.setFont(font);
     TextArea tutorialText = new TextArea(dataBase.readTutorial());
-    tutorialText.setPrefSize(1000, 700);
-    tutorialText.setFont(font);
+    Font textFont = Font.font("JetBrains Mono", width / 120);
+    tutorialText.setFont(textFont);
     VBox tutorialBox = new VBox();
     tutorialBox.setId("tutorialBox");
     tutorialBox.setPrefSize(1500, 800);
+    tutorialText.setPrefSize(root.getWidth() / 0.7, root.getHeight() / 0.9);
     tutorialBox.setAlignment(Pos.CENTER);
     tutorialBox.setEffect(dropShadow);
     tutorialBox.getChildren().addAll(tutorialTitle, tutorialText);
@@ -596,9 +597,13 @@ public class MainMenu {
     });
     howToPlay.setOnAction(e -> {
       menuBox.getChildren().remove(startMenu);
+      root.setTop(null);
       menuBox.getChildren().addAll(backButton, tutorialBox);
     });
     backButton.setOnAction(e -> {
+      if (!root.getChildren().contains(titleBox)) {
+        root.setTop(titleBox);
+      }
       menuBox.getChildren().clear();
       menuBox.getChildren().add(startMenu);
     });
