@@ -5,7 +5,6 @@ import gruppe.fire.filehandling.DataBase;
 import gruppe.fire.goals.Goal;
 import gruppe.fire.logic.Game;
 import gruppe.fire.logic.JukeBox;
-import gruppe.fire.logic.Passage;
 import gruppe.fire.logic.Player;
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -67,7 +66,6 @@ public class GameDisplay {
     List<Goal> goalList = dataBase.readGoalsFromFile();
     game.setGoalsList(goalList);
 
-
     MediaPlayer mediaPlayer = jukeBox.getGameplayMusic();
     mediaPlayer.setOnEndOfMedia(() -> mediaPlayer.seek(javafx.util.Duration.ZERO));
     mediaPlayer.play();
@@ -102,19 +100,6 @@ public class GameDisplay {
     HBox.setHgrow(growBox, Priority.ALWAYS); // set horizontal grow priority
     growBox.setMaxWidth(Double.MAX_VALUE); // set maximum width to a large value
 
-    //Back to main menu
-    Button mainMenuButton = new Button();
-    mainMenuButton.setId("topButton");
-    ImageView mainMenuImage = new ImageView("/gruppe/fire/Media/home.png");
-    mainMenuImage.setFitWidth(50);
-    mainMenuImage.setFitHeight(50);
-    mainMenuButton.setGraphic(mainMenuImage);
-    mainMenuButton.setEffect(dropShadow);
-    MainMenu mainMenu = new MainMenu();
-    mainMenuButton.setOnAction(e -> {
-      mainMenu.startMain(scene);
-      mediaPlayer.dispose();
-    });
 
     //Options
     VBox optionsBox = new VBox();
@@ -128,16 +113,10 @@ public class GameDisplay {
     Button restart = new Button("Restart game");
     restart.setFont(pauseFont);
     restart.setPrefSize(400, 100);
-    Button tutorial = new Button("Help");
-    tutorial.setFont(pauseFont);
-    tutorial.setPrefSize(400, 100);
-    Button settings = new Button("Settings");
-    settings.setFont(pauseFont);
-    settings.setPrefSize(400, 100);
     Button back = new Button("Exit to main menu");
     back.setFont(pauseFont);
     back.setPrefSize(400, 100);
-    optionsBox.getChildren().addAll(resume, restart, tutorial, settings, back);
+    optionsBox.getChildren().addAll(resume, restart, back);
 
     Button optionsButton = new Button();
     ImageView playerMenuImage = new ImageView("/gruppe/fire/Media/menu.png");
@@ -159,6 +138,7 @@ public class GameDisplay {
       start(scene, ifSaved);
       mediaPlayer.dispose();
     });
+    MainMenu mainMenu = new MainMenu();
     back.setOnAction(e -> {
       mainMenu.startMain(scene);
       mediaPlayer.dispose();
@@ -181,9 +161,9 @@ public class GameDisplay {
     //Disable saving for gpaths
     if (controller.checkIfGpaths()) {
       menuBar.getChildren()
-          .addAll(title, growBox, optionsButton, mainMenuButton);
+          .addAll(title, growBox, optionsButton);
     } else {
-      menuBar.getChildren().addAll(title, growBox, saveStateButton, optionsButton, mainMenuButton);
+      menuBar.getChildren().addAll(title, growBox, saveStateButton, optionsButton);
     }
 
     menuBar.setEffect(dropShadow);
@@ -328,6 +308,8 @@ public class GameDisplay {
     inventory.add(healthGoal, 3, 2);
     inventory.add(goldGoal, 3, 3);
     inventory.add(scoreGoal, 3, 4);
+    Label inventoryGoal = new Label(game.getGoals().get(3).getGoal());
+    inventory.add(inventoryGoal, 3, 5);
 
     this.actionBar = new HBox();
     actionBar.setEffect(hopShadow);
@@ -337,21 +319,19 @@ public class GameDisplay {
 
 
     //Import text
-    saveStateButton.setOnAction(e -> {
-      dataBase.gameToFile(game);
-    });
+    saveStateButton.setOnAction(e -> dataBase.gameToFile(game));
 
-    Game savedGame = dataBase.readFile();
+    Game game1 = dataBase.readFile();
     if (Boolean.TRUE.equals(ifSaved)) {
       controller.setLabels(roomTitle, roomContent, healthAmount,
           goldAmount, scoreAmount, passageImage);
-      controller.writeOpeningStringPassage(savedGame, actionBar, inventoryPane, gameTitle, font,
-          dropShadow);
+      controller.writeOpeningStringPassage(game1, actionBar,
+          inventoryPane, gameTitle, font, mediaPlayer);
     } else {
       controller.setLabels(roomTitle, roomContent, healthAmount,
           goldAmount, scoreAmount, passageImage);
-      controller.writeOpeningStringPassage(game, actionBar, inventoryPane, gameTitle, font,
-          dropShadow);
+      controller.writeOpeningStringPassage(game, actionBar,
+          inventoryPane, gameTitle, font, mediaPlayer);
     }
 
     HBox titleBox = new HBox();
