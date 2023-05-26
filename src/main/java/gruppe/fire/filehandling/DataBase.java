@@ -43,10 +43,10 @@ import javafx.scene.image.Image;
 public class DataBase {
 
   private static final String GPATHS = ".Gpaths";
-  private static final String CURRENT_GPATHS = "Data/currentGpaths/story.paths";
-  private static final String PP_FILE = "Data/PlayerData/Images/pp";
-  private static final String PLAYER_FILE = "Data/PlayerData/Players/player";
-  private static final String ACTIVE_GOALS = "Data/activeGoals.csv";
+  private static final String CURRENT_GPATHS = "data/currentGpaths/story.paths";
+  private static final String PP_FILE = "data/PlayerData/Images/pp";
+  private static final String PLAYER_FILE = "data/PlayerData/Players/player";
+  private static final String ACTIVE_GOALS = "data/activeGoals.csv";
 
   private boolean gameState = true;
 
@@ -57,11 +57,11 @@ public class DataBase {
    */
   public String getActivePlayerPath() {
     String activePlayer = null;
-    try (BufferedReader reader = new BufferedReader(new FileReader("Data/currentPlayerFile.csv"))) {
+    try (BufferedReader reader = new BufferedReader(new FileReader("data/currentPlayerFile.csv"))) {
       activePlayer = reader.readLine();
       if (!new File(activePlayer).exists()) {
         //Replaces selected player with default if player does not exist
-        activePlayer = "Data/PlayerData/Players/player1.dat";
+        activePlayer = "data/playerData/Players/player1.dat";
       }
     } catch (IOException e) {
       String exceptionString = "Something went wrong while reading active player file" + e;
@@ -142,7 +142,7 @@ public class DataBase {
    */
   public String getActiveStoryPath() {
     String activeStory = null;
-    try (BufferedReader reader = new BufferedReader(new FileReader("Data/currentPathsFile.csv"))) {
+    try (BufferedReader reader = new BufferedReader(new FileReader("data/currentPathsFile.csv"))) {
       activeStory = reader.readLine();
     } catch (IOException e) {
       String exceptionString = "Something went wrong while reading active story path from file" + e;
@@ -199,7 +199,7 @@ public class DataBase {
         System.getLogger(exceptionString);
       }
     } else {
-      targetPath = Paths.get("Data/PlayerData/Images/noSelect.png");
+      targetPath = Paths.get("data/playerData/Images/noSelect.png");
     }
 
     while (new File(PLAYER_FILE + i + ".dat").exists()) {
@@ -223,7 +223,7 @@ public class DataBase {
    * @return Array of players.
    */
   public String[] readPlayers() {
-    File folder = new File("Data/PlayerData/Players");
+    File folder = new File("data/playerData/Players");
     File[] listOfFiles = folder.listFiles();
     List<String> paths = new ArrayList<>();
 
@@ -242,7 +242,7 @@ public class DataBase {
    */
   public void gpathHandler() {
     String fileZip = getActiveStoryPath();
-    Path destDir = Paths.get("Data/currentGpaths");
+    Path destDir = Paths.get("data/currentGpaths");
 
     try {
       Files.walk(destDir)
@@ -308,7 +308,7 @@ public class DataBase {
         + game.getPlayer().getInventory() + "\n"
         + currentGoalsList().get(3);
 
-    try (FileWriter fileWriter = new FileWriter("Data/gameState.csv")) {
+    try (FileWriter fileWriter = new FileWriter("data/gameState.csv")) {
       fileWriter.write(gameStateString);
     } catch (IOException e) {
       String exceptionString = "Something went wrong" + e;
@@ -327,7 +327,7 @@ public class DataBase {
         .build();
 
     Game game = null;
-    try (Scanner scanner = new Scanner(new File("Data/gameState.csv"))) {
+    try (Scanner scanner = new Scanner(new File("data/gameState.csv"))) {
 
       // Sets the first line as the title of the story
       if (scanner.hasNextLine()) {
@@ -512,7 +512,7 @@ public class DataBase {
    * @param vlm2 FX volume status.
    */
   public void writeSettingsToFile(Boolean fs, Boolean bg, double vlm, double vlm2) {
-    try (FileWriter fileWriter = new FileWriter("Data/settings.cfg")) {
+    try (FileWriter fileWriter = new FileWriter("data/settings.cfg")) {
       fileWriter.write("fullscreen=" + fs + "\n");
       fileWriter.write("background=" + bg + "\n");
       fileWriter.write("music=" + vlm + "\n");
@@ -531,7 +531,7 @@ public class DataBase {
    */
   public Map<String, String> readSettingsFromFile() {
     Map<String, String> map = new HashMap<>();
-    File settingsFile = new File("Data/settings.cfg");
+    File settingsFile = new File("data/settings.cfg");
     try (Scanner scanner = new Scanner(settingsFile)) {
       String fs = scanner.nextLine();
       String fullscreen = (fs.replace("fullscreen=", ""));

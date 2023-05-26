@@ -159,7 +159,7 @@ public class PlayerMenu {
 
       //Sets active player
       String playerName = ppLabels[i - 1].getText();
-      String activePlayerString = "player" + playerNumber + ".txt";
+      String activePlayerString = "player" + playerNumber + ".dat";
       playerButton.setOnAction(event -> {
         controller.setActivePlayer(activePlayerString);
         selectedPlayer.setText("Selected Player: " + playerName);

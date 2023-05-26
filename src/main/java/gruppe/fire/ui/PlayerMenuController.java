@@ -29,8 +29,8 @@ public class PlayerMenuController {
    * @param filename Player file name.
    */
   public void setActivePlayer(String filename) {
-    Path savedPlayers = Path.of("Data/PlayerData/Players/" + filename);
-    try (FileWriter fileWriter = new FileWriter("Data/currentPlayerFile.csv")) {
+    Path savedPlayers = Path.of("data/playerData/Players/" + filename);
+    try (FileWriter fileWriter = new FileWriter("data/currentPlayerFile.csv")) {
       fileWriter.write(String.valueOf(savedPlayers));
 
     } catch (IOException ex) {
