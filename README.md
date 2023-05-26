@@ -18,8 +18,4 @@ Run the project by cleaning, compiling and then using JavaFX:Run to start the ap
     <img src="https://github.com/NTNU-IE-IIR/mappe-prosjekt-paths-mappe-4/blob/main/src/main/resources/gruppe/fire/Media/screenshot3.png?raw=true" width="50%">
 </div>
 
-
-
-## Participants
-- Matti Kjellstadli
-- Mathias Westergaard Johansen
+## 2023 Exam 
