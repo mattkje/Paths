@@ -1,21 +1,28 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-24ddc0f5d75046c5622901739e7c5dd533143b0c8e959d652212380cedb1ea36.svg)](https://classroom.github.com/a/om2-cP2d)
-# Paths - Game engine
+# Paths - Interactive Storytelling Game Engine
 
-Paths is a game engine for choice-based and interactive storytelling.
+Paths is a robust game engine designed specifically for crafting choice-based and interactive storytelling experiences.
 
 ## Installation
 
-To run this project, download the project zip and open it in an IDE that supports Maven.
-Run the project by cleaning, compiling and then using JavaFX:Run to start the application
+Getting started with Paths is a breeze. Simply follow these steps:
+
+1. Download the project ZIP file.
+2. Open it in an Integrated Development Environment (IDE) that supports Maven.
+3. Clean and compile the project.
+4. Use JavaFX:Run to start the application.
+
+Now you're ready to dive into the world of interactive storytelling!
 
 ## Screenshots
 
-<div style="display:flex;">
-    <img src="https://github.com/NTNU-IE-IIR/mappe-prosjekt-paths-mappe-4/blob/main/src/main/resources/gruppe/fire/Media/screenshot1.png?raw=true" width="50%">
-    <img src="https://github.com/NTNU-IE-IIR/mappe-prosjekt-paths-mappe-4/blob/main/src/main/resources/gruppe/fire/Media/screenshot2.png?raw=true" width="50%">
-</div>
-<div style="display:flex;">
-    <img src="https://github.com/NTNU-IE-IIR/mappe-prosjekt-paths-mappe-4/blob/main/src/main/resources/gruppe/fire/Media/screenshot3.png?raw=true" width="50%">
-</div>
+Here are some enticing glimpses of what you can expect from Paths:
 
-## 2023 Exam 
+![Screenshot 1](https://github.com/mattkje/Paths/blob/main/src/main/resources/gruppe/fire/Media/screenshot1.png?raw=true)
+
+![Screenshot 2](https://github.com/mattkje/Paths/blob/main/src/main/resources/gruppe/fire/Media/screenshot2.png?raw=true)
+
+![Screenshot 3](https://github.com/mattkje/Paths/blob/main/src/main/resources/gruppe/fire/Media/screenshot3.png?raw=true)
+
+## 2023 Exam
+
+Paths was originally developed as part of a Computer Science exam assignment at NTNU in May 2023. It's a testament to the project's academic roots and commitment to excellence in interactive storytelling.
